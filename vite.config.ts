@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
-import UniApp from "@dcloudio/vite-plugin-uni";
 import UniComponents from "@uni-helper/vite-plugin-uni-components";
 import { NutResolver } from "nutui-uniapp";
+import { setupVitePlugins } from './build/plugins'
 // import UnoCSS from "unocss/vite";
 
 export default async () => {
@@ -12,8 +12,7 @@ export default async () => {
             UniComponents({
                 resolvers: [NutResolver()],
             }),
-            UnoCSS(),
-            UniApp(),
+            ...await setupVitePlugins(),
         ],
         css: {
             preprocessorOptions: {

@@ -2,14 +2,23 @@
   <view class="content">
     <image class="logo" src="/static/logo.png" />
     <view class="text-area">
-      <text class="title m-20">{{ title }}</text>
+      <text class="title m-20" @click="aaa" >{{ title }}---{{ counterStore.count }}</text>
     </view>
   </view>
 </template>
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import {useCounterStore} from '@/store';
+
+const counterStore = useCounterStore();
+
 const title = ref('Hello')
+
+const aaa = ()=>{
+  uni.navigateTo({ url: '/pages/my/my' })
+}
+
 </script>
 
 <style>
