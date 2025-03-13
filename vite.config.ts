@@ -1,19 +1,15 @@
-import { defineConfig } from "vite";
+import type { ConfigEnv } from 'vite'
+import process from 'node:process'
+import { defineConfig, loadEnv } from 'vite'
 import UniComponents from "@uni-helper/vite-plugin-uni-components";
 import { NutResolver } from "nutui-uniapp";
 import { setupVitePlugins } from './build/plugins'
+import { convertEnv } from './build/utils'
 // import UnoCSS from "unocss/vite";
 
-export default async () => {
-  const UnoCSS = (await import('unocss/vite')).default
+export default async (configEnv: ConfigEnv) => {
     return defineConfig({
-        plugins: [
-            // 确保放在 `UniApp()` 之前
-            UniComponents({
-                resolvers: [NutResolver()],
-            }),
-            ...await setupVitePlugins(),
-        ],
+        plugins: await setupVitePlugins(),
         css: {
             preprocessorOptions: {
                 scss: {
