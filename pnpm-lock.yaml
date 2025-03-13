@@ -56,6 +56,9 @@ importers:
       '@uni-helper/uni-env':
         specifier: ^0.1.7
         version: 0.1.7
+      '@uni-helper/uni-network':
+        specifier: ^0.20.0
+        version: 0.20.0(vue@3.5.13(typescript@4.9.5))
       nutui-uniapp:
         specifier: ^1.8.3
         version: 1.8.3(@uni-helper/uni-app-types@1.0.0-alpha.6(typescript@4.9.5)(vue@3.5.13(typescript@4.9.5)))(vue@3.5.13(typescript@4.9.5))
@@ -1584,6 +1587,12 @@ packages:
   '@types/istanbul-reports@3.0.4':
     resolution: {integrity: sha512-pk2B1NWalF9toCRu6gjBzR69syFjP4Od8WRAX+0mmf9lAjCRicLOWc+ZrxZHx/0XRjotgkF9t6iaMJ+aXcOdZQ==}
 
+  '@types/lodash.merge@4.6.9':
+    resolution: {integrity: sha512-23sHDPmzd59kUgWyKGiOMO2Qb9YtqRO/x4IhkgNUiPQ1+5MUVqi6bCZeq9nBJ17msjIMbEIO5u+XW4Kz6aGUhQ==}
+
+  '@types/lodash@4.17.16':
+    resolution: {integrity: sha512-HX7Em5NYQAXKW+1T+FiuG27NGwzJfCX3s1GjOa7ujxZa52kjJLOr4FUxT+giF6Tgxv1e+/czV/iTtBw27WTU9g==}
+
   '@types/node@22.13.10':
     resolution: {integrity: sha512-I6LPUvlRH+O6VRUqYOcMudhaIdUVWfsjnZavnsraHvpBwaEyMN29ry+0UVJhImYL16xsscu0aske3yA+uPOWfw==}
 
@@ -1608,6 +1617,21 @@ packages:
 
   '@uni-helper/uni-env@0.1.7':
     resolution: {integrity: sha512-vxWnscbm1VgmK4ZzqN721mY0mIIVCeJutA32fH9P29itaYewVfL9VAWZWZi7nHJEssTkzhfdTTfydcnJKxUQzg==}
+
+  '@uni-helper/uni-network@0.20.0':
+    resolution: {integrity: sha512-NWy5hf3CHT+t/6geBhkM0rTQtvWrhZHrPIZVWjiIlth410AmcxGQWQ4lQZ9e/+udn64T1kWi9pVaRay2AcJAiQ==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0
+      '@vueuse/core': ^9.0.0 || ^10.0.0 || ^11.0.0 || ^12.0.0
+      vue: ^2.6.0 || ^2.7.0 || ^3.2.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
+        optional: true
+      '@vueuse/core':
+        optional: true
+      vue:
+        optional: true
 
   '@uni-helper/unocss-preset-uni@0.2.11':
     resolution: {integrity: sha512-/863vV/9y89j0ZzEGSrz+dCsOjxxUpGTNHL7+i/yokhyscmvcH8KPEpcOTfNtbkE5ALyJdNnfN70g2jbpxC3mw==}
@@ -2453,12 +2477,18 @@ packages:
   exsolve@1.0.4:
     resolution: {integrity: sha512-xsZH6PXaER4XoV+NiT7JHp1bJodJVT+cxeSH1G0f0tlT0lJqYuHUP3bUx2HtfTDvOagMINYp8rsqusxud3RXhw==}
 
+  fast-decode-uri-component@1.0.1:
+    resolution: {integrity: sha512-WKgKWg5eUxvRZGwW8FvfbaH7AXSh2cL+3j5fMGzUMCxWBJ3dV3a7Wz8y2f/uQ0e3B6WmodD3oS54jTQ9HVTIIg==}
+
   fast-glob@3.3.3:
     resolution: {integrity: sha512-7MptL8U0cqcFdzIzwOTHoilX9x5BrNqye7Z/LuC7kCMRio1EMSyqRK3BEAUD7sXRq4iT4AzTVuZdhgQ2TCvYLg==}
     engines: {node: '>=8.6.0'}
 
   fast-json-stable-stringify@2.1.0:
     resolution: {integrity: sha512-lhd/wF+Lk98HZoTCtlVraHtfh5XYijIjalXck7saUtuanSDyLMxnHhSXEDJqHxD7msR8D0uCmqlkwjCV8xvwHw==}
+
+  fast-querystring@1.1.2:
+    resolution: {integrity: sha512-g6KuKWmFXc0fID8WWH0jit4g0AGBoJhCkJMb1RmbsSEUNvQ+ZC8D6CUZ+GtF8nMzSPXnhiePyyqqipzNNEnHjg==}
 
   fastq@1.19.1:
     resolution: {integrity: sha512-GwLTyxkCXjXbxqIhTsMI2Nui8huMPtnxg7krajPJAjnEG/iiOS7i+zCtWGZR9G0NBKbXKh6X9m9UIsYX/N6vvQ==}
@@ -3026,6 +3056,9 @@ packages:
 
   lodash.groupby@4.6.0:
     resolution: {integrity: sha512-5dcWxm23+VAoz+awKmBaiBvzox8+RqMgFhi7UvX9DHZr2HdxHXM/Wrf8cfKpsW37RNrvtPn6hSwNqurSILbmJw==}
+
+  lodash.merge@4.6.2:
+    resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
 
   lodash@4.17.21:
     resolution: {integrity: sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==}
@@ -3644,6 +3677,10 @@ packages:
     resolution: {integrity: sha512-XlkWvfIm6RmsWtNJx+uqtKLS8eqFbxUg0ZzLXqY0caEy9l7hruX8IpiDnjsLavoBgqCCR71TqWO8MaXYheJ3RQ==}
     engines: {node: '>=10'}
 
+  statuses-es@2.0.6:
+    resolution: {integrity: sha512-MNbejKdhYUwxsiupoRli1XOb9WSaGLtoE6130mfjAXjHp5AV3cCdCTYzRbIV1qXLXq1uRHvs5J9jmR3tPZKDqw==}
+    engines: {node: '>= 0.8'}
+
   statuses@2.0.1:
     resolution: {integrity: sha512-RwNA9Z/7PrK06rYLIzFMlaF+l73iwpzsqRIFgbMLbTcLD6cOao82TaWefPXQvB2fOC4AjuYSEndS7N/mTCbkdQ==}
     engines: {node: '>= 0.8'}
@@ -3958,6 +3995,17 @@ packages:
       sugarss:
         optional: true
       terser:
+        optional: true
+
+  vue-demi@0.14.10:
+    resolution: {integrity: sha512-nMZBOwuzabUO0nLgIcc6rycZEebF6eeUfaiQx9+WSk8e29IbLvPU9feI6tqW4kTo3hvoYAJkMh8n8D0fuISphg==}
+    engines: {node: '>=12'}
+    hasBin: true
+    peerDependencies:
+      '@vue/composition-api': ^1.0.0-rc.1
+      vue: ^3.0.0-0 || ^2.6.0
+    peerDependenciesMeta:
+      '@vue/composition-api':
         optional: true
 
   vue-flow-layout@0.1.1:
@@ -6259,6 +6307,12 @@ snapshots:
     dependencies:
       '@types/istanbul-lib-report': 3.0.3
 
+  '@types/lodash.merge@4.6.9':
+    dependencies:
+      '@types/lodash': 4.17.16
+
+  '@types/lodash@4.17.16': {}
+
   '@types/node@22.13.10':
     dependencies:
       undici-types: 6.20.0
@@ -6281,6 +6335,17 @@ snapshots:
   '@uni-helper/uni-env@0.1.7':
     dependencies:
       std-env: 3.8.1
+
+  '@uni-helper/uni-network@0.20.0(vue@3.5.13(typescript@4.9.5))':
+    dependencies:
+      '@dcloudio/types': 3.4.14
+      '@types/lodash.merge': 4.6.9
+      fast-querystring: 1.1.2
+      lodash.merge: 4.6.2
+      statuses-es: 2.0.6
+      vue-demi: 0.14.10(vue@3.5.13(typescript@4.9.5))
+    optionalDependencies:
+      vue: 3.5.13(typescript@4.9.5)
 
   '@uni-helper/unocss-preset-uni@0.2.11(@unocss/preset-legacy-compat@66.0.0)(@unocss/rule-utils@66.1.0-beta.3)(unocss-applet@0.9.0(@unocss/core@66.1.0-beta.3)(unocss@66.1.0-beta.3(postcss@8.5.3)(vite@5.2.8(@types/node@22.13.10)(sass@1.63.2)(terser@5.39.0))(vue@3.5.13(typescript@4.9.5))))(unocss@66.1.0-beta.3(postcss@8.5.3)(vite@5.2.8(@types/node@22.13.10)(sass@1.63.2)(terser@5.39.0))(vue@3.5.13(typescript@4.9.5)))':
     dependencies:
@@ -7309,6 +7374,8 @@ snapshots:
 
   exsolve@1.0.4: {}
 
+  fast-decode-uri-component@1.0.1: {}
+
   fast-glob@3.3.3:
     dependencies:
       '@nodelib/fs.stat': 2.0.5
@@ -7318,6 +7385,10 @@ snapshots:
       micromatch: 4.0.8
 
   fast-json-stable-stringify@2.1.0: {}
+
+  fast-querystring@1.1.2:
+    dependencies:
+      fast-decode-uri-component: 1.0.1
 
   fastq@1.19.1:
     dependencies:
@@ -8101,6 +8172,8 @@ snapshots:
 
   lodash.groupby@4.6.0: {}
 
+  lodash.merge@4.6.2: {}
+
   lodash@4.17.21: {}
 
   lru-cache@5.1.1:
@@ -8687,6 +8760,8 @@ snapshots:
     dependencies:
       escape-string-regexp: 2.0.0
 
+  statuses-es@2.0.6: {}
+
   statuses@2.0.1: {}
 
   std-env@3.8.1: {}
@@ -8991,6 +9066,10 @@ snapshots:
       fsevents: 2.3.3
       sass: 1.63.2
       terser: 5.39.0
+
+  vue-demi@0.14.10(vue@3.5.13(typescript@4.9.5)):
+    dependencies:
+      vue: 3.5.13(typescript@4.9.5)
 
   vue-flow-layout@0.1.1(vue@3.5.13(typescript@4.9.5)):
     dependencies:
