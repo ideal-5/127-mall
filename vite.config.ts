@@ -1,7 +1,24 @@
 import { defineConfig } from "vite";
-import uni from "@dcloudio/vite-plugin-uni";
+import UniApp from "@dcloudio/vite-plugin-uni";
+import UniComponents from "@uni-helper/vite-plugin-uni-components";
+import { NutResolver } from "nutui-uniapp";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [uni()],
+  plugins: [
+    // 确保放在 `UniApp()` 之前
+    UniComponents({
+      resolvers: [
+        NutResolver()
+      ]
+    }),
+    UniApp()
+  ],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        api: 'modern-compiler',
+        additionalData: `@import '@/styles/variables.scss';`,
+      },
+    },
+  },
 });

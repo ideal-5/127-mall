@@ -10,4 +10,9 @@ onHide(() => {
   console.log("App Hide");
 });
 </script>
-<style></style>
+<!-- 注意这里的 lang="scss"，并且没有 scoped -->
+<style lang="scss">
+@import "nutui-uniapp/styles/index.scss";
+
+// ...
+</style>
