@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    IMdiHome: typeof import('~icons/mdi/home')['default']
+    NavBar: typeof import('./../src/components/NavBar.vue')['default']
+    NutNavbar: typeof import('nutui-uniapp/components/navbar/navbar.vue')['default']
   }
 }
