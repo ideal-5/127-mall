@@ -8,6 +8,8 @@ export {}
 declare module 'vue' {
   export interface GlobalComponents {
     NavBar: typeof import('./../src/components/NavBar.vue')['default']
-    NutNavbar: typeof import('nutui-uniapp/components/navbar/navbar.vue')['default']
+    NutSearchbar: typeof import('nutui-uniapp/components/searchbar/searchbar.vue')['default']
+    NutSwiper: typeof import('nutui-uniapp/components/swiper/swiper.vue')['default']
+    NutSwiperItem: typeof import('nutui-uniapp/components/swiperitem/swiperitem.vue')['default']
   }
 }

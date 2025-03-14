@@ -3,21 +3,21 @@ import { ref, defineProps, computed } from "vue";
 import { useSystemStore } from "@/store";
 
 interface Props {
-    barColor: string;
-    isFill: boolean;
-    isTimeFill: boolean;
-    backColor: string;
-    scrollTop: number;
-    scrollText: boolean;
-    isStopBack: boolean;
-    isBackIconFill: boolean;
+    barColor?: string;
+    isEmptyFill?: boolean;
+    isTimeFill?: boolean;
+    backColor?: string;
+    scrollTop?: number;
+    scrollText?: boolean;
+    isStopBack?: boolean;
+    isBackIconFill?: boolean;
 }
 
 const {
     // 背景颜色
     barColor = "transparent",
-    // 是否需要填充
-    isFill = true,
+    // 是否需要取消填充
+    isEmptyFill = false,
     // 是否只需要状态栏<时间>填充
     isTimeFill = false,
     // 返回按钮颜色
@@ -96,9 +96,7 @@ const opacity = computed(() => {
                 <!-- #endif  -->
                 <!-- app居中插槽 -->
                 <!-- #ifndef MP-WEIXIN -->
-                <div class="title" :style="{ opacity: scrollText ? opacity : 1 }">
-                    <slot></slot>
-                </div>
+                <div class="title" :style="{ opacity: scrollText ? opacity : 1 }"><slot></slot></div>
                 <!-- #endif -->
 
                 <!-- 减去右边胶囊按钮位置的插槽   -->
@@ -110,7 +108,8 @@ const opacity = computed(() => {
                         class="back-icon"
                         :style="{ position: isBackIconFill ? 'initial' : 'absolute' }"
                     >
-                        <up-icon name="arrow-leftward" :color="backColor" size="20"></up-icon>
+                        <!-- <up-icon name="arrow-leftward" :color="backColor" size="20"></up-icon> -->
+                        <div :class="`i-mdi:chevron-left  text-${backColor} text-60`" />
                     </div>
                     <slot name="left" :style="{ opacity: scrollText ? opacity : 1 }"></slot>
                 </div>
@@ -125,7 +124,8 @@ const opacity = computed(() => {
                         class="back-icon"
                         :style="{ position: isBackIconFill ? 'initial' : 'absolute' }"
                     >
-                        <up-icon name="arrow-leftward" :color="backColor" size="20"></up-icon>
+                        <!-- <up-icon name="arrow-leftward" :color="backColor" size="20"></up-icon> -->
+                        <div class="i-mdi:chevron-left text-#000 text-60" />
                     </div>
                     <slot name="left" :style="{ opacity: scrollText ? opacity : 1 }"></slot>
                 </div>
@@ -133,11 +133,10 @@ const opacity = computed(() => {
             </div>
         </div>
         <div
-            v-if="isFill"
+            v-if="!isEmptyFill"
             class="fill"
             :style="{ height: (isTimeFill ? systemInfo.statusBarHeight : systemInfo.navbarHeight) + 'px' }"
-        >
-        </div>
+        ></div>
     </div>
 </template>
 
