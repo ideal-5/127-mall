@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import ProductModule from "./components/ProductModule/index.vue";
+import Hot from "./components/Hot/index.vue";
 
 const searchValue = ref<string>("");
 const swiperList = ref([
@@ -46,9 +47,11 @@ const swiperList = ref([
                 <img :src="item" alt="" mode="aspectFill" />
             </nut-swiper-item>
         </nut-swiper>
-        <div style="width: 500rpx; height: 500rpx; background-color: aquamarine;" ></div>
+        <!-- <div style="width: 750rpx; height: 500rpx; background-color: aquamarine;" ></div> -->
         <!-- 商品模块 -->
         <ProductModule></ProductModule>
+        <!-- 热门推荐 -->
+        <Hot></Hot>
     </div>
 </template>
 

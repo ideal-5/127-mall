@@ -5,6 +5,7 @@
 
 interface NavigateToOptions {
   url: "/pages/home/home" |
+       "/pages/home/components/Hot/index" |
        "/pages/home/components/ProductModule/DirectSelling" |
        "/pages/home/components/ProductModule/index" |
        "/pages/home/components/ProductModule/NewProduct" |
