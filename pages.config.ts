@@ -31,15 +31,15 @@ export default defineUniPages({
                 text: "首页",
             },
             {
-                pagePath: "pages/message/message/message",
+                pagePath: "pages/message/message",
                 text: "消息",
             },
             {
-                pagePath: "pages/shoppingCart/shoppingCart/shoppingCart",
+                pagePath: "pages/shopping-cart/shopping-cart",
                 text: "购物车",
             },
             {
-                pagePath: "pages/my/my/my",
+                pagePath: "pages/my/my",
                 text: "我的",
             },
         ],

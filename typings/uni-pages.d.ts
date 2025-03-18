@@ -5,15 +5,15 @@
 
 interface NavigateToOptions {
   url: "/pages/home/home" |
-       "/pages/message/message/message" |
-       "/pages/my/edit-user/edit-user" |
-       "/pages/my/my/my" |
-       "/pages/shoppingCart/shoppingCart/shoppingCart";
+       "/pages/message/message" |
+       "/pages/my/edit-user" |
+       "/pages/my/my" |
+       "/pages/shopping-cart/shopping-cart";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 
 interface SwitchTabOptions {
-  url: "/pages/home/home" | "/pages/message/message/message" | "/pages/shoppingCart/shoppingCart/shoppingCart" | "/pages/my/my/my"
+  url: "/pages/home/home" | "/pages/message/message" | "/pages/shopping-cart/shopping-cart" | "/pages/my/my"
 }
 
 type ReLaunchOptions = NavigateToOptions | SwitchTabOptions;

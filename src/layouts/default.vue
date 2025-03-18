@@ -9,9 +9,9 @@ onShow(async () => {
     uni.hideTabBar()
     console.log("page.value", page.value);
     if (page.value === "pages/home/home") activeIndex.value = 0;
-    if (page.value === "pages/message/message/message") activeIndex.value = 1;
-    if (page.value === "pages/shoppingCart/shoppingCart/shoppingCart") activeIndex.value = 2;
-    if (page.value === "pages/my/my/my") activeIndex.value = 3;
+    if (page.value === "pages/message/message") activeIndex.value = 1;
+    if (page.value === "pages/shopping-cart/shopping-cart") activeIndex.value = 2;
+    if (page.value === "pages/my/my") activeIndex.value = 3;
 });
 
 function changeTab(_: any, index: number | string) {
@@ -23,15 +23,15 @@ function changeTab(_: any, index: number | string) {
         });
     } else if (index === 1) {
         uni.switchTab({
-            url: "/pages/message/message/message",
+            url: "/pages/message/message",
         });
     } else if (index === 2) {
         uni.switchTab({
-            url: "/pages/shoppingCart/shoppingCart/shoppingCart",
+            url: "/pages/shopping-cart/shopping-cart",
         });
     } else if (index === 3) {
         uni.switchTab({
-            url: "/pages/my/my/my",
+            url: "/pages/my/my",
         });
     }
 }

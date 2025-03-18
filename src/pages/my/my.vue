@@ -21,7 +21,7 @@ const toPage = (url) => {
             </template>
         </NavBar>
         <!-- 用户 -->
-        <div class="w-full flex items-center my-20" @click="toPage('/pages/my/edit-user/edit-user')">
+        <div class="w-full flex items-center my-20" @click="toPage('edit-user')">
             <div class="mr-20">
                 <image src="https://picsum.photos/200" mode="aspectFill" class="size-100 b-rd-full" />
             </div>
@@ -68,9 +68,9 @@ const toPage = (url) => {
         <!-- 订单 -->
         <div class="w-full bg-#fff b-rd-10 shadow-[0rpx_2rpx_4rpx_0rpx_rgba(0,0,0,0.1608)] box-border p-25">
             <div class="flex items-center justify-between mb-20">
-                <div class="text-30" >我的订单</div>
+                <div class="text-30">我的订单</div>
                 <div class="flex items-center">
-                    <span class="text-22 text-#949494" >全部</span>
+                    <span class="text-22 text-#949494">全部</span>
                     <span class="i-mdi:chevron-right"></span>
                 </div>
             </div>
