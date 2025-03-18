@@ -6,6 +6,7 @@ const page = ref(getCurrentPages()[0].route);
 const activeIndex = ref();
 
 onShow(async () => {
+    uni.hideTabBar()
     console.log("page.value", page.value);
     if (page.value === "pages/home/home") activeIndex.value = 0;
     if (page.value === "pages/message/message/message") activeIndex.value = 1;
@@ -37,10 +38,9 @@ function changeTab(_: any, index: number | string) {
 </script>
 
 <template>
-    <nut-config-provider>
+    <div>
         <slot />
         <!-- 支付宝小程序自定义 tabbar需要特殊处理 -->
-        <!-- #ifndef MP-ALIPAY -->
         <nut-tabbar
             v-model="activeIndex"
             active-color="#000"
@@ -74,8 +74,7 @@ function changeTab(_: any, index: number | string) {
                 </template>
             </nut-tabbar-item>
         </nut-tabbar>
-        <!-- #endif -->
-    </nut-config-provider>
+    </div>
 </template>
 
 <style scoped lang="scss">
