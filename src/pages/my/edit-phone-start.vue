@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { gotoPage } from "@/utils/uni.ts";
+</script>
 
 <template>
     <div
@@ -12,7 +14,10 @@
             <div class="text-46 font-500 my-32">武庸</div>
             <div class="text-30 text-#FFAA48">当前手机号</div>
             <div class="text-44 font-500 mt52 mb100">191****0101</div>
-            <div class="w-618 h-82 flex items-center justify-center text-#fff text-30 bg-#FFAA48 b-rd-full">
+            <div
+                class="w-618 h-82 flex items-center justify-center text-#fff text-30 bg-#FFAA48 b-rd-full"
+                @click="gotoPage('edit-phone-code')"
+            >
                 更换手机号
             </div>
         </div>

@@ -30,7 +30,7 @@ const tapAvatar = async () => {
                     <span class="i-mdi:chevron-right text-#d6d6d6"></span>
                 </div>
             </div>
-            <div class="line" @click="gotoPage('edit-phone')">
+            <div class="line" @click="gotoPage('edit-phone-start')">
                 <div class="label">手机号</div>
                 <div class="value">
                     <span class="text">191221151565645</span>

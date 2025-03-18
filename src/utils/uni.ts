@@ -15,3 +15,7 @@ export const gotoPage = (url: string, params: Record<string, any> = {}, method: 
     // 使用 as 断言让 TS 知道 uni[method] 是一个可调用函数
     (uni[method] as (options: UniApp.NavigateToOptions) => void)({ url: fullUrl });
 };
+
+export const showToast = (params: UniApp.ShowToastOptions) => {
+    uni.showToast({ icon: "none", ...params });
+};
