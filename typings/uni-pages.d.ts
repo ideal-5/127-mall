@@ -6,6 +6,7 @@
 interface NavigateToOptions {
   url: "/pages/home/home" |
        "/pages/message/message" |
+       "/pages/my/coupon" |
        "/pages/my/edit-phone-change" |
        "/pages/my/edit-phone-code" |
        "/pages/my/edit-phone-start" |

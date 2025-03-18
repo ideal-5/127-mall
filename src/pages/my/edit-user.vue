@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import { useUpload } from "@/hooks/useUpload.ts";
-import { gotoPage } from "@/utils/uni.ts";
+import { useUpload } from "@/hooks/useUpload";
+import { gotoPage } from "@/utils/uni";
 
 const { selectImage } = useUpload();
 

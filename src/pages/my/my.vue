@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import Member from "./components/Member";
+import Member from "./components/Member.vue";
 import { gotoPage } from "@/utils/uni";
 </script>
 
@@ -48,7 +48,7 @@ import { gotoPage } from "@/utils/uni";
                     <span class="i-mdi:chevron-right"></span>
                 </div>
             </div>
-            <div class="flex-1 flex flex-col items-center">
+            <div class="flex-1 flex flex-col items-center" @click="gotoPage('coupon')">
                 <div>
                     <span class="text-30">500</span>
                 </div>
