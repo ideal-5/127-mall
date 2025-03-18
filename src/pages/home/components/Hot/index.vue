@@ -17,7 +17,7 @@ const isLoaded = ref(false); // 是否加载中
 onReachBottom(async () => {
     if (!isLoaded.value) {
         await nextTick();
-        await pushList(list.value);
+        // await pushList(list.value);
         isLoaded.value = false;
     }
 });

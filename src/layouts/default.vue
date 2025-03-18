@@ -47,7 +47,6 @@ function changeTab(_: any, index: number | string) {
             unactive-color="#000"
             safe-area-inset-bottom
             bottom
-            placeholder
             @tab-switch="changeTab"
         >
             <nut-tabbar-item tab-title="首页">
