@@ -34,7 +34,7 @@ const list = ref<ProductWithIdKey[]>([
         vprice: "18.00",
         idKey: "a1",
     },
-    { img: "https://picsum.photos/300/3520", name: "智能手表 运动监测", price: "199.99", vprice: "25.00", idKey: "a2" },
+    { img: "https://picsum.photos/300/520", name: "智能手表 运动监测", price: "199.99", vprice: "25.00", idKey: "a2" },
     {
         img: "https://picsum.photos/300/430",
         name: "无线蓝牙耳机 降噪版",

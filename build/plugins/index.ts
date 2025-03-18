@@ -17,7 +17,7 @@ export async function setupVitePlugins(): Promise<PluginOption[]> {
             mergePages: true, // 是否合并pages配置文件
             minify: true, // 是否压缩pages配置文件
             dts: resolve(getRootPath(), "typings/uni-pages.d.ts"), // 生成pages.d.ts文件
-            exclude: ["**/components/*.vue"], // 排除的pages文件
+            exclude: ["**/components/**/*.vue"], // 排除的pages文件
         }),
         // uniLayouts(),
         ...unplugins,
