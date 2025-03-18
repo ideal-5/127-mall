@@ -6,6 +6,7 @@
 interface NavigateToOptions {
   url: "/pages/home/home" |
        "/pages/message/message" |
+       "/pages/my/edit-phone" |
        "/pages/my/edit-user" |
        "/pages/my/my" |
        "/pages/shopping-cart/shopping-cart";

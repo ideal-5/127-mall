@@ -1,11 +1,6 @@
 <script setup lang="ts">
 import Member from "./components/Member";
-
-const toPage = (url) => {
-    uni.navigateTo({
-        url,
-    });
-};
+import { gotoPage } from "@/utils/uni";
 </script>
 
 <template>
@@ -21,7 +16,7 @@ const toPage = (url) => {
             </template>
         </NavBar>
         <!-- 用户 -->
-        <div class="w-full flex items-center my-20" @click="toPage('edit-user')">
+        <div class="w-full flex items-center my-20" @click="gotoPage('edit-user')">
             <div class="mr-20">
                 <image src="https://picsum.photos/200" mode="aspectFill" class="size-100 b-rd-full" />
             </div>

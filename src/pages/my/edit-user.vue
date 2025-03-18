@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useUpload } from "@/hooks/useUpload.ts";
+import { gotoPage } from "@/utils/uni.ts";
 
 const { selectImage } = useUpload();
 
@@ -29,7 +30,7 @@ const tapAvatar = async () => {
                     <span class="i-mdi:chevron-right text-#d6d6d6"></span>
                 </div>
             </div>
-            <div class="line">
+            <div class="line" @click="gotoPage('edit-phone')">
                 <div class="label">手机号</div>
                 <div class="value">
                     <span class="text">191221151565645</span>
