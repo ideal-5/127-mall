@@ -8,9 +8,10 @@ const codeFinish = () => {
     console.log("codeInp", codeInp);
     // 调用接口
 
-    let code = 0;
+    let code = 1;
     if (code === 1) {
         // code正确 跳转页面
+        gotoPage("edit-phone-change");
     } else {
         showToast({ title: "验证码错误" });
     }

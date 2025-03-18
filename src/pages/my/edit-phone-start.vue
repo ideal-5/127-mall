@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { gotoPage } from "@/utils/uni.ts";
+import { gotoPage } from "@/utils/uni";
 </script>
 
 <template>
