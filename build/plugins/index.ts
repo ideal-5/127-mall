@@ -1,7 +1,7 @@
 import type { PluginOption } from "vite";
 import { resolve } from "node:path";
 import uni from "@dcloudio/vite-plugin-uni";
-// import uniLayouts from '@uni-helper/vite-plugin-uni-layouts'
+import uniLayouts from '@uni-helper/vite-plugin-uni-layouts'
 // import uniManifest from '@uni-helper/vite-plugin-uni-manifest'
 import uniPages from "@uni-helper/vite-plugin-uni-pages";
 import uniPolyfill from "vite-plugin-uni-polyfill";
@@ -19,7 +19,7 @@ export async function setupVitePlugins(): Promise<PluginOption[]> {
             dts: resolve(getRootPath(), "typings/uni-pages.d.ts"), // 生成pages.d.ts文件
             exclude: ["**/components/**/*.vue"], // 排除的pages文件
         }),
-        // uniLayouts(),
+        uniLayouts(),
         ...unplugins,
         uniPolyfill(), // polyfill vue版本的补丁
         unocss(),
