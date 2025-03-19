@@ -1,5 +1,7 @@
 <script setup lang="ts">
 import { gotoPage } from "@/utils/uni";
+import { ref } from "vue";
+const showProps = ref(false);
 </script>
 
 <template>
@@ -10,7 +12,7 @@ import { gotoPage } from "@/utils/uni";
             <template #left>
                 <div class="w100vh flex-center relative">
                     <span class="text-34 font-400">我的分销</span>
-                    <span class="text-26 absolute right-30">分销规则</span>
+                    <span class="text-26 absolute right-30" @click.stop="showProps = true">分销规则</span>
                 </div>
             </template>
         </NavBar>
@@ -53,6 +55,18 @@ import { gotoPage } from "@/utils/uni";
                 <div class="flex-1 flex-center text-26">邀请总人数:</div>
             </div>
         </div>
+        <nut-popup
+            v-model:visible="showProps"
+            transition="zoom"
+            pop-class="w600 px-25 flex flex-col items-center b-rd-22"
+        >
+            <div
+                class="bg-[linear-gradient(95deg,#FECE62_0%,#FFFFFF_18%,#FFFFFF_47%,#FFFFFF_82%,#FECE62_100%)] text-34 text-#FF9113 b-rd-full px-20 my-30"
+            >
+                分销规则
+            </div>
+            <rich-text :nodes="'<div>我是HTML代码</div>'"></rich-text>
+        </nut-popup>
     </div>
 </template>
 <route lang="json">
