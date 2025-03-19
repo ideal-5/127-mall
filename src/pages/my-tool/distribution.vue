@@ -1,4 +1,6 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { gotoPage } from "@/utils/uni";
+</script>
 
 <template>
     <div
@@ -31,6 +33,7 @@
                 </div>
                 <div
                     class="bg-[linear-gradient(101deg,#FECE62_0%,#FFAA48_100%)] text-#fff text-22 box-border px-20 py-10 b-rd-full"
+                    @click="gotoPage('withdraw')"
                 >
                     立即提现
                 </div>
