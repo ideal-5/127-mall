@@ -116,7 +116,7 @@ import { gotoPage } from "@/utils/uni";
                     <image src="@/static/img/tool-yaoqing.png" />
                     <div>邀请分享</div>
                 </div>
-                <div class="tool-item" @click="gotoPage('/pages/my-tool/distribution')" >
+                <div class="tool-item" @click="gotoPage('/pages/my-tool/distribution')">
                     <image src="@/static/img/tool-fenxiao.png" />
                     <div>我的分销</div>
                 </div>
@@ -128,11 +128,11 @@ import { gotoPage } from "@/utils/uni";
                     <image src="@/static/img/tool-kefu.png" />
                     <div>联系客服</div>
                 </div>
-                <div class="tool-item" @click="gotoPage('/pages/my-tool/feedback')" >
+                <div class="tool-item" @click="gotoPage('/pages/my-tool/feedback')">
                     <image src="@/static/img/tool-fankui.png" />
                     <div>意见反馈</div>
                 </div>
-                <div class="tool-item">
+                <div class="tool-item" @click="gotoPage('/pages/my-tool/settings')">
                     <image src="@/static/img/tool-shezhi.png" />
                     <div>系统设置</div>
                 </div>
