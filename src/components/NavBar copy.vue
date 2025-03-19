@@ -12,28 +12,31 @@ interface Props {
     isStopBack?: boolean;
     isBackIconFill?: boolean;
 }
-const props = withDefaults(defineProps<Props>(), {
-    barColor: "transparent",
+
+const {
+    // 背景颜色
+    barColor = "transparent",
     // 是否需要取消填充
-    isEmptyFill: false,
+    isEmptyFill = false,
     // 是否只需要状态栏<时间>填充
-    isTimeFill: false,
+    isTimeFill = false,
     // 返回按钮颜色
-    backColor: "#000",
+    backColor = "#000",
     // 滚动条距离顶部的距离<如果不传 默认是-1  如果值是-1 就说明没有传值>
     // import { onPageScroll } from "@dcloudio/uni-app";
-    // const scrollTop : ref(0);
-    // onPageScroll((e) :> {
-    //     scrollTop.value : e.scrollTop;
+    // const scrollTop = ref(0);
+    // onPageScroll((e) => {
+    //     scrollTop.value = e.scrollTop;
     // });
-    scrollTop: -1,
+    scrollTop = -1,
     // 是否根据滚动改变文字透明度<默认和left插槽都会生效>
-    scrollText: false,
+    scrollText = false,
     // 点击返回按钮是否阻止返回上一页面
-    isStopBack: false,
+    isStopBack = false,
     // 使用left具名插槽时 返回按钮是否占据位置
-    isBackIconFill: false,
-});
+    isBackIconFill = false,
+} = defineProps<Props>();
+
 const emit = defineEmits(["tapBackIcon"]);
 
 const systemStore = useSystemStore();
@@ -42,7 +45,7 @@ systemInfo.value = systemStore.getSystem();
 
 const goBacksPage = () => {
     emit("tapBackIcon");
-    if (!props.isStopBack) {
+    if (!isStopBack) {
         uni.navigateBack({
             delta: 1,
         });
@@ -61,8 +64,8 @@ const isGoBack = () => {
 
 // 计算背景颜色
 const background = computed(() => {
-    let color = props.barColor;
-    if (props.scrollTop >= 0 && color === "transparent") {
+    let color = barColor;
+    if (scrollTop >= 0 && color === "transparent") {
         color = "#fff"; // 透明背景时替换成白色
     }
     return color;
@@ -70,7 +73,7 @@ const background = computed(() => {
 
 // 计算透明度，避免每次通过 computed 计算
 const opacity = computed(() => {
-    return props.scrollTop >= 0 ? Math.min(props.scrollTop / systemInfo.value.navbarHeight, 1) : 1;
+    return scrollTop >= 0 ? Math.min(scrollTop / systemInfo.value.navbarHeight, 1) : 1;
 });
 </script>
 
@@ -83,7 +86,7 @@ const opacity = computed(() => {
             <!-- 状态栏<时间> -->
             <div class="statusBar" :style="{ height: systemInfo.statusBarHeight + 'px' }"></div>
             <!-- 标题栏<标题> -->
-            <div v-if="!props.isTimeFill" class="titleBar" :style="{ height: systemInfo.titleBarHeight + 'px' }">
+            <div v-if="!isTimeFill" class="titleBar" :style="{ height: systemInfo.titleBarHeight + 'px' }">
                 <!-- 居中的插槽，两边都有胶囊的占位盒子  -->
                 <!-- #ifdef MP-WEIXIN -->
                 <div :style="{ width: systemInfo.menuButtonWidth + 'px' }"></div>
@@ -104,10 +107,10 @@ const opacity = computed(() => {
                         v-if="isGoBack()"
                         @click="goBacksPage"
                         class="back-icon"
-                        :style="{ position: props.isBackIconFill ? 'initial' : 'absolute' }"
+                        :style="{ position: isBackIconFill ? 'initial' : 'absolute' }"
                     >
                         <!-- <up-icon name="arrow-leftward" :color="backColor" size="20"></up-icon> -->
-                        <div :class="`i-mdi:chevron-left  text-${props.backColor} text-60`" />
+                        <div :class="`i-mdi:chevron-left  text-${backColor} text-60`" />
                     </div>
                     <slot name="left" :style="{ opacity: scrollText ? opacity : 1 }"></slot>
                 </div>
@@ -120,10 +123,10 @@ const opacity = computed(() => {
                         v-if="isGoBack()"
                         @click="goBacksPage"
                         class="back-icon"
-                        :style="{ position: props.isBackIconFill ? 'initial' : 'absolute' }"
+                        :style="{ position: isBackIconFill ? 'initial' : 'absolute' }"
                     >
                         <!-- <up-icon name="arrow-leftward" :color="backColor" size="20"></up-icon> -->
-                        <div :class="`i-mdi:chevron-left  text-${props.backColor} text-60`" />
+                        <div class="i-mdi:chevron-left text-#000 text-60" />
                     </div>
                     <slot name="left" :style="{ opacity: scrollText ? opacity : 1 }"></slot>
                 </div>
@@ -131,9 +134,9 @@ const opacity = computed(() => {
             </div>
         </div>
         <div
-            v-if="!props.isEmptyFill"
+            v-if="!isEmptyFill"
             class="fill"
-            :style="{ height: (props.isTimeFill ? systemInfo.statusBarHeight : systemInfo.navbarHeight) + 'px' }"
+            :style="{ height: (isTimeFill ? systemInfo.statusBarHeight : systemInfo.navbarHeight) + 'px' }"
         ></div>
     </div>
 </template>
