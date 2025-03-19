@@ -16,7 +16,7 @@ const text = ref("");
                     v-model="text"
                     placeholder="请输入所在区域"
                     :border="false"
-                    style="--nut-input-padding: 10px 0"
+                    style="--nut-input-padding: 10px 0; --nut-input-font-size: 24rpx"
                 >
                     <template #left>
                         <span class="text-26 font-500">所在区域</span>
@@ -33,7 +33,7 @@ const text = ref("");
                     v-model="text"
                     placeholder="请输入详细地址与门牌号"
                     :border="false"
-                    style="--nut-input-padding: 10px 0"
+                    style="--nut-input-padding: 10px 0; --nut-input-font-size: 24rpx"
                 >
                     <template #left>
                         <span class="text-26 font-500">详细地址与门牌号</span>
@@ -50,7 +50,7 @@ const text = ref("");
                     v-model="text"
                     placeholder="请输入收货人姓名"
                     :border="false"
-                    style="--nut-input-padding: 10px 0"
+                    style="--nut-input-padding: 10px 0; --nut-input-font-size: 24rpx"
                 >
                     <template #left>
                         <span class="text-26 font-500">收货人姓名</span>
@@ -67,7 +67,7 @@ const text = ref("");
                     v-model="text"
                     placeholder="请输入手机号码"
                     :border="false"
-                    style="--nut-input-padding: 10px 0"
+                    style="--nut-input-padding: 10px 0; --nut-input-font-size: 24rpx"
                 >
                     <template #left>
                         <span class="text-26 font-500">手机号</span>

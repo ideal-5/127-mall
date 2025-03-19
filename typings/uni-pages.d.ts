@@ -14,6 +14,7 @@ interface NavigateToOptions {
        "/pages/my/my" |
        "/pages/my-tool/address-add" |
        "/pages/my-tool/address-list" |
+       "/pages/my-tool/distribution" |
        "/pages/shopping-cart/shopping-cart";
 }
 interface RedirectToOptions extends NavigateToOptions {}
