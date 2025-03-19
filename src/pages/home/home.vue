@@ -3,6 +3,7 @@ import { ref } from "vue";
 import ProductModule from "./components/ProductModule/index.vue";
 import Hot from "./components/Hot/index.vue";
 import { onPageScroll } from "@dcloudio/uni-app";
+import { gotoPage } from "@/utils/uni";
 
 const scrollTop = ref(0);
 onPageScroll((e) => {
@@ -22,7 +23,7 @@ const swiperList = ref([
 <template>
     <div class="main w-full min-h-100vh bg-gradient-to-l from-[#FFEDC4] to-[#FFDBB8] box-border px-34">
         <NavBar :scrollTop="scrollTop" barColor="#fff">
-        <!-- <NavBar> -->
+            <!-- <NavBar> -->
             <template #left>
                 <div class="w-100vw box-border px-34">
                     <span class="text-34 font-800 mr-15">SHOP_APP_NAME</span>
@@ -33,6 +34,8 @@ const swiperList = ref([
         <nut-searchbar
             v-model="searchValue"
             style="--nut-searchbar-input-height: 37px; --nut-searchbar-input-border-radius: 9999rpx"
+            @click-input="gotoPage('search')"
+            @click-right-icon="gotoPage('search')"
         >
             <template #rightin>
                 <div

@@ -20,8 +20,8 @@ export const useSystemStore = defineStore("system", () => {
     let statusBarHeight: number; // 状态栏高度
     let titleBarHeight: number; // 标题栏高度
     let navbarHeight: number; // 导航栏总高度 = 标题栏高度 + 状态栏高度
-    let menuButtonWidth: number; // 胶囊按钮的宽度 + 胶囊按钮与右边的距离
-    let menuButtonLeft: number; // 胶囊按钮距离屏幕左边的距离 可以给navbar的titleBox宽度设置menuButtonLeft   确保标题绝对不会和胶囊按钮相交
+    let menuButtonWidth: number = 0; // 胶囊按钮的宽度 + 胶囊按钮与右边的距离
+    let menuButtonLeft: number = 0; // 胶囊按钮距离屏幕左边的距离 可以给navbar的titleBox宽度设置menuButtonLeft   确保标题绝对不会和胶囊按钮相交
 
     let safeAreaInsets: UniApp.SafeAreaInsets; // 四个方向的安全距离<px> {top,bottom,......}
     let safeAreaInsetsRpx: UniApp.SafeAreaInsets = { top: 0, bottom: 0, left: 0, right: 0 }; // 四个方向的安全距离<rpx> {top,bottom,......}

@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, defineProps, computed } from "vue";
 import { useSystemStore } from "@/store";
+import { computed, defineProps, ref } from "vue";
 
 interface Props {
     barColor?: string;
@@ -40,20 +40,20 @@ const systemStore = useSystemStore();
 const systemInfo = ref();
 systemInfo.value = systemStore.system;
 
-const goBacksPage = () => {
+function goBacksPage() {
     emit("tapBackIcon");
     if (!props.isStopBack) {
         uni.navigateBack({
             delta: 1,
         });
     }
-};
-const isGoBack = () => {
+}
+function isGoBack() {
     const pages = getCurrentPages();
     // 如果页面栈长度大于1，表示有上一页可以返回
     // console.log("页面栈", pages);
     return pages.length > 1;
-};
+}
 
 /**
  * 背景色
@@ -78,69 +78,52 @@ const opacity = computed(() => {
     <div class="layout">
         <div class="navbar">
             <!-- 背景 -->
-            <div class="navbar-bj" :style="{ opacity, background }"></div>
+            <div class="navbar-bj" :style="{ opacity, background }" />
 
             <!-- 状态栏<时间> -->
-            <div class="statusBar" :style="{ height: systemInfo.statusBarHeight + 'px' }"></div>
+            <div class="statusBar" :style="{ height: `${systemInfo.statusBarHeight}px` }" />
             <!-- 标题栏<标题> -->
-            <div v-if="!props.isTimeFill" class="titleBar" :style="{ height: systemInfo.titleBarHeight + 'px' }">
-                <!-- 居中的插槽，两边都有胶囊的占位盒子  -->
-                <!-- #ifdef MP-WEIXIN -->
-                <div :style="{ width: systemInfo.menuButtonWidth + 'px' }"></div>
+            <div v-if="!props.isTimeFill" class="titleBar" :style="{ height: `${systemInfo.titleBarHeight}px` }">
+                <!-- 居中<默认>的插槽，微信两边都有胶囊的占位盒子  -->
+                <div :style="{ width: `${systemInfo.menuButtonWidth}px` }" />
                 <div class="title" :style="{ opacity: scrollText ? opacity : 1 }">
-                    <slot></slot>
+                    <slot />
                 </div>
-                <div :style="{ width: systemInfo.menuButtonWidth + 'px' }"></div>
-                <!-- #endif  -->
-                <!-- app居中插槽 -->
-                <!-- #ifndef MP-WEIXIN -->
-                <div class="title" :style="{ opacity: scrollText ? opacity : 1 }"><slot></slot></div>
-                <!-- #endif -->
+                <div :style="{ width: `${systemInfo.menuButtonWidth}px` }" />
 
                 <!-- 减去右边胶囊按钮位置的插槽   -->
-                <!-- #ifdef MP-WEIXIN -->
-                <div class="let-slot-box" :style="{ maxWidth: systemInfo.menuButtonLeft + 'px' }">
+                <div
+                    class="let-slot-box"
+                    :style="{
+                        width: systemInfo.menuButtonLeft ? `${systemInfo.menuButtonLeft}px` : '100%',
+                    }"
+                >
                     <div
                         v-if="isGoBack()"
-                        @click="goBacksPage"
                         class="back-icon"
                         :style="{ position: props.isBackIconFill ? 'initial' : 'absolute' }"
-                    >
-                        <!-- <up-icon name="arrow-leftward" :color="backColor" size="20"></up-icon> -->
-                        <div :class="`i-mdi:chevron-left  text-${props.backColor} text-60`" />
-                    </div>
-                    <slot name="left" :style="{ opacity: scrollText ? opacity : 1 }"></slot>
-                </div>
-                <!-- #endif  -->
-
-                <!-- app不居中插槽 -->
-                <!-- #ifndef MP-WEIXIN -->
-                <div class="let-slot-box" :style="{ maxWidth: '100vw' }">
-                    <div
-                        v-if="isGoBack()"
                         @click="goBacksPage"
-                        class="back-icon"
-                        :style="{ position: props.isBackIconFill ? 'initial' : 'absolute' }"
                     >
-                        <!-- <up-icon name="arrow-leftward" :color="backColor" size="20"></up-icon> -->
                         <div :class="`i-mdi:chevron-left  text-${props.backColor} text-60`" />
                     </div>
-                    <slot name="left" :style="{ opacity: scrollText ? opacity : 1 }"></slot>
+                    <slot name="left" :style="{ opacity: scrollText ? opacity : 1 }" />
                 </div>
-                <!-- #endif -->
             </div>
         </div>
+        <!-- 填充 为了占位置 -->
         <div
             v-if="!props.isEmptyFill"
             class="fill"
-            :style="{ height: (props.isTimeFill ? systemInfo.statusBarHeight : systemInfo.navbarHeight) + 'px' }"
-        ></div>
+            :style="{
+                height: `${props.isTimeFill ? systemInfo.statusBarHeight : systemInfo.navbarHeight}px`,
+            }"
+        />
     </div>
 </template>
 
 <style scoped lang="scss">
 .layout {
-    --my-navbar-border-bottom-color: transparent;
+    --my-navbar-border-bottom-color: transparent; // 底部边框颜色
     .navbar {
         z-index: 10;
         position: fixed;
@@ -153,7 +136,6 @@ const opacity = computed(() => {
             width: 100%;
             height: 100%;
             border-bottom: 1rpx solid var(--my-navbar-border-bottom-color);
-            
         }
 
         .statusBar {
@@ -167,7 +149,9 @@ const opacity = computed(() => {
                 font-size: 40rpx;
                 font-weight: 900;
                 flex: 1;
-                @include text-omit;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
                 text-align: center;
             }
 
@@ -178,11 +162,15 @@ const opacity = computed(() => {
                 display: flex;
                 align-items: center;
                 min-width: 100rpx;
-                @include text-omit;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                white-space: nowrap;
                 .back-icon {
                     width: 70rpx;
                     z-index: 2;
-                    @include my-flex;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
                 }
             }
         }
