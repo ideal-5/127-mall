@@ -12,6 +12,7 @@ interface NavigateToOptions {
        "/pages/my/edit-phone-start" |
        "/pages/my/edit-user" |
        "/pages/my/my" |
+       "/pages/my-tool/address-add" |
        "/pages/my-tool/address-list" |
        "/pages/shopping-cart/shopping-cart";
 }

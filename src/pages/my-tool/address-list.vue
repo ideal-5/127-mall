@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useStyle } from "@/hooks/useStyle";
 import { ref } from "vue";
+import {gotoPage} from '@/utils/uni'
 
 const { bottomHeight, bottomStyle } = useStyle().absoluteBottom(150);
 
@@ -53,7 +54,7 @@ const defaultAddress = ref(true);
         </div>
 
         <div :style="bottomStyle" class="flex-center box-border px-30">
-            <div class="w-full flex-center text-#fff h-90 bg-#FFAA48 b-rd-full">+添加地址</div>
+            <div class="w-full flex-center text-#fff h-90 bg-#FFAA48 b-rd-full" @click="gotoPage('address-add')" >+添加地址</div>
         </div>
     </div>
 </template>
