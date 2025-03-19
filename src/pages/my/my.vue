@@ -128,7 +128,7 @@ import { gotoPage } from "@/utils/uni";
                     <image src="@/static/img/tool-kefu.png" />
                     <div>联系客服</div>
                 </div>
-                <div class="tool-item">
+                <div class="tool-item" @click="gotoPage('/pages/my-tool/feedback')" >
                     <image src="@/static/img/tool-fankui.png" />
                     <div>意见反馈</div>
                 </div>

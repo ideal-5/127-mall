@@ -15,6 +15,7 @@ interface NavigateToOptions {
        "/pages/my-tool/address-add" |
        "/pages/my-tool/address-list" |
        "/pages/my-tool/distribution" |
+       "/pages/my-tool/feedback" |
        "/pages/my-tool/withdraw" |
        "/pages/shopping-cart/shopping-cart";
 }
