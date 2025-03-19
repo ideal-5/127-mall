@@ -1,32 +1,62 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { ref } from "vue";
+const activeTabs = ref(0);
+
+const tabList = ref([
+    { label: "可使用", value: "5" },
+    { label: "已过期/失效", value: "6" },
+]);
+</script>
 
 <template>
-    <div class="main bg-#F8F8F8 box-border px-30 ">
+    <div class="main bg-#F8F8F8">
         <NavBar barColor="#fff">优惠券</NavBar>
-        <div class="coupon-list">
-            <div class="quan-dizu" v-for="(item, index) in 10" :key="index">
-                <div class="quan">
-                    <div class="qian">
-                        <div class="qian-line1">
-                            <div class="amount">
-                                <text>123</text>
-                                <text>123</text>
+        <nut-tabs
+            v-model="activeTabs"
+            swipeable
+            style="
+                --nut-tabs-titles-background-color: #fff;
+                --nut-tabs-horizontal-tab-line-color: #ffaa48;
+                --nut-tab-pane-background: #f8f8f8;
+            "
+            @change="
+                (i) => {
+                    console.log(i);
+                }
+            "
+        >
+            <nut-tab-pane
+                :title="tabItem.label"
+                :pane-key="tabItem.value"
+                v-for="(tabItem, tabIndex) in tabList"
+                :key="tabIndex"
+            >
+                <div class="coupon-list box-border px-30">
+                    <div class="quan-dizu" v-for="(item, index) in 10" :key="index">
+                        <div class="quan">
+                            <div class="qian">
+                                <div class="qian-line1">
+                                    <div class="amount">
+                                        <text>123</text>
+                                        <text>123</text>
+                                    </div>
+                                    <div class="tiaojian">456</div>
+                                </div>
+                                <div class="qian-line2">
+                                    <text>456</text>
+                                </div>
+                                <div class="qian-line3">
+                                    <div>789</div>
+                                </div>
                             </div>
-                            <div class="tiaojian">456</div>
-                        </div>
-                        <div class="qian-line2">
-                            <text>456</text>
-                        </div>
-                        <div class="qian-line3">
-                            <div>789</div>
+                            <div class="hou"></div>
+                            <div class="xuxian"></div>
+                            <div class="guoqi">10</div>
                         </div>
                     </div>
-                    <div class="hou"></div>
-                    <div class="xuxian"></div>
-                    <div class="guoqi">10</div>
                 </div>
-            </div>
-        </div>
+            </nut-tab-pane>
+        </nut-tabs>
     </div>
 </template>
 <route lang="json">
@@ -43,7 +73,7 @@
         box-sizing: border-box;
         padding: 20rpx;
         flex-shrink: 0; // 确保该盒子不被挤压变形
-        background-color: #FFF5DD;
+        background-color: #fff5dd;
         @include my-flex;
         border-radius: 10rpx;
         box-shadow: 0rpx 6rpx 12rpx 2rpx rgba(0, 0, 0, 0.16);

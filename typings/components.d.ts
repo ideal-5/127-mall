@@ -18,5 +18,7 @@ declare module 'vue' {
     NutSwiperItem: typeof import('nutui-uniapp/components/swiperitem/swiperitem.vue')['default']
     NutTabbar: typeof import('nutui-uniapp/components/tabbar/tabbar.vue')['default']
     NutTabbarItem: typeof import('nutui-uniapp/components/tabbaritem/tabbaritem.vue')['default']
+    NutTabPane: typeof import('nutui-uniapp/components/tabpane/tabpane.vue')['default']
+    NutTabs: typeof import('nutui-uniapp/components/tabs/tabs.vue')['default']
   }
 }
