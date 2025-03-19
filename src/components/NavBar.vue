@@ -38,7 +38,7 @@ const emit = defineEmits(["tapBackIcon"]);
 
 const systemStore = useSystemStore();
 const systemInfo = ref();
-systemInfo.value = systemStore.getSystem();
+systemInfo.value = systemStore.system;
 
 const goBacksPage = () => {
     emit("tapBackIcon");
@@ -140,6 +140,7 @@ const opacity = computed(() => {
 
 <style scoped lang="scss">
 .layout {
+    --my-navbar-border-bottom-color: transparent;
     .navbar {
         z-index: 10;
         position: fixed;
@@ -151,6 +152,8 @@ const opacity = computed(() => {
             position: absolute;
             width: 100%;
             height: 100%;
+            border-bottom: 1rpx solid var(--my-navbar-border-bottom-color);
+            
         }
 
         .statusBar {

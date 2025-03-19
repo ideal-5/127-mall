@@ -7,7 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    copy: typeof import('./../src/components/NavBar copy.vue')['default']
     NavBar: typeof import('./../src/components/NavBar.vue')['default']
     'NavBar copy': typeof import('./../src/components/NavBar copy.vue')['default']
     NutCodeInput: typeof import('nutui-uniapp/components/codeinput/codeinput.vue')['default']
@@ -16,6 +15,7 @@ declare module 'vue' {
     NutSearchbar: typeof import('nutui-uniapp/components/searchbar/searchbar.vue')['default']
     NutSwiper: typeof import('nutui-uniapp/components/swiper/swiper.vue')['default']
     NutSwiperItem: typeof import('nutui-uniapp/components/swiperitem/swiperitem.vue')['default']
+    NutSwitch: typeof import('nutui-uniapp/components/switch/switch.vue')['default']
     NutTabbar: typeof import('nutui-uniapp/components/tabbar/tabbar.vue')['default']
     NutTabbarItem: typeof import('nutui-uniapp/components/tabbaritem/tabbaritem.vue')['default']
     NutTabPane: typeof import('nutui-uniapp/components/tabpane/tabpane.vue')['default']

@@ -108,7 +108,7 @@ import { gotoPage } from "@/utils/uni";
                 <span class="text-30 font-500">服务与工具</span>
             </div>
             <div class="w-full grid grid-cols-4">
-                <div class="tool-item">
+                <div class="tool-item" @click="gotoPage('/pages/my-tool/address-list')">
                     <image src="@/static/img/tool-address.png" />
                     <div>地址管理</div>
                 </div>

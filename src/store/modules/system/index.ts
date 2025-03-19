@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import { computed } from "vue";
 
 interface SystemInfo {
     safeAreaInsetsRpx: UniApp.SafeAreaInsets;
@@ -42,13 +43,14 @@ export const useSystemStore = defineStore("system", () => {
         navbarHeight = titleBarHeight + statusBarHeight; // navBar的总高度
 
         // 获取四个方向的安全距离 并转为rpx
-
+        console.log("uni.getSystemInfoSync()", uni.getSystemInfoSync());
         safeAreaInsets = {
-            left: SYSTEM.safeArea?.left || 0,
-            right: SYSTEM.safeArea?.right || 0,
-            bottom: SYSTEM.safeArea?.bottom || 0,
-            top: SYSTEM.safeArea?.top || 0,
+            left: SYSTEM.safeAreaInsets?.left || 0,
+            right: SYSTEM.safeAreaInsets?.right || 0,
+            bottom: SYSTEM.safeAreaInsets?.bottom || 0,
+            top: SYSTEM.safeAreaInsets?.top || 0,
         };
+
         safeAreaInsetsRpx = safeAreaInsets;
         for (const key in safeAreaInsets) {
             safeAreaInsetsRpx[key as keyof typeof safeAreaInsetsRpx] = pxToRpx(
@@ -56,8 +58,7 @@ export const useSystemStore = defineStore("system", () => {
             );
         }
     };
-
-    const getSystem = (): SystemInfo => {
+    const system = computed(() => {
         if (!navbarHeight) {
             setSystemApi();
         }
@@ -69,12 +70,12 @@ export const useSystemStore = defineStore("system", () => {
             menuButtonWidth,
             menuButtonLeft,
         };
-    };
+    });
     // px转rpx
     const pxToRpx = (px: number) => {
         const screenWidth = SYSTEM.screenWidth; // 屏幕宽度
         return (750 * Number.parseInt(px.toString())) / screenWidth;
     };
 
-    return { setSystemApi, getSystem, pxToRpx, safeAreaInsetsRpx };
+    return { setSystemApi, pxToRpx, safeAreaInsetsRpx, system };
 });

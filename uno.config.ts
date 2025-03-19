@@ -13,6 +13,9 @@ import { presetUni } from "@uni-helper/unocss-preset-uni";
 const darkMode = isH5 ? "class" : "media";
 
 const config: UserConfig = defineConfig({
+    rules: [
+        ["flex-center", { display: "flex", "align-items": "center", "justify-content": "center" }], // 一个配置为一个数组
+    ],
     content: {
         pipeline: {
             exclude: [
