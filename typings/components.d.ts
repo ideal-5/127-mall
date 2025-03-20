@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    copy: typeof import('./../src/components/NavBar copy.vue')['default']
     NavBar: typeof import('./../src/components/NavBar.vue')['default']
     'NavBar copy': typeof import('./../src/components/NavBar copy.vue')['default']
     NutCodeInput: typeof import('nutui-uniapp/components/codeinput/codeinput.vue')['default']
@@ -22,5 +23,6 @@ declare module 'vue' {
     NutTabs: typeof import('nutui-uniapp/components/tabs/tabs.vue')['default']
     NutTextarea: typeof import('nutui-uniapp/components/textarea/textarea.vue')['default']
     Tabs: typeof import('./../src/components/Tabs.vue')['default']
+    WaterfallsFlow: typeof import('./../src/components/WaterfallsFlow.vue')['default']
   }
 }
