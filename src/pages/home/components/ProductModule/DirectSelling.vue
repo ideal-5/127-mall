@@ -4,10 +4,15 @@
 
 -->
 
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { gotoPage } from "@/utils/uni";
+</script>
 
 <template>
-    <div class="bg-[linear-gradient(179deg,#FFDBB8_0%,#FFFFFF_40%,#FFFFFF_100%)] w-324 h-464 box-border px-16 b-rd-10">
+    <div
+        class="bg-[linear-gradient(179deg,#FFDBB8_0%,#FFFFFF_40%,#FFFFFF_100%)] w-324 h-464 box-border px-16 b-rd-10"
+        @click.stop="gotoPage('direct-selling')"
+    >
         <div class="text-30 font-900 h-70 flex items-center">厂家直销</div>
         <div class="flex flex-wrap justify-between">
             <div v-for="(item, index) in 4" :key="index" class="flex flex-col items-center mb-20">

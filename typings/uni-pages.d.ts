@@ -5,6 +5,7 @@
 
 interface NavigateToOptions {
   url: "/pages/home/home" |
+       "/pages/home/direct-selling" |
        "/pages/home/search" |
        "/pages/message/message" |
        "/pages/my/coupon" |
