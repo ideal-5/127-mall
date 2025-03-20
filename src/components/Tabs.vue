@@ -129,7 +129,7 @@ const changeActiveTab = (index: number) => {
         }
         .custom-tab-active-indicator {
             position: absolute;
-            bottom: 0;
+            bottom: 10rpx;
             height: 6rpx;
             background: var(--tabs-line-bagcolor);
             border-radius: 99999999rpx;

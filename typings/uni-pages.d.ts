@@ -9,6 +9,7 @@ interface NavigateToOptions {
        "/pages/home/group-buy" |
        "/pages/home/new-product" |
        "/pages/home/search" |
+       "/pages/home/second-hand" |
        "/pages/message/message" |
        "/pages/my/coupon" |
        "/pages/my/edit-phone-change" |

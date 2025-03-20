@@ -9,7 +9,7 @@ import { gotoPage } from "@/utils/uni";
 
 <template>
     <div class="w-348 h-274 flex items-center justify-between">
-        <div class="w-172 h-274 position-relative" @click="gotoPage('group-buy')">
+        <div class="w-172 h-274 position-relative" @click.stop="gotoPage('group-buy')">
             <image src="" mode="aspectFill" class="bg-red size-full b-rd-10" />
             <div
                 class="bg-[rgba(0,0,0,0.7)] h-35 position-absolute top-10 left-10 b-rd-999 flex items-center box-border px-10"
@@ -18,7 +18,7 @@ import { gotoPage } from "@/utils/uni";
                 <span class="text-14 text-#fff">团购专区</span>
             </div>
         </div>
-        <div class="w-172 h-274 position-relative">
+        <div class="w-172 h-274 position-relative" @click.stop="gotoPage('second-hand')">
             <image src="" mode="aspectFill" class="bg-red size-full b-rd-10" />
             <div
                 class="bg-[rgba(0,0,0,0.7)] h-35 position-absolute top-10 left-10 b-rd-999 flex items-center box-border px-10"
