@@ -3,10 +3,15 @@
 新品上市
 
 -->
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import { gotoPage } from "@/utils/uni";
+</script>
 
 <template>
-    <div class="w-348 h-758 bg-[linear-gradient(179deg,#FFDBB8_0%,#FFFFFF_40%,#FFFFFF_100%)] b-rd-10 box-border px-20">
+    <div
+        class="w-348 h-758 bg-[linear-gradient(179deg,#FFDBB8_0%,#FFFFFF_40%,#FFFFFF_100%)] b-rd-10 box-border px-20"
+        @click.stop="gotoPage('new-product')"
+    >
         <div class="flex items-center h-50">
             <div class="text-30 pr-15">
                 <span>新品</span>

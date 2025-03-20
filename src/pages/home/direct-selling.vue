@@ -60,7 +60,7 @@ const activeTab = ref("1");
                 class="w-full bg-[linear-gradient(180deg,#D8F1FF_0%,#FFFDF9_44%,#FFFFFF_95%,#FFF5DF_100%)] b-rd-16 box-border px20 py30 flex-shrink-0"
             >
                 <div class="wfull flex items-center justify-between mb30">
-                    <span>今日热销</span>
+                    <image src="@/static/img/jinrirexiao-text.png" class="w126 h34" />
                     <span text="20">2万人正在热抢...</span>
                 </div>
                 <div class="wfull flex items-center justify-around">
@@ -107,8 +107,12 @@ const activeTab = ref("1");
                                 />
                                 <div class="text-#AEAEAE text-20 whitespace-nowrap ml25 mr35">已售3万+</div>
                             </div>
-                            <div class="wfull flex items-center my-20 ">
-                                <div class="text-22 text-#EC3013 b-1 b-solid b-#EC3013 b-rd-4 flex-center box-border px5 py3">急速退款</div>
+                            <div class="wfull flex items-center my-20">
+                                <div
+                                    class="text-22 text-#EC3013 b-1 b-solid b-#EC3013 b-rd-4 flex-center box-border px5 py3"
+                                >
+                                    急速退款
+                                </div>
                             </div>
                             <div class="wfull flex items-center">
                                 <div class="flex-1 min-w-0 bg-#FEEAE7 h58 b-rd-8 text-#EC3013 flex items-center">

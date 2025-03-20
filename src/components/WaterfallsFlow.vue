@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, onMounted, getCurrentInstance, nextTick } from "vue";
+import { deepClone } from "@/utils/tool";
 
 interface ProductWithIdKey extends Product {
     idKey: string;
@@ -28,7 +29,27 @@ const instance = getCurrentInstance();
 const pushList = async <T extends Record<string, any>>(list: (T & { idKey: string })[]) => {
     isLoaded.value = true;
     if (!instance) return;
-    for (const listItem of list) {
+    let nList = deepClone(list);
+    let resList = await Promise.allSettled(nList.map(async (item) => await uni.getImageInfo({ src: item.img })));
+    resList.forEach(({ status, value }, index) => {
+        let height = 300;
+        let width = 300;
+        let path = "https://th.bing.com/th/id/OIP.U94Z89XV8xiBeEgFrTG-IgAAAA?rs=1&pid=ImgDetMain";
+        let isSuccess = false;
+        if (status === "fulfilled" && value) {
+            height = value.height;
+            width = value.width;
+            path = value.path;
+            isSuccess = true;
+        }
+        nList[index].imgInfo = {
+            height,
+            width,
+            path,
+            isSuccess,
+        };
+    });
+    for (const listItem of nList) {
         const maxIndex = columns.value.reduce(
             (maxIdx, item, idx, array) => (item.height < array[maxIdx].height ? idx : maxIdx),
             0
@@ -51,18 +72,9 @@ const pushList = async <T extends Record<string, any>>(list: (T & { idKey: strin
                     .exec();
             });
         });
-        // 加载图片并获取图片高度
-        let imgPath = "";
-        let imgHeight = 0;
-        try {
-            const imgInfo = await uni.getImageInfo({ src: listItem.img });
-            imgHeight = Math.ceil((imgInfo.height / imgInfo.width) * columnDom.width);
-            imgPath = imgInfo.path; // 确保使用解析后的图片路径
-        } catch (error) {
-            imgPath = "https://th.bing.com/th/id/OIP.U94Z89XV8xiBeEgFrTG-IgAAAA?rs=1&pid=ImgDetMain"; // 设为默认占位图
-        }
-        column.data[column.data.length - 1].img = imgPath;
-        column.height = column.height + columnDom.height + imgHeight + 24;
+
+        column.data[column.data.length - 1].img = listItem.img;
+        column.height = column.height + columnDom.height + listItem.imgInfo.width + 24;
     }
 };
 

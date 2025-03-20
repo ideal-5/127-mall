@@ -32,7 +32,7 @@ watch(
     }
 );
 
-const list = ref<Product[]>([
+const list = ref<Product[]>([ 
     {
         img: "https://picsum.photos/300/450",
         name: "家用3C 数码电器电饭煲",

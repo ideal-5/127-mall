@@ -4,13 +4,13 @@ import { ref, onMounted, watch, getCurrentInstance } from "vue";
 
 interface Props {
     tabList: Record<string, any>[];
-    keyName: string;
+    keyName?: string;
     isSlide?: boolean;
 }
 
 const props = withDefaults(defineProps<Props>(), {
     tabList: () => [],
-    keyName: "",
+    keyName: "label",
     // 是否需要滑块的 滑轨< 也可以直接自己样式穿透直接设置颜色 >
     isSlide: false,
 });
@@ -102,6 +102,8 @@ const changeActiveTab = (index: number) => {
     --tabs-line-bagcolor: #000;
     --tabs-text-color: #a5a5a5;
     --tabs-text-active-color: #000;
+    --tabs-text-font: 400;
+    --tabs-text-active-font: 500;
 
     height: 80rpx;
     width: 100%;
@@ -119,8 +121,10 @@ const changeActiveTab = (index: number) => {
         .custom-tab-item {
             margin: 0 20rpx;
             flex-shrink: 0;
+            font-weight: var(--tabs-text-font);
             &--active {
                 color: var(--tabs-text-active-color);
+                font-weight: var(--tabs-text-active-font);
             }
         }
         .custom-tab-active-indicator {
