@@ -2,6 +2,7 @@
 import { ref, onMounted, watch, nextTick } from "vue";
 import WaterfallsFlow from "@/components/WaterfallsFlow.vue";
 import type { Product } from "@/types";
+import { gotoPage } from "@/utils/uni";
 
 const searchValue = ref("");
 
@@ -170,6 +171,7 @@ const WaterfallsFlowRef = ref<{ pushData: (data: Product[]) => void }>();
                     class="w-full border-b-solid border-b-#DCDCDC border-b-1 box-border px-30 mb24"
                     v-for="(item, index) in 15"
                     :key="index"
+                    @click.stop="gotoPage('shop-home')"
                 >
                     <div class="flex items-center justify-between">
                         <div class="flex-center">

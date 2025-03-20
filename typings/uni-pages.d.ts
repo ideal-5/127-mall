@@ -10,6 +10,7 @@ interface NavigateToOptions {
        "/pages/home/new-product" |
        "/pages/home/search" |
        "/pages/home/second-hand" |
+       "/pages/home/shop-home" |
        "/pages/message/message" |
        "/pages/my/coupon" |
        "/pages/my/edit-phone-change" |
