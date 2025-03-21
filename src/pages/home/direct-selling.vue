@@ -133,11 +133,7 @@ const activeTab = ref("1");
         </div>
     </div>
 </template>
-<route lang="json">
-{
-    "layout": "anyLayout"
-}
-</route>
+
 
 <style scoped lang="scss">
 .bg {

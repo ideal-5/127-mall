@@ -63,11 +63,6 @@ const tapAvatar = async () => {
     </div>
 </template>
 
-<route lang="json">
-{
-    "layout": "anyLayout"
-}
-</route>
 
 <style scoped lang="scss">
 .line {

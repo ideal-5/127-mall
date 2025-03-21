@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useStyle } from "@/hooks/useStyle";
 import { ref } from "vue";
-import {gotoPage} from '@/utils/uni'
+import { gotoPage } from "@/utils/uni";
 
 const { bottomHeight, bottomStyle } = useStyle().absoluteBottom(150);
 
@@ -10,10 +10,10 @@ const defaultAddress = ref(true);
 
 <template>
     <div class="main" :style="{ paddingBottom: bottomHeight }">
-        <NavBar barColor="#fff" style="--my-navbar-border-bottom-color: #F2F2F2">地址管理</NavBar>
+        <NavBar barColor="#fff" style="--my-navbar-border-bottom-color: #f2f2f2">地址管理</NavBar>
         <div class="box-border px-32">
             <div
-                class="w-full shadow-[0rpx_6rpx_12rpx_0rpx_rgba(0,0,0,0.1608)] b-rd-12 mt-30  last:mb-20"
+                class="w-full shadow-[0rpx_6rpx_12rpx_0rpx_rgba(0,0,0,0.1608)] b-rd-12 mt-30 last:mb-20"
                 v-for="(item, index) in 10"
                 :key="index"
             >
@@ -59,8 +59,3 @@ const defaultAddress = ref(true);
     </div>
 </template>
 
-<route lang="json">
-{
-    "layout": "anyLayout"
-}
-</route>

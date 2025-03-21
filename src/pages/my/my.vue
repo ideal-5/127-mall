@@ -142,6 +142,11 @@ import { gotoPage } from "@/utils/uni";
         <image src="@/static/bj/ruzhu.png" class="w-full h-200" />
     </div>
 </template>
+<route lang="json">
+{
+    "layout": "tabbarLayout"
+}
+</route>
 
 <style scoped lang="scss">
 .order-item {

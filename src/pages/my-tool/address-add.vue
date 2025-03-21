@@ -80,8 +80,3 @@ const text = ref("");
     </div>
 </template>
 
-<route lang="json">
-{
-    "layout": "anyLayout"
-}
-</route>

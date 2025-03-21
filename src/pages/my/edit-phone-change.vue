@@ -45,11 +45,6 @@ const popupInp = ref("");
     </div>
 </template>
 
-<route lang="json">
-{
-    "layout": "anyLayout"
-}
-</route>
 
 <style scoped lang="scss">
 :deep(.nut-input) {

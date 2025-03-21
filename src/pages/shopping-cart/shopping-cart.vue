@@ -6,4 +6,10 @@
     </div>
 </template>
 
+<route lang="json">
+{
+    "layout": "tabbarLayout"
+}
+</route>
+
 <style scoped lang="scss"></style>

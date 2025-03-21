@@ -40,11 +40,6 @@ const moneyInp = ref("");
         <div class="btn" :class="{ 'btn--setout': moneyInp }">立即提现</div>
     </div>
 </template>
-<route lang="json">
-{
-    "layout": "anyLayout"
-}
-</route>
 
 <style scoped lang="scss">
 .main {

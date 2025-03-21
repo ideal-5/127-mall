@@ -14,11 +14,6 @@ const feedbackValue = ref("");
         <div class="text-26 text-#fff flex-center bg-#FFAA48 wfull h80 mt26">立即提交</div>
     </div>
 </template>
-<route lang="json">
-{
-    "layout": "anyLayout"
-}
-</route>
 
 <style scoped lang="scss">
 :deep(.nut-textarea) {

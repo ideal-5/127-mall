@@ -207,11 +207,7 @@ const WaterfallsFlowRef = ref<{ pushData: (data: Product[]) => void }>();
         </div>
     </div>
 </template>
-<route lang="json">
-{
-    "layout": "anyLayout"
-}
-</route>
+
 <style scoped lang="scss">
 .main {
     background: url("@/static/bj/search-bg.png");

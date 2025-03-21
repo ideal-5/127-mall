@@ -69,10 +69,5 @@ const showProps = ref(false);
         </nut-popup>
     </div>
 </template>
-<route lang="json">
-{
-    "layout": "anyLayout"
-}
-</route>
 
 <style scoped lang="scss"></style>
