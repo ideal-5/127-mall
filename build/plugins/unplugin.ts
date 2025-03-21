@@ -1,5 +1,5 @@
 import { resolve } from "node:path";
-// import AutoImport from 'unplugin-auto-import/vite'
+import AutoImport from "unplugin-auto-import/vite";
 import Components from "@uni-helper/vite-plugin-uni-components";
 import { UniUIResolver } from "@uni-helper/vite-plugin-uni-components/resolvers";
 // import { uniuseAutoImports } from '@uni-helper/uni-use'
@@ -16,6 +16,19 @@ export default [
     //   vueTemplate: true,
     //   dts: resolve(getRootPath(), 'typings/auto-import.d.ts'),
     // }),
+    AutoImport({
+        imports: [
+            "vue",
+            {
+                "nutui-uniapp/composables": [
+                    // 在这里添加需要自动导入的API
+                    "useToast",
+                ],
+            },
+        ],
+        vueTemplate: true,
+        dts: resolve(getRootPath(), "typings/auto-import.d.ts"),
+    }),
     Components({
         resolvers: [NutResolver(), UniUIResolver(), IconsResolver()],
         extensions: ["vue"],
