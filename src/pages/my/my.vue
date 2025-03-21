@@ -39,7 +39,7 @@ import { gotoPage } from "@/utils/uni";
                     <span class="text-26 font-500">我的积分</span>
                 </div>
             </div>
-            <div class="flex-1 flex flex-col items-center">
+            <div class="flex-1 flex flex-col items-center" @click="gotoPage('point-exchange')">
                 <div>
                     <span class="text-30">500</span>
                 </div>
