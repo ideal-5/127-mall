@@ -6,7 +6,7 @@ import { gotoPage } from "@/utils/uni";
 
 const searchValue = ref("");
 
-const activeTab = ref(1);
+const activeTab = ref(0);
 const tabsList = ref([
     {
         title: "全部",
@@ -30,10 +30,11 @@ watch(
                 WaterfallsFlowRef.value && WaterfallsFlowRef.value.pushData(list.value);
             });
         }
-    }
+    },
+    { immediate: true }
 );
 
-const list = ref<Product[]>([ 
+const list = ref<Product[]>([
     {
         img: "https://picsum.photos/300/450",
         name: "家用3C 数码电器电饭煲",
@@ -117,7 +118,7 @@ const WaterfallsFlowRef = ref<{ pushData: (data: Product[]) => void }>();
                             </div>
                         </template>
                     </nut-searchbar>
-                    <span class="text-28 font-500 text-#fff mx-10">搜索</span>
+                    <span class="text-28 font-500 text-#fff mx-10 whitespace-nowrap">搜索</span>
                 </div>
             </template>
         </NavBar>

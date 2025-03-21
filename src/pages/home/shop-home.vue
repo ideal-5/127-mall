@@ -22,22 +22,59 @@ const tabList = ref([
         key: "computer",
     },
     {
-        title: "价格",
+        title: "价格(降序)",
         key: "life",
-        sortable: "1",
+    },
+    {
+        title: "价格(升序)",
+        key: "123",
     },
 ]);
-const activeTabs = ref({ key: "all", sortable: 0 });
+const activeTabs = ref("all");
+
+const showMore = ref(false);
 </script>
 
 <template>
-    <div class="main h100vh flex flex-col">
+    <div class="main h100vh flex flex-col" @touchstart="showMore = false">
         <NavBar isEmptyFill isBackIconFill backColor="#fff">
             <template #left>
-                <div class="wfull hfull flex items-center box-border pr-30">
-                    <span class="text-42 text-#fff mx-10">二手市场</span>
-                    <div class="size-40 flex-center">
+                <div class="wfull hfull flex items-center justify-between box-border pr-30">
+                    <div class="flex-center">
+                        <image
+                            class="size-82 b-rd-10 mr16"
+                            src="https://picsum.photos/id/237/200/300"
+                            mode="aspectFill"
+                        />
+                        <div class="font-500 text-28">Moon橘子店</div>
+                    </div>
+                    <div class="hfull flex-center">
                         <span class="i-mdi:magnify text-#000 size-40"></span>
+                        <div class="relative">
+                            <span
+                                class="i-mdi:dots-horizontal text-#000 size-40 ml30"
+                                @click="showMore = !showMore"
+                            ></span>
+                            <nut-transition :show="showMore" name="zoom" :duration="200">
+                                <div
+                                    class="bg-#fff absolute top-100% right-30% text-28 b-rd-8 b-rd-tr-0 box-border px15"
+                                    @touchstart.stop
+                                >
+                                    <div class="box-border py15 px20 b-b-solid b-b-1 b-b-#EFEFEF flex">
+                                        <span class="i-mdi:cart-minus size-38 mr10"></span>
+                                        <span>123</span>
+                                    </div>
+                                    <div class="box-border py15 px20 b-b-solid b-b-1 b-b-#EFEFEF flex">
+                                        <span class="i-icon-park-outline:transaction-order size-38 mr10"></span>
+                                        <span>12345564564</span>
+                                    </div>
+                                    <div class="box-border py15 px20 flex">
+                                        <span class="i-ri:customer-service-line size-38 mr10"></span>
+                                        <span>123</span>
+                                    </div>
+                                </div>
+                            </nut-transition>
+                        </div>
                     </div>
                 </div>
             </template>
@@ -58,22 +95,42 @@ const activeTabs = ref({ key: "all", sortable: 0 });
             </nut-swiper>
         </div>
 
-        <div class="wfull flex-1 min-h-0 bg-fuchsia mt--94 b-rd-t-20 z-10">
-            <div class="wfull flex items-center">
+        <div class="wfull flex-1 min-h-0 bg-#fff mt--94 b-rd-t-20 z-10 box-border px32 flex flex-col">
+            <div class="wfull h70 flex items-center flex-shrink-0">
                 <div
                     class="text-26 mr40"
-                    :class="activeTabs.key === item.key ? 'text-#EC3013' : 'text-#AEAEAE'"
+                    :class="activeTabs === item.key ? 'text-#EC3013' : 'text-#AEAEAE'"
                     v-for="(item, index) in tabList"
                     :key="index"
-                    @click="activeTabs.key = item.key"
+                    @click="activeTabs = item.key"
                 >
                     {{ item.title }}
                 </div>
-                <div class="flex flex-col">
+                <!-- <div class="flex flex-col">
                     <span class="i-tabler:triangle-filled text-12"></span>
                     <span class="i-tabler:triangle-inverted-filled text-12"></span>
-                    <!-- <span class="i-tabler:triangle text-12"></span>
-                    <span class="i-tabler:triangle-inverted text-12"></span> -->
+                    <span class="i-tabler:triangle text-12"></span>
+                    <span class="i-tabler:triangle-inverted text-12"></span>
+                </div>  -->
+            </div>
+            <div class="flex-1 min-h-0 wfull flex flex-wrap justify-between overflow-scroll">
+                <div v-for="(item, index) in 9" :key="index" :id="index" class="w-326 mb-[24px]">
+                    <div class="w-full h-342 overflow-hidden flex">
+                        <image src="https://picsum.photos/200/300" mode="aspectFill" class="w-full hfull" />
+                    </div>
+                    <div class="bg-#fff b-rd-b-16 box-border p-16">
+                        <div class="text-24">我是商品</div>
+                        <div>
+                            <span class="font-500 text-18">￥</span>
+                            <span class="text-24 font-700">100.00</span>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex items-center border-1 border-#000 border-solid">
+                                <image src="@/static/img/vip1.png" mode="scaleToFill" class="size-25" />
+                                <span class="text-12 mx-10">省20.00</span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

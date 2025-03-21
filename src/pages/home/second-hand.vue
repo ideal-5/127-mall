@@ -18,7 +18,7 @@ const activeTab = ref(0);
         <NavBar isEmptyFill isBackIconFill backColor="#fff">
             <template #left>
                 <div class="wfull hfull flex items-center box-border pr-30">
-                    <span class="text-42 text-#fff mx-10">二手市场</span>
+                    <span class="text-42 text-#fff mx-10 whitespace-nowrap">二手市场</span>
                     <nut-searchbar
                         v-model="searchValue"
                         style="

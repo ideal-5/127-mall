@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useSystemStore } from "@/store";
-import { computed, defineProps, ref } from "vue";
+import { computed, defineProps, ref, useSlots } from "vue";
 
 interface Props {
     barColor?: string;
@@ -35,6 +35,8 @@ const props = withDefaults(defineProps<Props>(), {
     isBackIconFill: false,
 });
 const emit = defineEmits(["tapBackIcon"]);
+
+const slots = useSlots();
 
 const systemStore = useSystemStore();
 const systemInfo = ref();
@@ -82,32 +84,36 @@ const opacity = computed(() => {
 
             <!-- 状态栏<时间> -->
             <div class="statusBar" :style="{ height: `${systemInfo.statusBarHeight}px` }" />
+
             <!-- 标题栏<标题> -->
             <div v-if="!props.isTimeFill" class="titleBar" :style="{ height: `${systemInfo.titleBarHeight}px` }">
-                <!-- 居中<默认>的插槽，微信两边都有胶囊的占位盒子  -->
-                <div :style="{ width: `${systemInfo.menuButtonWidth}px` }" />
-                <div class="title" :style="{ opacity: scrollText ? opacity : 1 }">
-                    <slot />
-                </div>
-                <div :style="{ width: `${systemInfo.menuButtonWidth}px` }" />
-
-                <!-- 减去右边胶囊按钮位置的插槽   -->
+                <!-- 返回按钮   -->
                 <div
-                    class="let-slot-box"
+                    v-if="isGoBack()"
+                    class="back-icon"
                     :style="{
-                        width: systemInfo.menuButtonLeft ? `${systemInfo.menuButtonLeft}px` : '100%',
+                        position: props.isBackIconFill && systemInfo.menuButtonWidth === 0 ? 'initial' : 'absolute',
                     }"
+                    @click="goBacksPage"
                 >
-                    <div
-                        v-if="isGoBack()"
-                        class="back-icon"
-                        :style="{ position: props.isBackIconFill ? 'initial' : 'absolute' }"
-                        @click="goBacksPage"
-                    >
-                        <div :class="`i-mdi:chevron-left  text-${props.backColor} text-60`" />
-                    </div>
-                    <slot name="left" :style="{ opacity: scrollText ? opacity : 1 }" />
+                    <div :class="`i-mdi:chevron-left  text-${props.backColor} text-60`" />
                 </div>
+                <div
+                    v-if="slots.default"
+                    :style="{ width: `${systemInfo.menuButtonWidth}px` }"
+                    class="hfull flex-shrink-0"
+                />
+
+                <div
+                    class="hfull min-w0 flex-1"
+                    :class="slots.default && `font-900 text-32   flex items-center  justify-center`"
+                    :style="{ opacity: scrollText ? opacity : 1 }"
+                >
+                    <slot />
+                    <slot name="left" />
+                </div>
+
+                <div :style="{ width: `${systemInfo.menuButtonWidth}px` }" class="hfull flex-shrink-0" />
             </div>
         </div>
         <!-- 填充 为了占位置 -->
@@ -137,6 +143,13 @@ const opacity = computed(() => {
             height: 100%;
             border-bottom: 1rpx solid var(--my-navbar-border-bottom-color);
         }
+        .back-icon {
+            width: 70rpx;
+            z-index: 2;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
         .statusBar {
         }
@@ -145,34 +158,6 @@ const opacity = computed(() => {
             align-items: center;
             width: 100%;
             position: relative;
-            .title {
-                font-size: 40rpx;
-                font-weight: 900;
-                flex: 1;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                text-align: center;
-            }
-
-            .let-slot-box {
-                position: absolute;
-                left: 0rpx;
-                height: 100%;
-                display: flex;
-                align-items: center;
-                min-width: 100rpx;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-                .back-icon {
-                    width: 70rpx;
-                    z-index: 2;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-            }
         }
     }
     .fill {

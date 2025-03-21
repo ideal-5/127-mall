@@ -15,7 +15,6 @@ declare module 'vue' {
     NutPopup: typeof import('nutui-uniapp/components/popup/popup.vue')['default']
     NutProgress: typeof import('nutui-uniapp/components/progress/progress.vue')['default']
     NutSearchbar: typeof import('nutui-uniapp/components/searchbar/searchbar.vue')['default']
-    NutSkeleton: typeof import('nutui-uniapp/components/skeleton/skeleton.vue')['default']
     NutSwiper: typeof import('nutui-uniapp/components/swiper/swiper.vue')['default']
     NutSwiperItem: typeof import('nutui-uniapp/components/swiperitem/swiperitem.vue')['default']
     NutSwitch: typeof import('nutui-uniapp/components/switch/switch.vue')['default']
@@ -24,6 +23,7 @@ declare module 'vue' {
     NutTabPane: typeof import('nutui-uniapp/components/tabpane/tabpane.vue')['default']
     NutTabs: typeof import('nutui-uniapp/components/tabs/tabs.vue')['default']
     NutTextarea: typeof import('nutui-uniapp/components/textarea/textarea.vue')['default']
+    NutTransition: typeof import('nutui-uniapp/components/transition/transition.vue')['default']
     Tabs: typeof import('./../src/components/Tabs.vue')['default']
     WaterfallsFlow: typeof import('./../src/components/WaterfallsFlow.vue')['default']
   }
