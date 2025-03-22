@@ -70,6 +70,46 @@ const list = ref<Product[]>([
     },
 ]);
 const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
+
+const showBottomPopup = ref(false);
+const showBottomPopupData = ref({
+    title: "",
+    content: "",
+});
+const showBottomPopupFunc = (type: "service" | "deliver-goods") => {
+    if (type === "service") {
+        showBottomPopupData.value = {
+            title: "服务说明",
+            content: `
+    <p>感谢您选择我们的服务！我们提供一系列专业的解决方案，旨在为您的需求提供高效且个性化的支持。以下是我们服务的主要内容：</p>
+    <ul>
+      <li><strong>产品售后支持：</strong>在产品购买后，我们为您提供 30 天内的无理由退换货服务，确保您能够放心使用我们的产品。</li>
+      <li><strong>定期更新和维护：</strong>我们会定期对产品进行系统升级，确保您始终使用最新版本的软件，以获得最佳的使用体验。</li>
+      <li><strong>个性化定制服务：</strong>根据您的需求，我们可以提供产品的定制化服务，包括功能定制、UI 设计等。</li>
+      <li><strong>全天候技术支持：</strong>我们的客服团队会在工作日 9:00 - 18:00 提供及时的技术支持，并在紧急情况下提供加急支持。</li>
+    </ul>
+    <p>如有任何问题，欢迎随时联系我们的客服团队，我们将竭诚为您服务。</p>
+    <p><strong>联系方式：</strong><br>电话：400-123-4567<br>邮箱：support@example.com</p>
+  `,
+        };
+    } else if (type === "deliver-goods") {
+        showBottomPopupData.value = {
+            title: "发货说明",
+            content: `
+    <p>我们致力于为每一位客户提供快速、准时的发货服务。以下是我们的发货政策：</p>
+    <ol>
+      <li><strong>标准快递：</strong>在确认订单并收到付款后的 1-2 个工作日内，我们将通过标准快递为您发货。预计配送时间为 3-5 个工作日。</li>
+      <li><strong>加急配送：</strong>如果您需要更快的配送服务，我们提供加急配送选项。选择加急配送后，我们会在收到付款后的 1 个工作日内发货，预计 1-2 个工作日内送达。</li>
+      <li><strong>海外发货：</strong>对于国际订单，我们提供海外发货服务。国际配送时间依据目的地国家的不同会有所不同，通常在 7-14 个工作日内送达。</li>
+      <li><strong>订单追踪：</strong>发货后，我们将通过短信或电子邮件将快递单号发送给您。您可以使用该单号在快递公司的官网进行订单追踪。</li>
+    </ol>
+    <p>请注意，在特殊节假日或恶劣天气情况下，配送可能会有所延迟。我们会尽最大努力保证准时发货并及时通知您订单的状态。</p>
+    <p><strong>特别提醒：</strong>请确保您在订单中填写的收货地址准确无误。如果因地址错误导致无法送达，我们将无法承担相应的责任。</p>
+  `,
+        };
+    }
+    showBottomPopup.value = true;
+};
 </script>
 
 <template>
@@ -115,7 +155,7 @@ const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
                 </div>
             </div>
             <div class="wfull bg-#fff b-rd-14 mt20">
-                <div class="wfull flex box-border py15">
+                <div class="wfull flex box-border py15" @click="showBottomPopupFunc('service')">
                     <div class="w80 flex justify-center flex-shrink-0">
                         <span class="i-mdi:shield-check-outline"></span>
                     </div>
@@ -127,7 +167,7 @@ const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
                         <!-- <div class="text-16 text-#AEAEAE">福建省福州市 发货 | 免运费</div> -->
                     </div>
                 </div>
-                <div class="wfull flex box-border py15">
+                <div class="wfull flex box-border py15" @click="showBottomPopupFunc('deliver-goods')">
                     <div class="w80 flex justify-center flex-shrink-0">
                         <span class="i-mdi:truck-outline"></span>
                     </div>
@@ -249,6 +289,14 @@ const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
             </div>
         </div>
     </div>
+    <nut-popup position="bottom" :custom-style="{ height: '60vh' }" v-model:visible="showBottomPopup" round closeable lock-scroll>
+        <div class="flex-col wfull hfull">
+            <div wfull h100 flex-center text-34 flex-shrink-0>{{ showBottomPopupData.title }}</div>
+            <div class="flex-1 min-h-0 wfull overflow-scroll box-border px32">
+                <rich-text :nodes="showBottomPopupData.content"></rich-text>
+            </div>
+        </div>
+    </nut-popup>
 </template>
 
 <style scoped lang="scss">
