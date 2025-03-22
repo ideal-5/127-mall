@@ -24,7 +24,6 @@ const tabChange = (index: number) => {
 watch(
     () => activeTab.value,
     () => {
-        console.log("activeTab.value", activeTab.value);
         if (activeTab.value === 0) {
             nextTick(() => {
                 WaterfallsFlowRef.value && WaterfallsFlowRef.value.pushData(list.value);
@@ -40,61 +39,53 @@ const list = ref<Product[]>([
         name: "家用3C 数码电器电饭煲",
         price: "311.99",
         vprice: "18.00",
-        idKey: "a1",
     },
-    { img: "https://picsum.photos/300/520", name: "智能手表 运动监测", price: "199.99", vprice: "25.00", idKey: "a2" },
+    { img: "https://picsum.photos789/300/520", name: "智能手表 运动监测", price: "199.99", vprice: "25.00" },
     {
         img: "https://picsum.photos/300/430",
         name: "无线蓝牙耳机 降噪版",
         price: "129.99",
         vprice: "15.00",
-        idKey: "a3",
     },
     {
         img: "https://picsum.photos/300/480",
         name: "家用空气炸锅 健康低脂",
         price: "279.99",
         vprice: "22.00",
-        idKey: "a4",
     },
-    { img: "https://picsum.photos/300/510", name: "便携式投影仪 高清", price: "459.99", vprice: "30.00", idKey: "a5" },
+    { img: "https://picsum.photos/300/510", name: "便携式投影仪 高清", price: "459.99", vprice: "30.00" },
     {
         img: "https://picsum.photos/300/400",
         name: "高性能游戏鼠标 RGB灯光",
         price: "89.99",
         vprice: "10.00",
-        idKey: "a6",
     },
     {
         img: "https://picsum.photos/300/550",
         name: "时尚智能音箱 语音助手",
         price: "159.99",
         vprice: "18.50",
-        idKey: "a7",
     },
     {
         img: "https://picsum.photos/300/470",
         name: "家用电动剃须刀 便捷",
         price: "109.99",
         vprice: "12.00",
-        idKey: "a8",
     },
     {
         img: "https://picsum.photos/300/530",
         name: "办公无线键盘 机械手感",
         price: "139.99",
         vprice: "17.00",
-        idKey: "a9",
     },
     {
         img: "https://picsum.photos/300/490",
         name: "高清摄像头 直播专用",
         price: "249.99",
         vprice: "28.00",
-        idKey: "a10",
     },
 ]);
-const WaterfallsFlowRef = ref<{ pushData: (data: Product[]) => void }>();
+const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
 </script>
 
 <template>

@@ -23,6 +23,7 @@ export function useStyle() {
         console.log('systemInfo.safeAreaInsetsRpx.bottom', systemInfo.safeAreaInsetsRpx.bottom);
         console.log('height + "rpx"', height + "rpx");
         return {
+            bottomHeightNum: height,
             bottomHeight: height + "rpx", // 总高
             bottomStyle: {
                 width: "100%",

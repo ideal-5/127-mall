@@ -2,14 +2,17 @@
 import { ref, onMounted, getCurrentInstance, nextTick } from "vue";
 import { deepClone } from "@/utils/tool";
 
-interface ProductWithIdKey extends Product {
-    idKey: string;
+// 接收的值
+interface ReceiveData {
+    img: string;
+    [key: string]: any;
 }
 interface Columns {
     idKey: string;
-    data: ProductWithIdKey[];
+    data: ReceiveData[];
     height: number;
 }
+
 const isLoaded = ref(false); // 是否加载中
 
 const columns = ref<Columns[]>([
@@ -17,29 +20,28 @@ const columns = ref<Columns[]>([
     { idKey: "column2", data: [], height: 0 },
 ]);
 
-const pushData = async <T extends Record<string, any>>(list: T[]) => {
+const pushData = async (list: ReceiveData[]) => {
     if (!isLoaded.value) {
         await nextTick();
-        await pushList(list.map((item) => ({ idKey: "123", ...item })));
+        await pushList(list);
         isLoaded.value = false;
     }
 };
-
 const instance = getCurrentInstance();
-const pushList = async <T extends Record<string, any>>(list: (T & { idKey: string })[]) => {
+const pushList = async (list: ReceiveData[]) => {
     isLoaded.value = true;
     if (!instance) return;
     let nList = deepClone(list);
     let resList = await Promise.allSettled(nList.map(async (item) => await uni.getImageInfo({ src: item.img })));
-    resList.forEach(({ status, value }, index) => {
+    resList.forEach((item, index) => {
         let height = 300;
         let width = 300;
         let path = "https://th.bing.com/th/id/OIP.U94Z89XV8xiBeEgFrTG-IgAAAA?rs=1&pid=ImgDetMain";
         let isSuccess = false;
-        if (status === "fulfilled" && value) {
-            height = value.height;
-            width = value.width;
-            path = value.path;
+        if (item.status === "fulfilled") {
+            height = item.value.height;
+            width = item.value.width;
+            path = item.value.path;
             isSuccess = true;
         }
         nList[index].imgInfo = {
@@ -77,7 +79,6 @@ const pushList = async <T extends Record<string, any>>(list: (T & { idKey: strin
         column.height = column.height + columnDom.height + listItem.imgInfo.width + 24;
     }
 };
-
 defineExpose({ pushData });
 </script>
 

@@ -25,6 +25,7 @@ interface NavigateToOptions {
        "/pages/my-tool/feedback" |
        "/pages/my-tool/settings" |
        "/pages/my-tool/withdraw" |
+       "/pages/product/details" |
        "/pages/shopping-cart/shopping-cart";
 }
 interface RedirectToOptions extends NavigateToOptions {}
