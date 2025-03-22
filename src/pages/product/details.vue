@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { useStyle } from "@/hooks/useStyle";
 import type { Product } from "@/types";
 import WaterfallsFlow from "@/components/WaterfallsFlow.vue";
+import { gotoPage } from "@/utils/uni";
 
 const { bottomHeightNum, bottomStyle } = useStyle().absoluteBottom(120);
 
@@ -188,7 +189,7 @@ const showBottomPopupFunc = (type: "service" | "deliver-goods") => {
                 <image src="https://picsum.photos/300/600" mode="widthFix" class="wfull" />
             </div>
             <!-- 评论 -->
-            <div bg-white wfull mt20 mb20>
+            <div bg-white wfull mt20 mb20 @click.stop="gotoPage('comment')">
                 <div flex items-center justify-between h80 box-border px-10>
                     <div text-28 fw500>商品评价(2.2万)</div>
                     <div i-mdi:chevron-right></div>
@@ -289,7 +290,14 @@ const showBottomPopupFunc = (type: "service" | "deliver-goods") => {
             </div>
         </div>
     </div>
-    <nut-popup position="bottom" :custom-style="{ height: '60vh' }" v-model:visible="showBottomPopup" round closeable lock-scroll>
+    <nut-popup
+        position="bottom"
+        :custom-style="{ height: '60vh' }"
+        v-model:visible="showBottomPopup"
+        round
+        closeable
+        lock-scroll
+    >
         <div class="flex-col wfull hfull">
             <div wfull h100 flex-center text-34 flex-shrink-0>{{ showBottomPopupData.title }}</div>
             <div class="flex-1 min-h-0 wfull overflow-scroll box-border px32">
