@@ -139,7 +139,7 @@ import { gotoPage } from "@/utils/uni";
             </div>
         </div>
         <!-- 商家入驻 -->
-        <image src="@/static/bj/ruzhu.png" class="w-full h-200" />
+        <image src="@/static/bj/ruzhu.png" class="w-full h-200" @click="gotoPage('merchant-enter')" />
     </div>
 </template>
 <route lang="json">

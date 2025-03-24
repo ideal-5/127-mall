@@ -17,6 +17,7 @@ interface NavigateToOptions {
        "/pages/my/edit-phone-code" |
        "/pages/my/edit-phone-start" |
        "/pages/my/edit-user" |
+       "/pages/my/merchant-enter" |
        "/pages/my/my" |
        "/pages/my/point-exchange" |
        "/pages/my-tool/address-add" |
