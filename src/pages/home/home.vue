@@ -8,7 +8,6 @@ import { gotoPage } from "@/utils/uni";
 const scrollTop = ref(0);
 onPageScroll((e) => {
     scrollTop.value = e.scrollTop;
-    console.log("scrollTop.value", scrollTop.value);
 });
 
 const searchValue = ref<string>("");
@@ -25,7 +24,7 @@ const swiperList = ref([
         <NavBar :scrollTop="scrollTop" barColor="#fff">
             <!-- <NavBar> -->
             <template #left>
-                <div class="w-100vw box-border px-34">
+                <div class="wfull box-border px-34 hfull flex items-center">
                     <span class="text-34 font-800 mr-15">SHOP_APP_NAME</span>
                     <span class="text-24">海量商品用心精选</span>
                 </div>
