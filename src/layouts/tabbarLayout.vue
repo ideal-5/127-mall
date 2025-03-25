@@ -63,7 +63,7 @@ function changeTab(_: any, index: number | string) {
                     <image class="size-38" v-else src="@/static/tabbar/2-0.png" />
                 </template>
             </nut-tabbar-item>
-            <nut-tabbar-item tab-title="购物车">
+            <nut-tabbar-item tab-title="购物车" :value="55">
                 <template #icon="props">
                     <image class="size-38" v-if="props.active" src="@/static/tabbar/3-1.png" />
                     <image class="size-38" v-else src="@/static/tabbar/3-0.png" />

@@ -29,7 +29,12 @@ interface NavigateToOptions {
        "/pages/product/comment" |
        "/pages/product/details" |
        "/pages/product/swiper" |
-       "/pages/shopping-cart/shopping-cart";
+       "/pages/shopping-cart/shopping-cart" |
+       "/pages/underwear/underwear-home" |
+       "/pages/underwear/underwear-hot" |
+       "/pages/underwear/underwear-major" |
+       "/pages/underwear/underwear-story" |
+       "/pages/underwear/underwear-tide";
 }
 interface RedirectToOptions extends NavigateToOptions {}
 

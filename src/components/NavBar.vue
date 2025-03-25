@@ -8,6 +8,7 @@ interface Props {
     isTimeFill?: boolean;
     backColor?: string;
     scrollTop?: number;
+    scrollLimit?: number | string;
     scrollText?: boolean;
     isStopBack?: boolean;
     isBackIconFill?: boolean;
@@ -21,12 +22,14 @@ const props = withDefaults(defineProps<Props>(), {
     // 返回按钮颜色
     backColor: "#000",
     // 滚动条距离顶部的距离<如果不传 默认是-1  如果值是-1 就说明没有传值>
-    // import { onPageScroll } from "@dcloudio/uni-app";
-    // const scrollTop : ref(0);
-    // onPageScroll((e) :> {
-    //     scrollTop.value : e.scrollTop;
+    //     import { onPageScroll } from "@dcloudio/uni-app";
+    // const scrollTop = ref(0);
+    // onPageScroll((e) => {
+    //     scrollTop.value = e.scrollTop;
     // });
     scrollTop: -1,
+    // 页面滚动多少时透明度为1  数字单位px  可传 1rxp 1px 1
+    scrollLimit: 0,
     // 是否根据滚动改变文字透明度<默认和left插槽都会生效>
     scrollText: false,
     // 点击返回按钮是否阻止返回上一页面
@@ -69,10 +72,21 @@ const background = computed(() => {
     }
     return color;
 });
+const scrollLimitExtra = computed(() => {
+    const match = props.scrollLimit.toString().match(/^(\d+)(rpx|px)?$/);
+    if (!match) return 0;
+
+    let count = Number(match[1]);
+    if (count <= 0) return 0;
+
+    return match[2] === "rpx" ? uni.upx2px(count) : count;
+});
 
 // 计算透明度，避免每次通过 computed 计算
 const opacity = computed(() => {
-    return props.scrollTop >= 0 ? Math.min(props.scrollTop / systemInfo.value.navbarHeight, 1) : 1;
+    return props.scrollTop >= 0
+        ? Math.min(props.scrollTop / (systemInfo.value.navbarHeight + scrollLimitExtra.value), 1)
+        : 1;
 });
 </script>
 
