@@ -44,7 +44,7 @@ const activeTab = ref("1");
                 class="w310 h168 border-solid border-4 border-#154BD2 b-rd-16 bg-#fff absolute bottom-45 right-30 flex items-center justify-around"
             >
                 <div class="w118 h116 relative" v-for="(item, index) in 2" :key="index">
-                    <image src="https://picsum.photos/200" mode="aspectFill" class="size-full" />
+                    <image :src="`https://picsum.photos/700/350?random=${Math.random()}`" mode="aspectFill" class="size-full" />
                     <div
                         class="text-#EC3013 absolute top-[100%] left-[50%] translate-[-50%] bg-#FEEAE7 b-rd-full box-border px15 py5 flex items-center"
                     >
@@ -69,7 +69,7 @@ const activeTab = ref("1");
                         v-for="(item, index) in 4"
                         :key="index"
                     >
-                        <image src="https://picsum.photos/200" mode="aspectFill" class="size-full b-rd-12" />
+                        <image :src="`https://picsum.photos/700/350?random=${Math.random()}`" mode="aspectFill" class="size-full b-rd-12" />
                         <div class="absolute top-0 left-0 bg-#FEEAE7 b-rd-full text-14 text-#EC3013">热销5万+</div>
                         <div
                             class="text-#EC3013 absolute top-[100%] left-[50%] translate-[-50%] bg-#FEEAE7 b-rd-full box-border px15 py5 flex items-center"
@@ -94,7 +94,7 @@ const activeTab = ref("1");
                 <div class="flex-1 min-h0 wfull overflow-scroll">
                     <div class="wfull flex mb30" v-for="(item, index) in 10">
                         <div class="size-220 flex-shrink-0">
-                            <image src="https://picsum.photos/200" mode="aspectFill" class="b-rd-10 size-full" />
+                            <image :src="`https://picsum.photos/700/350?random=${index}`" mode="aspectFill" class="b-rd-10 size-full" />
                         </div>
                         <div class="flex-1 min-w-0 box-border pl-44">
                             <div class="text-30 font-500">【新人福利】一次性洗脸巾</div>

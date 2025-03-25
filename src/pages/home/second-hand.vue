@@ -55,7 +55,7 @@ const activeTab = ref(0);
                 <div class="flex-1 min-h0 wfull overflow-scroll">
                     <div class="wfull flex mb30" v-for="(item, index) in 10">
                         <div class="size-220 flex-shrink-0">
-                            <image src="https://picsum.photos/200" mode="aspectFill" class="b-rd-10 size-full" />
+                            <image :src="`https://picsum.photos/700/350?random=${Math.random()}`" mode="aspectFill" class="b-rd-10 size-full" />
                         </div>
                         <div class="flex-1 min-w-0 box-border pl-44">
                             <div class="text-30 font-500">【新人福利】一次性洗脸巾</div>

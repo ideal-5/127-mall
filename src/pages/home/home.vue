@@ -11,17 +11,12 @@ onPageScroll((e) => {
 });
 
 const searchValue = ref<string>("");
-const swiperList = ref([
-    "https://storage.360buyimg.com/jdc-article/NutUItaro34.jpg",
-    "https://storage.360buyimg.com/jdc-article/NutUItaro2.jpg",
-    "https://storage.360buyimg.com/jdc-article/welcomenutui.jpg",
-    "https://storage.360buyimg.com/jdc-article/fristfabu.jpg",
-]);
+const swiperList = ref(Array.from({ length: 5 }, (_, i) => `https://picsum.photos/700/350?random=${Math.random()}`));
 </script>
 
 <template>
     <div class="main w-full min-h-100vh bg-gradient-to-l from-[#FFEDC4] to-[#FFDBB8] box-border px-34">
-        <NavBar :scrollTop="scrollTop" barColor="#fff">
+        <NavBar :scrollTop="scrollTop" barColor="#FFDBB8">
             <!-- <NavBar> -->
             <template #left>
                 <div class="wfull box-border px-34 hfull flex items-center">
@@ -54,7 +49,7 @@ const swiperList = ref([
             class="w-full h-344 b-rd-12 mt-22 mb-24"
         >
             <nut-swiper-item v-for="(item, index) in swiperList" :key="index">
-                <img :src="item" alt="" mode="aspectFill" />
+                <image :src="item" mode="aspectFill" class="wfull hfull"  />
             </nut-swiper-item>
         </nut-swiper>
         <!-- <div style="width: 750rpx; height: 500rpx; background-color: aquamarine;" ></div> -->

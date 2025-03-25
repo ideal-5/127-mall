@@ -48,30 +48,31 @@ function changeTab(_: any, index: number | string) {
             unactive-color="#000"
             safe-area-inset-bottom
             bottom
+            placeholder
             @tab-switch="changeTab"
         >
             <nut-tabbar-item tab-title="首页">
                 <template #icon="props">
-                    <img class="size-38" v-if="props.active" src="@/static/tabbar/1-1.png" />
-                    <img class="size-38" v-else src="@/static/tabbar/1-0.png" />
+                    <image class="size-38" v-if="props.active" src="@/static/tabbar/1-1.png" />
+                    <image class="size-38" v-else src="@/static/tabbar/1-0.png" />
                 </template>
             </nut-tabbar-item>
             <nut-tabbar-item tab-title="消息">
                 <template #icon="props">
-                    <img class="size-38" v-if="props.active" src="@/static/tabbar/2-1.png" />
-                    <img class="size-38" v-else src="@/static/tabbar/2-0.png" />
+                    <image class="size-38" v-if="props.active" src="@/static/tabbar/2-1.png" />
+                    <image class="size-38" v-else src="@/static/tabbar/2-0.png" />
                 </template>
             </nut-tabbar-item>
             <nut-tabbar-item tab-title="购物车">
                 <template #icon="props">
-                    <img class="size-38" v-if="props.active" src="@/static/tabbar/3-1.png" />
-                    <img class="size-38" v-else src="@/static/tabbar/3-0.png" />
+                    <image class="size-38" v-if="props.active" src="@/static/tabbar/3-1.png" />
+                    <image class="size-38" v-else src="@/static/tabbar/3-0.png" />
                 </template>
             </nut-tabbar-item>
             <nut-tabbar-item tab-title="我的">
                 <template #icon="props">
-                    <img class="size-38" v-if="props.active" src="@/static/tabbar/4-1.png" />
-                    <img class="size-38" v-else src="@/static/tabbar/4-0.png" />
+                    <image class="size-38" v-if="props.active" src="@/static/tabbar/4-1.png" />
+                    <image class="size-38" v-else src="@/static/tabbar/4-0.png" />
                 </template>
             </nut-tabbar-item>
         </nut-tabbar>

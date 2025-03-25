@@ -17,7 +17,7 @@ import { gotoPage } from "@/utils/uni";
         <div class="flex flex-wrap justify-between">
             <div v-for="(item, index) in 4" :key="index" class="flex flex-col items-center mb-20">
                 <div class="size-134 position-relative">
-                    <image class="bg-red size-full b-rd-10" src="" alt="" />
+                    <image class=" size-full b-rd-10" :src="`https://picsum.photos/id/${index}/200/300`" mode="aspectFill" />
                     <div
                         class="bg-[#FEEAE7] b-rd-6 w-84 h-28 flex items-center justify-center position-absolute top-[100%] left-[50%] transform -translate-x-1/2 -translate-y-1/2"
                     >

@@ -21,7 +21,7 @@ import { gotoPage } from "@/utils/uni";
         </div>
         <div class="w-full flex flex-wrap justify-between">
             <div v-for="(item, index) in 8" :key="index" class="w-142 h-134 mb-48 position-relative">
-                <image src="" class="bg-red size-full b-rd-10" />
+                <image :src="`https://picsum.photos/200?random=${Math.random()}`" mode="aspectFill" class="size-full b-rd-10" />
                 <div
                     class="text-18 font-500 text-#EC3013 bg-#FEEAE7 position-absolute top-100% left-50% transform -translate-50% b-rd-999 px-16 py-8"
                 >
