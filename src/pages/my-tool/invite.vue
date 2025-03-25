@@ -24,6 +24,5 @@
     background: url("@/static/bj/invite-bg.png");
     background-repeat: no-repeat;
     background-size: 100% 100%;
-    // transform: translateX();
 }
 </style>

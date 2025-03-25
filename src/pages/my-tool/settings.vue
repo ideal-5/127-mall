@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { useStyle } from "@/hooks/useStyle";
+import { gotoPage } from "@/utils/uni";
 
 const { bottomHeight, bottomStyle } = useStyle().absoluteBottom(120);
 </script>
@@ -36,7 +37,12 @@ const { bottomHeight, bottomStyle } = useStyle().absoluteBottom(120);
         </div>
 
         <div class="flex-center !bg-transparent" :style="bottomStyle">
-            <div class="w700 h80 flex-center text-#fff text-32 bg-#FFAA48 b-rd-full">退出登录</div>
+            <div
+                class="w700 h80 flex-center text-#fff text-32 bg-#FFAA48 b-rd-full"
+                @click="gotoPage('/pages/login/login')"
+            >
+                退出登录
+            </div>
         </div>
     </div>
 </template>
@@ -48,8 +54,8 @@ const { bottomHeight, bottomStyle } = useStyle().absoluteBottom(120);
     align-items: center;
     justify-content: space-between;
     padding: 30rpx 0;
-    border-bottom: 1rpx solid #CDCDCD;
-  
+    border-bottom: 1rpx solid #cdcdcd;
+
     .label {
         font-size: 26rpx;
     }

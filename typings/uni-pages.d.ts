@@ -11,6 +11,7 @@ interface NavigateToOptions {
        "/pages/home/search" |
        "/pages/home/second-hand" |
        "/pages/home/shop-home" |
+       "/pages/login/login" |
        "/pages/message/message" |
        "/pages/my/coupon" |
        "/pages/my/edit-phone-change" |
