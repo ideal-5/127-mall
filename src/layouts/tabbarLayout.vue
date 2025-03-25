@@ -7,7 +7,6 @@ const activeIndex = ref();
 
 onShow(async () => {
     uni.hideTabBar();
-    console.log("page.value", page.value);
     if (page.value === "pages/home/home") activeIndex.value = 0;
     if (page.value === "pages/message/message") activeIndex.value = 1;
     if (page.value === "pages/shopping-cart/shopping-cart") activeIndex.value = 2;
@@ -15,8 +14,6 @@ onShow(async () => {
 });
 
 function changeTab(_: any, index: number | string) {
-    console.log("tabindex", index);
-
     if (index === 0) {
         uni.switchTab({
             url: "/pages/home/home",

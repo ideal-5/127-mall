@@ -1,9 +1,10 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import ProductModule from "./components/ProductModule/index.vue";
 import Hot from "./components/Hot/index.vue";
 import { onPageScroll } from "@dcloudio/uni-app";
 import { gotoPage } from "@/utils/uni";
+import { ceshiApi, ceshiApi2 } from "@/api";
 
 const scrollTop = ref(0);
 onPageScroll((e) => {
@@ -12,6 +13,12 @@ onPageScroll((e) => {
 
 const searchValue = ref<string>("");
 const swiperList = ref(Array.from({ length: 5 }, (_, i) => `https://picsum.photos/700/350?random=${Math.random()}`));
+
+ceshiApi();
+onMounted(async () => {
+    let res = await ceshiApi2({ configName: "PROFIT_RULE" });
+    // console.log("*******",  res.body.wwwww   );
+});
 </script>
 
 <template>
@@ -50,7 +57,7 @@ const swiperList = ref(Array.from({ length: 5 }, (_, i) => `https://picsum.photo
             class="w-full h-344 b-rd-12 mt-22 mb-24"
         >
             <nut-swiper-item v-for="(item, index) in swiperList" :key="index">
-                <image :src="item" mode="aspectFill" class="wfull hfull"  />
+                <image :src="item" mode="aspectFill" class="wfull hfull" />
             </nut-swiper-item>
         </nut-swiper>
         <!-- <div style="width: 750rpx; height: 500rpx; background-color: aquamarine;" ></div> -->

@@ -43,7 +43,6 @@ export const useSystemStore = defineStore("system", () => {
         navbarHeight = titleBarHeight + statusBarHeight; // navBar的总高度
 
         // 获取四个方向的安全距离 并转为rpx
-        console.log("uni.getSystemInfoSync()", uni.getSystemInfoSync());
         safeAreaInsets = {
             left: SYSTEM.safeAreaInsets?.left || 0,
             right: SYSTEM.safeAreaInsets?.right || 0,

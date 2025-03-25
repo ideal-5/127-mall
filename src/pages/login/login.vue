@@ -4,6 +4,13 @@ import { ref } from "vue";
 const text = ref("");
 
 const isAccredit = ref(false);
+
+const loginClick = () => {
+    uni.switchTab({
+        url: "/pages/home/home",
+    });
+};
+
 </script>
 
 <template>
@@ -42,6 +49,7 @@ const isAccredit = ref(false);
                 </div>
                 <div
                     class="bg-[linear-gradient(247deg,#FF9113_0%,#FECE62_100%)] text-30 w524 h76 shadow-[0rpx,6rpx,12rpx,0rpx,#FFDBB8] b-rd-full flex-center"
+                    @click="loginClick"
                 >
                     登录
                 </div>
