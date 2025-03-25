@@ -30,6 +30,7 @@ const swiperList = ref(Array.from({ length: 5 }, (_, i) => `https://picsum.photo
             style="--nut-searchbar-input-height: 37px; --nut-searchbar-input-border-radius: 9999rpx"
             @click-input="gotoPage('search')"
             @click-right-icon="gotoPage('search')"
+            readonly
         >
             <template #rightin>
                 <div

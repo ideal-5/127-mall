@@ -77,7 +77,7 @@ const addressClose = (e: { data: closeEvent; type: string }) => {
 <template>
     <div class="main flex flex-col items-center">
         <NavBar style="--my-navbar-border-bottom-color: #f2f2f2">添加地址</NavBar>
-        <div class="wfull flex" @click="showCityPopup = true">
+        <div class="wfull flex box-border py20 pr20" @click="showCityPopup = true">
             <div class="w100 flex-shrink-0 flex-center">
                 <div class="i-mdi:map-marker-radius"></div>
             </div>
@@ -87,6 +87,8 @@ const addressClose = (e: { data: closeEvent; type: string }) => {
                     placeholder="请输入所在区域"
                     :border="false"
                     style="--nut-input-padding: 10px 0; --nut-input-font-size: 24rpx"
+                    input-class="!text-align-right"
+                    readonly
                 >
                     <template #left>
                         <span class="text-26 font-500">所在区域</span>
@@ -94,7 +96,7 @@ const addressClose = (e: { data: closeEvent; type: string }) => {
                 </nut-input>
             </div>
         </div>
-        <div class="wfull flex">
+        <div class="wfull flex box-border py20 pr20">
             <div class="w100 flex-shrink-0 flex-center">
                 <div class="i-mdi:tag"></div>
             </div>
@@ -104,6 +106,7 @@ const addressClose = (e: { data: closeEvent; type: string }) => {
                     placeholder="请输入详细地址与门牌号"
                     :border="false"
                     style="--nut-input-padding: 10px 0; --nut-input-font-size: 24rpx"
+                    input-class="!text-align-right"
                 >
                     <template #left>
                         <span class="text-26 font-500">详细地址与门牌号</span>
@@ -111,7 +114,7 @@ const addressClose = (e: { data: closeEvent; type: string }) => {
                 </nut-input>
             </div>
         </div>
-        <div class="wfull flex">
+        <div class="wfull flex box-border py20 pr20">
             <div class="w100 flex-shrink-0 flex-center">
                 <div class="i-mdi:account"></div>
             </div>
@@ -121,6 +124,7 @@ const addressClose = (e: { data: closeEvent; type: string }) => {
                     placeholder="请输入收货人姓名"
                     :border="false"
                     style="--nut-input-padding: 10px 0; --nut-input-font-size: 24rpx"
+                    input-class="!text-align-right"
                 >
                     <template #left>
                         <span class="text-26 font-500">收货人姓名</span>
@@ -128,7 +132,7 @@ const addressClose = (e: { data: closeEvent; type: string }) => {
                 </nut-input>
             </div>
         </div>
-        <div class="wfull flex">
+        <div class="wfull flex box-border py20 pr20">
             <div class="w100 flex-shrink-0 flex-center">
                 <div class="i-mdi:phone"></div>
             </div>
@@ -138,6 +142,7 @@ const addressClose = (e: { data: closeEvent; type: string }) => {
                     placeholder="请输入手机号码"
                     :border="false"
                     style="--nut-input-padding: 10px 0; --nut-input-font-size: 24rpx"
+                    input-class="!text-align-right"
                 >
                     <template #left>
                         <span class="text-26 font-500">手机号</span>

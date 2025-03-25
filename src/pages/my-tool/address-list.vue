@@ -33,7 +33,7 @@ const defaultAddress = ref(true);
                     </div>
                 </div>
                 <div
-                    class="text-#818181 flex items-center justify-between border-t-#DBDBDB border-t-solid border-t-1 box-border py-25 pr-20"
+                    class="text-#818181 flex items-center justify-between border-t-#DBDBDB border-t-solid border-t-1 box-border py-25 pr-20 text-24"
                 >
                     <div class="ml-70">
                         <nut-switch v-model="defaultAddress" active-color="#55BC8D" />
