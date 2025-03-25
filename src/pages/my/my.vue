@@ -112,7 +112,7 @@ import { gotoPage } from "@/utils/uni";
                     <image src="@/static/img/tool-address.png" />
                     <div>地址管理</div>
                 </div>
-                <div class="tool-item">
+                <div class="tool-item" @click="gotoPage('/pages/my-tool/invite')" >
                     <image src="@/static/img/tool-yaoqing.png" />
                     <div>邀请分享</div>
                 </div>
