@@ -28,6 +28,7 @@ interface NavigateToOptions {
        "/pages/my-tool/withdraw" |
        "/pages/product/comment" |
        "/pages/product/details" |
+       "/pages/product/swiper" |
        "/pages/shopping-cart/shopping-cart";
 }
 interface RedirectToOptions extends NavigateToOptions {}

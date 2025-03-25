@@ -127,17 +127,17 @@ const tapSearch = () => {
                                     class="bg-#fff absolute top-100% right-30% text-28 b-rd-8 b-rd-tr-0 box-border px15"
                                     @touchstart.stop
                                 >
-                                    <div class="box-border py15 px20 b-b-solid b-b-1 b-b-#EFEFEF flex">
+                                    <div class="box-border py15 px20 b-b-solid b-b-1 b-b-#EFEFEF flex truncate">
                                         <span class="i-mdi:cart-minus size-38 mr10"></span>
-                                        <span>123</span>
+                                        <span>购物车</span>
                                     </div>
-                                    <div class="box-border py15 px20 b-b-solid b-b-1 b-b-#EFEFEF flex">
+                                    <div class="box-border py15 px20 b-b-solid b-b-1 b-b-#EFEFEF flex truncate">
                                         <span class="i-icon-park-outline:transaction-order size-38 mr10"></span>
-                                        <span>12345564564</span>
+                                        <span>我的订单</span>
                                     </div>
-                                    <div class="box-border py15 px20 flex">
+                                    <div class="box-border py15 px20 flex truncate">
                                         <span class="i-ri:customer-service-line size-38 mr10"></span>
-                                        <span>123</span>
+                                        <span>客服</span>
                                     </div>
                                 </div>
                             </nut-transition>
@@ -158,7 +158,7 @@ const tapSearch = () => {
             >
                 <nut-swiper-item v-for="(item, index) in swiperList" :key="index">
                     <!-- <image src="" mode="aspectFill" class="wfull hfull bg-emerald" /> -->
-                    <image :src="item" mode="aspectFill" class="wfull hfull " />
+                    <image :src="item" mode="aspectFill" class="wfull hfull" />
                 </nut-swiper-item>
             </nut-swiper>
         </div>

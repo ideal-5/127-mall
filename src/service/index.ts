@@ -9,17 +9,6 @@ import { showNetworkError } from "./helper";
 const instance = un.create({
     baseUrl: DefaultBaseUrl,
     timeout: 30_000,
-    // paramsSerializer: (params: any) => {
-    //   const query = qs.stringify(
-    //     Object.fromEntries(
-    //       Object.entries(params).filter(
-    //         ([, v]) => !['undefined', 'null', undefined, null].includes((v as any)?.toString() ?? v),
-    //       ),
-    //     ),
-    //   )
-
-    //   return query
-    // },
 });
 
 instance.interceptors.request.use((config) => {

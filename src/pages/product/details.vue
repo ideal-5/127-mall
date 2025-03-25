@@ -7,12 +7,7 @@ import { gotoPage } from "@/utils/uni";
 
 const { bottomHeightNum, bottomStyle } = useStyle().absoluteBottom(120);
 
-const swiperList = ref([
-    "https://storage.360buyimg.com/jdc-article/NutUItaro34.jpg",
-    "https://storage.360buyimg.com/jdc-article/NutUItaro2.jpg",
-    "https://storage.360buyimg.com/jdc-article/welcomenutui.jpg",
-    "https://storage.360buyimg.com/jdc-article/fristfabu.jpg",
-]);
+const swiperList = ref(Array.from({ length: 5 }, (_, i) => `https://picsum.photos/700/350?random=${Math.random()}`));
 
 onMounted(() => {
     WaterfallsFlowRef.value && WaterfallsFlowRef.value.pushData(list.value);
@@ -117,14 +112,14 @@ const showBottomPopupFunc = (type: "service" | "deliver-goods") => {
     <div class="main box-border bg-#F8F8F8" :style="{ paddingBottom: bottomHeightNum + 30 + 'rpx' }">
         <NavBar isEmptyFill></NavBar>
         <!-- 轮播图 -->
-        <div class="wfull h730 bg-emerald">
+        <div class="wfull h730" @click="gotoPage('swiper')">
             <nut-swiper
                 :init-page="1"
                 :pagination-visible="true"
                 pagination-color="#426543"
                 pagination-unselected-color="#808080"
                 auto-play="8000"
-                class="w-full hfull bg-emerald"
+                class="w-full hfull"
             >
                 <nut-swiper-item v-for="(item, index) in swiperList" :key="index">
                     <image :src="item" mode="aspectFill" class="wfull hfull" />
