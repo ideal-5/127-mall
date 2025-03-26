@@ -6,10 +6,10 @@ import { useUserStore } from "@/store";
 const toast = useToast();
 const userStore = useUserStore();
 
-const isAccredit = ref(true);
+const isAccredit = ref(false);
 const params = ref({
     phone: "18800008888",
-    password: "12345",
+    password: "123456",
 });
 
 const loginClick = async () => {
@@ -18,7 +18,6 @@ const loginClick = async () => {
     if (!isAccredit.value) return toast.text("请先阅读并同意《隐私政策》和《用户协议》");
 
     let { accessToken, code } = await userLoginApi(params.value);
-    console.log("okkokokokokokoko");
     if (code && accessToken) {
         userStore.token = accessToken;
         toast.loading("登陆成功!跳转中...", {

@@ -1,6 +1,16 @@
 <script setup lang="ts">
 import { useStyle } from "@/hooks/useStyle";
 import { gotoPage } from "@/utils/uni";
+import { useUserStore } from "@/store";
+
+const userStore = useUserStore();
+
+const logoutClick = () => {
+    userStore.token = "";
+    uni.reLaunch({
+        url: "/pages/login/login",
+    });
+};
 
 const { bottomHeight, bottomStyle } = useStyle().absoluteBottom(120);
 </script>
@@ -37,12 +47,7 @@ const { bottomHeight, bottomStyle } = useStyle().absoluteBottom(120);
         </div>
 
         <div class="flex-center !bg-transparent" :style="bottomStyle">
-            <div
-                class="w700 h80 flex-center text-#fff text-32 bg-#FFAA48 b-rd-full"
-                @click="gotoPage('/pages/login/login')"
-            >
-                退出登录
-            </div>
+            <div class="w700 h80 flex-center text-#fff text-32 bg-#FFAA48 b-rd-full" @click="logoutClick">退出登录</div>
         </div>
     </div>
 </template>

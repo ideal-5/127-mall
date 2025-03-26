@@ -1,6 +1,6 @@
 // import type { VueQueryPluginOptions } from '@tanstack/vue-query'
 import { DefaultBaseUrl, DefaultHeaders } from "@/constants";
-import { useUserStore, useSetupStore } from "@/store";
+import { useUserStore } from "@/store";
 // import { MutationCache, QueryCache, QueryClient } from '@tanstack/vue-query'
 import un from "@uni-helper/uni-network";
 // import qs from 'qs'
@@ -52,7 +52,6 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response) => {
         const data = response as IUnResponse;
-        const setupStore = useSetupStore();
 
         // 牛 返回的data 在上传文件的时候是JSON字符串
         if (typeof data.data === "string") {
@@ -64,7 +63,11 @@ instance.interceptors.response.use(
 
         if (data.data?.code !== 200) {
             let msg = handleServerError(data.data?.code, data.data?.msg);
-            setupStore.toast.text(msg || data.data?.msg || "未知错误");
+            uni.showToast({
+                title: msg || data.data?.msg || "未知错误",
+                icon: "none",
+            });
+
             // throw new Error('123456');
             throw response.data;
         }
