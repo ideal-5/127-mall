@@ -1,8 +1,68 @@
-<script lang="ts" setup></script>
+<script lang="ts" setup>
+import { ref } from "vue";
+import { onShow } from "@dcloudio/uni-app";
+
+// 页面路径与索引映射
+const isTabbar = ref(false);
+const tabMap = {
+    "pages/home/home": 0,
+    "pages/message/message": 1,
+    "pages/shopping-cart/shopping-cart": 2,
+    "pages/my/my": 3,
+} as const;
+const activeIndex = ref<number | undefined>();
+onShow(() => {
+    uni.hideTabBar({
+        success: () => {
+            isTabbar.value = true;
+        },
+        fail: () => {
+            isTabbar.value = false;
+        },
+    });
+    const currentPage = getCurrentPages().pop()?.route;
+    if (currentPage && currentPage in tabMap) {
+        activeIndex.value = tabMap[currentPage as keyof typeof tabMap];
+    }
+});
+function changeTab(_: any, index: number | string) {
+    const paths = Object.keys(tabMap);
+    if (paths[Number(index)]) {
+        uni.switchTab({ url: `/${paths[Number(index)]}` });
+    }
+}
+</script>
 
 <template>
     <div>
         <nut-toast></nut-toast>
         <slot />
+        <nut-tabbar
+            v-model="activeIndex"
+            active-color="#000"
+            unactive-color="#000"
+            safe-area-inset-bottom
+            bottom
+            placeholder
+            @tab-switch="changeTab"
+            v-if="isTabbar"
+        >
+            <nut-tabbar-item
+                v-for="(path, idx) in Object.keys(tabMap)"
+                :key="idx"
+                :tab-title="['首页', '消息', '购物车', '我的'][idx]"
+            >
+                <template #icon="props">
+                    <image class="size-38" v-if="props.active" :src="`/static/tabbar/${idx + 1}-1.png`" />
+                    <image class="size-38" v-else :src="`/static/tabbar/${idx + 1}-0.png`" />
+                </template>
+            </nut-tabbar-item>
+        </nut-tabbar>
     </div>
 </template>
+
+<style scoped lang="scss">
+:deep(.nut-tabbar) {
+    background: linear-gradient(180deg, #f9fdff 0%, #ffedc2 100%) !important;
+}
+</style>

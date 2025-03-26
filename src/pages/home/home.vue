@@ -66,11 +66,7 @@ onMounted(async () => {
         <Hot></Hot>
     </div>
 </template>
-<route lang="json">
-{
-    "layout": "tabbarLayout"
-}
-</route>
+
 <style scoped lang="scss">
 .main {
     :deep(.nut-searchbar) {

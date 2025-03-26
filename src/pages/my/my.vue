@@ -9,7 +9,7 @@ import { gotoPage } from "@/utils/uni";
     >
         <NavBar>
             <template #left>
-                <div class="w-100vh flex items-center justify-center relative">
+                <div class="w-100% flex items-center justify-center relative">
                     <span class="text-34">个人中心</span>
                     <span class="i-mdi:account-circle-outline absolute size-40 right-36"></span>
                 </div>
@@ -142,11 +142,7 @@ import { gotoPage } from "@/utils/uni";
         <image src="@/static/bj/ruzhu.png" class="w-full h-200" @click="gotoPage('merchant-enter')" />
     </div>
 </template>
-<route lang="json">
-{
-    "layout": "tabbarLayout"
-}
-</route>
+
 
 <style scoped lang="scss">
 .order-item {
