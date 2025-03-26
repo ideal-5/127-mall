@@ -17,9 +17,10 @@ const loginClick = async () => {
     if (params.value.password === "") return toast.text("请输入密码");
     if (!isAccredit.value) return toast.text("请先阅读并同意《隐私政策》和《用户协议》");
 
-    let { accessToken, code } = await userLoginApi(params.value);
+    let { accessToken, code, body } = await userLoginApi(params.value);
     if (code && accessToken) {
         userStore.token = accessToken;
+        userStore.user = body;
         toast.loading("登陆成功!跳转中...", {
             duration: 800,
         });

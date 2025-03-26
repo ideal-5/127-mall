@@ -1,8 +1,13 @@
 <script lang="ts" setup>
 import { ref } from "vue";
-import { onShow } from "@dcloudio/uni-app";
+import { onShow, onLoad } from "@dcloudio/uni-app";
+import { useUserStore } from "@/store";
 
-// 页面路径与索引映射
+const userStore = useUserStore();
+
+/**
+ * 处理tabbar
+ */
 const isTabbar = ref(false);
 const tabMap = {
     "pages/home/home": 0,
@@ -31,6 +36,10 @@ function changeTab(_: any, index: number | string) {
         uni.switchTab({ url: `/${paths[Number(index)]}` });
     }
 }
+
+/**
+ * 处理应用必须接口<没有这些接口数据就不展示页面>
+ */
 </script>
 
 <template>
