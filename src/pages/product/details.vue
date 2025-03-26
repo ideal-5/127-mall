@@ -106,6 +106,12 @@ const showBottomPopupFunc = (type: "service" | "deliver-goods") => {
     }
     showBottomPopup.value = true;
 };
+
+/**
+ * 下单
+ */
+const showSubmitPopup = ref(true);
+const submitCount = ref(1);
 </script>
 
 <template>
@@ -297,6 +303,76 @@ const showBottomPopupFunc = (type: "service" | "deliver-goods") => {
             <div wfull h100 flex-center text-34 flex-shrink-0>{{ showBottomPopupData.title }}</div>
             <div class="flex-1 min-h-0 wfull overflow-scroll box-border px32">
                 <rich-text :nodes="showBottomPopupData.content"></rich-text>
+            </div>
+        </div>
+    </nut-popup>
+    <nut-popup
+        position="bottom"
+        :custom-style="{ height: '80vh', display: 'flex', 'flex-direction': 'column' }"
+        v-model:visible="showSubmitPopup"
+        round
+        lock-scroll
+    >
+        <div class="flex-1 min-h-0 wfull overflow-scroll">
+            <!--   position: "sticky",
+            top: top ? topValue[top] : "0px",
+            "z-index": 10, -->
+            <div class="h100 wfull flex justify-end items-center box-border px32 sticky top-0">
+                <span i-mdi:close></span>
+            </div>
+            <!-- 地址 -->
+            <div class="wfull flex items-center h-fit b-b-solid b-b-4rpx b-b-#F2F2F2 box-border py20">
+                <div class="flex-1 min-w-0 flex hfull flex items-center">
+                    <div class="w100 hfull flex-center flex-shrink-0">
+                        <span i-mdi:map-marker-radius></span>
+                    </div>
+                    <div class="fw500 text-30 flex-1 min-w-0">
+                        <div mb8>我是地址大概</div>
+                        <div>我是地址详情</div>
+                        <div class="text-#949494 text-22 mt15">
+                            <span mr20>名字</span>
+                            <span>1212313456</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="w100 hfull flex-center flex-shrink-0">
+                    <span i-mdi:chevron-right></span>
+                </div>
+            </div>
+            <!-- 商品 -->
+            <div class="wfull box-border py32 flex box-border px32 b-b-solid b-b-4rpx b-b-#F2F2F2">
+                <div size-190 flex-shrink-0 mr32>
+                    <image src="" mode="aspectFill" class="size-190 b-rd-12 bg-fuchsia" />
+                </div>
+                <div class="flex-1 min-w-0">
+                    <div class="flex items-center">
+                        <div class="text-#EC3013 fw500 mr32">
+                            <span text-28>￥</span>
+                            <span text-42>12.99</span>
+                        </div>
+                        <div class="text-#949494 text-24 line-through">￥19.99</div>
+                    </div>
+                    <div text-26 my28>已选: 的撒进口的哈卡刷点卡是的</div>
+                    <nut-input-number v-model="submitCount"></nut-input-number>
+                </div>
+            </div>
+            <!-- 分类 先不写 -->
+            <!-- 订单备注 -->
+            <div
+                class="wfull flex items-center justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2"
+                v-for="item in 30"
+                :key="item"
+            >
+                <div text-26 fw500>订单备注</div>
+                <div i-mdi:chevron-right></div>
+            </div>
+        </div>
+        <div class="wfull h120 flex-center box-border px32">
+            <div
+                class="bg-[linear-gradient(109deg,#FFAA48_0%,#FF9113_100%)] wfull h92 fw500 flex-center text-#fff b-rd-16"
+            >
+                <span text-28>立即支付</span>
+                <span text-34>￥12.90</span>
             </div>
         </div>
     </nut-popup>

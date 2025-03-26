@@ -18,6 +18,7 @@ declare module 'vue' {
     NutForm: typeof import('nutui-uniapp/components/form/form.vue')['default']
     NutFormItem: typeof import('nutui-uniapp/components/formitem/formitem.vue')['default']
     NutInput: typeof import('nutui-uniapp/components/input/input.vue')['default']
+    NutInputNumber: typeof import('nutui-uniapp/components/inputnumber/inputnumber.vue')['default']
     NutPopup: typeof import('nutui-uniapp/components/popup/popup.vue')['default']
     NutProgress: typeof import('nutui-uniapp/components/progress/progress.vue')['default']
     NutSearchbar: typeof import('nutui-uniapp/components/searchbar/searchbar.vue')['default']
