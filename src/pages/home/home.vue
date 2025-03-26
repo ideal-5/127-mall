@@ -4,7 +4,6 @@ import ProductModule from "./components/ProductModule/index.vue";
 import Hot from "./components/Hot/index.vue";
 import { onPageScroll } from "@dcloudio/uni-app";
 import { gotoPage } from "@/utils/uni";
-import { ceshiApi, ceshiApi2 } from "@/api";
 
 const scrollTop = ref(0);
 onPageScroll((e) => {
@@ -14,9 +13,9 @@ onPageScroll((e) => {
 const searchValue = ref<string>("");
 const swiperList = ref(Array.from({ length: 5 }, (_, i) => `https://picsum.photos/700/350?random=${Math.random()}`));
 
-ceshiApi();
+
 onMounted(async () => {
-    let res = await ceshiApi2({ configName: "PROFIT_RULE" });
+
     // console.log("*******",  res.body.wwwww   );
 });
 </script>

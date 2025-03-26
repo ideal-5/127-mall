@@ -1,22 +1,42 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { userLoginApi } from "@/api";
+import { useUserStore } from "@/store";
 
-const text = ref("");
+const toast = useToast();
+const userStore = useUserStore();
 
-const isAccredit = ref(false);
+const isAccredit = ref(true);
+const params = ref({
+    phone: "18800008888",
+    password: "12345",
+});
 
-const loginClick = () => {
-    uni.switchTab({
-        url: "/pages/home/home",
-    });
+const loginClick = async () => {
+    if (params.value.phone === "") return toast.text("请输入手机号");
+    if (params.value.password === "") return toast.text("请输入密码");
+    if (!isAccredit.value) return toast.text("请先阅读并同意《隐私政策》和《用户协议》");
+
+    let { accessToken, code } = await userLoginApi(params.value);
+    console.log("okkokokokokokoko");
+    if (code && accessToken) {
+        userStore.token = accessToken;
+        toast.loading("登陆成功!跳转中...", {
+            duration: 800,
+        });
+        setTimeout(() => {
+            uni.switchTab({
+                url: "/pages/home/home",
+            });
+        }, 1000);
+    }
 };
-
 </script>
 
 <template>
     <div class="main flex-col">
         <div class="bg wfull h522 text-52 fw500 flex-col justify-center box-border pl30 flex-shrink-0">
-            <span>你好,</span>
+            <span>你好, </span>
             <span>欢迎登陆*****!</span>
         </div>
         <div
@@ -30,7 +50,7 @@ const loginClick = () => {
                             <span class="text-28 fw500">手机号</span>
                         </div>
                         <nut-input
-                            v-model="text"
+                            v-model="params.phone"
                             placeholder="请输入您的手机号"
                             style="--nut-input-padding: 10px 0"
                         ></nut-input>
@@ -41,7 +61,7 @@ const loginClick = () => {
                             <span class="text-28 fw500">密码</span>
                         </div>
                         <nut-input
-                            v-model="text"
+                            v-model="params.password"
                             placeholder="请输入您的密码"
                             style="--nut-input-padding: 10px 0"
                         ></nut-input>
@@ -68,7 +88,9 @@ const loginClick = () => {
             </div>
             <div class="wfull h200 flex-col items-center mb100">
                 <div class="w300">
-                    <nut-divider style="--nut-divider-text-color: #A4A4A4;--nut-divider-text-font-size:24rpx">第三方登录</nut-divider>
+                    <nut-divider style="--nut-divider-text-color: #a4a4a4; --nut-divider-text-font-size: 24rpx"
+                        >第三方登录</nut-divider
+                    >
                 </div>
                 <div class="wull flex items-center justify-around">
                     <div class="size-64 b-rd-full bg-#28C445 flex-center">

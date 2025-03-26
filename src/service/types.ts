@@ -13,10 +13,10 @@ export interface IUnResponseData_<T = null, D = null> {
     // errMsg: "request:ok";
     // cookies: [];
     accessToken: string;
-    body: T;
+    data: T;
+    body: D;
     code: number;
     count: number | null;
-    data: D;
     msg: string;
     total: number | null;
 }

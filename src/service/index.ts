@@ -1,37 +1,45 @@
 // import type { VueQueryPluginOptions } from '@tanstack/vue-query'
 import { DefaultBaseUrl, DefaultHeaders } from "@/constants";
-// import { useAuthStore } from '@/store'
+import { useUserStore, useSetupStore } from "@/store";
 // import { MutationCache, QueryCache, QueryClient } from '@tanstack/vue-query'
 import un from "@uni-helper/uni-network";
 // import qs from 'qs'
-import { showNetworkError } from "./helper";
+// import { showNetworkError } from "./helper";
+import { handleHttpError, handleServerError } from "./handleError";
 
 const instance = un.create({
     baseUrl: DefaultBaseUrl,
     timeout: 30_000,
 });
 
-instance.interceptors.request.use((config) => {
-    // const authStore = useAuthStore()
-    // console.log("config", config);
+instance.interceptors.request.use(
+    (config) => {
+        const userStore = useUserStore();
 
-    let headers: Record<string, string> = {};
+        // console.log("config", config);
+        let headers: Record<string, string> = {};
 
-    if ((config.method === "POST" || config.method === "post") && !config.headers) {
-        headers["Content-Type"] = "application/x-www-form-urlencoded";
+        if ((config.method === "POST" || config.method === "post") && !config.headers) {
+            headers["Content-Type"] = "application/x-www-form-urlencoded";
+        }
+
+        config.headers = {
+            ...DefaultHeaders,
+            token: userStore.token,
+            // 'X-Token': authStore.token,
+            // 'X-Access-Token': authStore.token,
+            ...headers,
+            ...config.headers,
+        };
+
+        return config;
+    },
+    (error) => {
+        console.log("请求err", error.response);
+
+        // throw new Error(error);
     }
-
-    config.headers = {
-        ...DefaultHeaders,
-        // 'token': authStore.token,
-        // 'X-Token': authStore.token,
-        // 'X-Access-Token': authStore.token,
-        ...headers,
-        ...config.headers,
-    };
-
-    return config;
-});
+);
 // instance.interceptors.response.use(
 //     (response) => {
 //         const data = response as IUnResponse
@@ -43,21 +51,36 @@ instance.interceptors.request.use((config) => {
 // );
 instance.interceptors.response.use(
     (response) => {
-        // const data = response as IUnResponse;
-        // console.log("response");
-        // if (response.config?.showError ?? true) {
-        //   showNetworkError({
-        //     response: response as unknown as IUnResponse,
-        //     error: data?.data as unknown as IUnError,
-        //     type: data.config?.showErrorType,
-        //   })
-        // }
-        console.log('response', response);
+        const data = response as IUnResponse;
+        const setupStore = useSetupStore();
+
+        // 牛 返回的data 在上传文件的时候是JSON字符串
+        if (typeof data.data === "string") {
+            data.data = JSON.parse(data.data);
+        }
+        /**
+         * 处理服务器业务错误码
+         */
+
+        if (data.data?.code !== 200) {
+            let msg = handleServerError(data.data?.code, data.data?.msg);
+            setupStore.toast.text(msg || data.data?.msg || "未知错误");
+            // throw new Error('123456');
+            throw response.data;
+        }
+
+        console.log("response", response);
         return response.data as any;
     },
     (error) => {
-        console.log("error", error);
-        // throw new Error(error);
+        console.log("响应err", error.response.status);
+        console.log("响应config", error.config);
+        let msg = handleHttpError(error.response.status);
+        uni.showToast({
+            title: msg,
+            icon: "none",
+        });
+        throw new Error(error);
     }
 );
 
