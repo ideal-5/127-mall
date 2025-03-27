@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    copy: typeof import('./../src/components/NavBar copy.vue')['default']
     NavBar: typeof import('./../src/components/NavBar.vue')['default']
     'NavBar copy': typeof import('./../src/components/NavBar copy.vue')['default']
     NutAddress: typeof import('nutui-uniapp/components/address/address.vue')['default']
@@ -19,6 +20,9 @@ declare module 'vue' {
     NutFormItem: typeof import('nutui-uniapp/components/formitem/formitem.vue')['default']
     NutInput: typeof import('nutui-uniapp/components/input/input.vue')['default']
     NutInputNumber: typeof import('nutui-uniapp/components/inputnumber/inputnumber.vue')['default']
+    NutMenu: typeof import('nutui-uniapp/components/menu/menu.vue')['default']
+    NutMenuItem: typeof import('nutui-uniapp/components/menuitem/menuitem.vue')['default']
+    NutPicker: typeof import('nutui-uniapp/components/picker/picker.vue')['default']
     NutPopup: typeof import('nutui-uniapp/components/popup/popup.vue')['default']
     NutProgress: typeof import('nutui-uniapp/components/progress/progress.vue')['default']
     NutSearchbar: typeof import('nutui-uniapp/components/searchbar/searchbar.vue')['default']
@@ -34,7 +38,9 @@ declare module 'vue' {
     NutTextarea: typeof import('nutui-uniapp/components/textarea/textarea.vue')['default']
     NutToast: typeof import('nutui-uniapp/components/toast/toast.vue')['default']
     NutTransition: typeof import('nutui-uniapp/components/transition/transition.vue')['default']
+    NutUploader: typeof import('nutui-uniapp/components/uploader/uploader.vue')['default']
     Tabs: typeof import('./../src/components/Tabs.vue')['default']
+    Uploader: typeof import('./../src/components/Uploader.vue')['default']
     WaterfallsFlow: typeof import('./../src/components/WaterfallsFlow.vue')['default']
   }
 }

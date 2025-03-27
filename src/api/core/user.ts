@@ -49,6 +49,53 @@ export namespace User {
         amount: number;
         invite: number;
     }
+    // 店铺入住
+    export interface ShopEnterParamse {
+        /**
+         * 详细地址
+         */
+        address: string;
+        /**
+         * 身份证背面照片
+         */
+        backImage: string;
+        /**
+         * 联系人
+         */
+        contactName: string;
+        /**
+         * 联系人电话
+         */
+        contactPhone: string;
+        /**
+         * 身份证正面照片
+         */
+        faceImage: string;
+        /**
+         * 身份证号
+         */
+        identityCode: string;
+        /**
+         * 店铺轮播图
+         */
+        imageList: string[];
+        /**
+         * 短信验证码
+         */
+        msgCode: string;
+        /**
+         * 店铺logo
+         */
+        shopLogo: string;
+        /**
+         * 店铺名称
+         */
+        shopName: string;
+        /**
+         * 分类id
+         */
+        sortId: number;
+    }
 }
 
 // 登陆
@@ -119,4 +166,9 @@ export const userUpdatePhoneApi = (data: { phone: string; msgCode: string }) => 
 // 意见反馈
 export const userFeedbackApi = (data: { suggest: string }) => {
     return unInstance.post<UnData, { suggest: string }, IUnResponseData<null, null>>("/v1/user/addSuggest", data);
+};
+
+// 店铺入驻
+export const userShopEnterApi = (data: User.ShopEnterParamse) => {
+    return unInstance.post<UnData, User.ShopEnterParamse, IUnResponseData<null, null>>("/v1/shop/shopEnter", data);
 };

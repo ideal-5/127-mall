@@ -27,7 +27,6 @@ export function useUpload() {
         let params = isObject(count) ? count : { count };
         try {
             const chooseImageRes = await uni.chooseImage(params as UniApp.ChooseImageOptions);
-            console.log("chooseImageRes", chooseImageRes);
             const tempFilePaths = chooseImageRes.tempFilePaths;
             return isString(tempFilePaths) ? [tempFilePaths as string] : (tempFilePaths as string[]);
         } catch (error) {

@@ -1,55 +1,34 @@
 <script setup lang="ts">
 import { useStyle } from "@/hooks/useStyle";
-import { ref } from "vue";
-export interface Request {
-    /**
-     * 详细地址
-     */
-    address?: string;
-    /**
-     * 身份证背面照片
-     */
-    backImage?: string;
-    /**
-     * 联系人
-     */
-    contactName?: string;
-    /**
-     * 联系人电话
-     */
-    contactPhone?: string;
-    /**
-     * 身份证正面照片
-     */
-    faceImage?: string;
-    /**
-     * 身份证号
-     */
-    identityCode?: string;
-    /**
-     * 店铺轮播图
-     */
-    imageList?: string[];
-    /**
-     * 短信验证码
-     */
-    msgCode?: number;
-    /**
-     * 店铺logo
-     */
-    shopLogo?: string;
-    /**
-     * 店铺名称
-     */
-    shopName?: string;
-    /**
-     * 分类id
-     */
-    sortId?: number;
-    [property: string]: any;
-}
+import { ref, computed } from "vue";
+import { useUpload } from "@/hooks/useUpload";
+import { userShopEnterApi, configGetShopSortListApi } from "@/api";
+import type { User, Config } from "@/api";
+import type { PickerBaseEvent } from "nutui-uniapp";
 
-const from = ref<Request>({
+const shopSortList = ref<Config.ConfigShopSortResult[]>();
+onMounted(async () => {
+    let { data } = await configGetShopSortListApi({ page: 1, limit: 9999 });
+    shopSortList.value = data;
+});
+const activeShopSortText = computed(() => {
+    return shopSortList.value?.find((item) => item.id === from.value.sortId)?.name || "";
+});
+const showShopSortPopup = ref(false);
+const shopSortListOptions = computed(() => {
+    return shopSortList.value?.map((item) => {
+        return {
+            text: item.name,
+            value: item.id,
+        };
+    });
+});
+const popupConfirm = (selected: PickerBaseEvent) => {
+    from.value.sortId = selected.selectedOptions[0].value as number;
+    showShopSortPopup.value = false;
+};
+
+const from = ref<User.ShopEnterParamse>({
     address: "",
     backImage: "",
     contactName: "",
@@ -57,13 +36,38 @@ const from = ref<Request>({
     faceImage: "",
     identityCode: "",
     imageList: [],
-    msgCode: 0,
+    msgCode: '',
     shopLogo: "",
     shopName: "",
     sortId: 0,
 });
 
 const { bottomHeight, bottomStyle } = useStyle().absoluteBottom(120);
+
+const { selectImage, uploadFiles } = useUpload();
+
+const uploadClisk = async (key: "shopLogo" | "faceImage" | "backImage" | "imageList") => {
+    if (from.value[key] instanceof Array) {
+        let imgarr = await selectImage(9 - from.value[key].length);
+        let imagearr = await uploadFiles(imgarr);
+        from.value[key].push(...imagearr);
+    } else if (typeof from.value[key] === "string") {
+        let imgarr = await selectImage(1);
+        let imagearr = await uploadFiles(imgarr);
+        (from.value[key] as string) = imagearr[0];
+    }
+};
+const delClick = (key: "shopLogo" | "faceImage" | "backImage" | "imageList", index?: number) => {
+    if (from.value[key] instanceof Array && index !== undefined) {
+        from.value[key].splice(index, 1);
+    } else if (typeof from.value[key] === "string") {
+        (from.value[key] as string) = "";
+    }
+};
+
+const submitClick = async () => {
+    userShopEnterApi(from.value);
+};
 </script>
 
 <template>
@@ -79,37 +83,118 @@ const { bottomHeight, bottomStyle } = useStyle().absoluteBottom(120);
             "
         >
             <div class="wfull bg-#fff b-rd-12">
-                <nut-form-item label="店铺名称" required>
+                <nut-form-item label="店铺名称">
                     <nut-input v-model="from.shopName" placeholder="请填写（必填）" />
                 </nut-form-item>
                 <nut-form-item label="商家主营分类" required>
-                    <nut-input v-model="from.sortId" placeholder="请填写（必填）" />
+                    <!--  v-model="from.sortId" -->
+                    <nut-input
+                        :modelValue="activeShopSortText"
+                        readonly
+                        placeholder="请填写（必填）"
+                        @click="showShopSortPopup = true"
+                    />
                 </nut-form-item>
                 <nut-form-item label="店铺详细地址">
-                    <nut-input v-model="from.sortId" placeholder="请填写店铺详细地址" />
+                    <nut-input v-model="from.address" placeholder="请填写店铺详细地址" />
                 </nut-form-item>
             </div>
 
-            <div class="wfull bg-#fff b-rd-12 mt20">
-                <nut-form-item label="联系人姓名" required>
+            <div class="wfull bg-#fff b-rd-12 my20">
+                <nut-form-item label="联系人姓名">
                     <nut-input v-model="from.contactName" placeholder="请输入真实姓名" />
                 </nut-form-item>
                 <nut-form-item label="身份证号">
                     <nut-input v-model="from.identityCode" placeholder="请填写" />
                 </nut-form-item>
                 <nut-form-item label="联系电话" required>
-                    <nut-input v-model="from.address" placeholder="请填写您的电话号码" />
+                    <nut-input v-model="from.contactPhone" placeholder="请填写您的电话号码" />
                 </nut-form-item>
                 <nut-form-item label="验证码">
                     <nut-input v-model="from.msgCode" placeholder="请填写（必填）" />
                 </nut-form-item>
             </div>
+
+            <div class="wfull bg-#fff b-rd-12">
+                <nut-form-item label="店铺LOSO" required>
+                    <div class="size-152 b-rd-6 bg-#EBEBEB text-#949494 relative">
+                        <div wfull hfull flex-center flex-col @click="uploadClisk('shopLogo')" v-if="!from.shopLogo">
+                            <div i-mdi:camera-plus-outline class="size-42"></div>
+                            <div text-18 mt10>添加图片</div>
+                        </div>
+                        <image v-else :src="from.shopLogo" mode="aspectFill" class="wfull hfull b-rd-6" />
+                        <span
+                            i-mdi:close-circle-outline
+                            class="absolute top-0 right-0 translate-x-50% -translate-y-50% text-#000"
+                            @click="delClick('shopLogo')"
+                            v-if="from.shopLogo"
+                        ></span>
+                    </div>
+                </nut-form-item>
+                <nut-form-item label="服务介绍图" required>
+                    <div class="wfull flex flex-wrap">
+                        <div
+                            class="size-152 b-rd-6 bg-#EBEBEB text-#949494 relative mr25 mb25 flex-shrink-0"
+                            v-for="(item, index) in from.imageList"
+                            :key="item"
+                        >
+                            <image :src="item" mode="aspectFill" class="wfull hfull b-rd-6" />
+                            <span
+                                i-mdi:close-circle-outline
+                                class="absolute top-0 right-0 translate-x-50% -translate-y-50% text-#000"
+                                @click="delClick('imageList', index)"
+                            ></span>
+                        </div>
+                        <div class="size-152 b-rd-6 bg-#EBEBEB text-#949494 relative" v-if="from.imageList.length < 9">
+                            <div class="wfull hfull flex-center flex-col" @click="uploadClisk('imageList')">
+                                <div i-mdi:camera-plus-outline class="size-42"></div>
+                                <div text-18 mt10>添加图片</div>
+                            </div>
+                        </div>
+                    </div>
+                </nut-form-item>
+                <nut-form-item label="身份证正面(人像面)">
+                    <div class="size-152 b-rd-6 bg-#EBEBEB text-#949494 relative">
+                        <div wfull hfull flex-center flex-col @click="uploadClisk('faceImage')" v-if="!from.faceImage">
+                            <div i-mdi:camera-plus-outline class="size-42"></div>
+                            <div text-18 mt10>添加图片</div>
+                        </div>
+                        <image v-else :src="from.faceImage" mode="aspectFill" class="wfull hfull b-rd-6" />
+                        <span
+                            i-mdi:close-circle-outline
+                            class="absolute top-0 right-0 translate-x-50% -translate-y-50% text-#000"
+                            @click="delClick('faceImage')"
+                            v-if="from.faceImage"
+                        ></span>
+                    </div>
+                </nut-form-item>
+                <nut-form-item label="身份证反面(国徽面)">
+                    <div class="size-152 b-rd-6 bg-#EBEBEB text-#949494 relative">
+                        <div wfull hfull flex-center flex-col @click="uploadClisk('backImage')" v-if="!from.backImage">
+                            <div i-mdi:camera-plus-outline class="size-42"></div>
+                            <div text-18 mt10>添加图片</div>
+                        </div>
+                        <image v-else :src="from.backImage" mode="aspectFill" class="wfull hfull b-rd-6" />
+                        <span
+                            i-mdi:close-circle-outline
+                            class="absolute top-0 right-0 translate-x-50% -translate-y-50% text-#000"
+                            @click="delClick('backImage')"
+                            v-if="from.backImage"
+                        ></span>
+                    </div>
+                </nut-form-item>
+            </div>
         </nut-form>
 
         <div :style="bottomStyle" class="box-border px32 flex-center">
-            <div class="wfull h78 bg-#FFAA48 text-#fff flex-center b-rd-8 text-26 fw500">申请入驻</div>
+            <div class="wfull h78 bg-#FFAA48 text-#fff flex-center b-rd-8 text-26 fw500" @click="submitClick">
+                申请入驻
+            </div>
         </div>
     </div>
+    <nut-popup v-model:visible="showShopSortPopup" position="bottom" safe-area-inset-bottom>
+        <nut-picker :columns="shopSortListOptions" title="选择主营分类" @confirm="popupConfirm"> </nut-picker>
+    </nut-popup>
 </template>
 
 <style scoped lang="scss">
