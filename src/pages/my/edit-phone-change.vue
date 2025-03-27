@@ -1,10 +1,29 @@
 <script setup lang="ts">
 import { gotoPage } from "@/utils/uni";
 import { ref } from "vue";
+import { onLoad } from "@dcloudio/uni-app";
+import { userUpdatePhoneApi } from "@/api";
+import { useUserStore } from "@/store";
+
+const userStore = useUserStore();
 
 const showPopup = ref(true);
 
 const popupInp = ref("");
+const msgCode = ref("");
+
+onLoad((query) => {
+    msgCode.value = query?.code || "";
+});
+
+const submit = async () => {
+    if (!popupInp.value) return;
+    let { code } = await userUpdatePhoneApi({ phone: popupInp.value, msgCode: msgCode.value });
+    if (code === 200) {
+        userStore.refreshUserInfo();
+        uni.navigateBack({ delta: 2 });
+    }
+};
 </script>
 
 <template>
@@ -39,12 +58,11 @@ const popupInp = ref("");
                 >
                     取消
                 </div>
-                <div class="flex-1 flex items-center justify-center h-100">确定</div>
+                <div class="flex-1 flex items-center justify-center h-100" @click="submit">确定</div>
             </div>
         </nut-popup>
     </div>
 </template>
-
 
 <style scoped lang="scss">
 :deep(.nut-input) {

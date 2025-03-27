@@ -1,6 +1,19 @@
 <script setup lang="ts">
 import Member from "./components/Member.vue";
 import { gotoPage } from "@/utils/uni";
+import { useUserStore } from "@/store";
+import { onLoad } from "@dcloudio/uni-app";
+import { userGetUserScoreAndCouponApi } from "@/api";
+import type { User } from "@/api";
+
+const userStore = useUserStore();
+
+const scoreAndCoupon = ref<User.UserScoreAndCouponResult>();
+
+onLoad(async () => {
+    let { body } = await userGetUserScoreAndCouponApi();
+    scoreAndCoupon.value = body;
+});
 </script>
 
 <template>
@@ -18,14 +31,14 @@ import { gotoPage } from "@/utils/uni";
         <!-- 用户 -->
         <div class="w-full flex items-center my-20" @click="gotoPage('edit-user')">
             <div class="mr-20">
-                <image src="https://picsum.photos/200" mode="aspectFill" class="size-100 b-rd-full" />
+                <image :src="userStore.user?.headImage" mode="aspectFill" class="size-100 b-rd-full" />
             </div>
             <div>
                 <div>
-                    <span class="text-34 font-500">依依</span>
+                    <span class="text-34 font-500">{{ userStore.user?.userName }}</span>
                 </div>
                 <div>
-                    <span class="text-22 color-[#949494]">191 **** 0101</span>
+                    <span class="text-22 color-[#949494]">{{ userStore.user?.phone }}</span>
                 </div>
             </div>
         </div>
@@ -33,7 +46,7 @@ import { gotoPage } from "@/utils/uni";
         <div class="flex mb-30">
             <div class="flex-1 flex flex-col items-center">
                 <div>
-                    <span class="text-30">500</span>
+                    <span class="text-30">{{ scoreAndCoupon?.coin }}</span>
                 </div>
                 <div>
                     <span class="text-26 font-500">我的积分</span>
@@ -41,7 +54,7 @@ import { gotoPage } from "@/utils/uni";
             </div>
             <div class="flex-1 flex flex-col items-center" @click="gotoPage('point-exchange')">
                 <div>
-                    <span class="text-30">500</span>
+                    <span class="text-30">-</span>
                 </div>
                 <div>
                     <span class="text-26 font-500">积分兑换</span>
@@ -50,7 +63,7 @@ import { gotoPage } from "@/utils/uni";
             </div>
             <div class="flex-1 flex flex-col items-center" @click="gotoPage('coupon')">
                 <div>
-                    <span class="text-30">500</span>
+                    <span class="text-30">{{ scoreAndCoupon?.coupon }}</span>
                 </div>
                 <div>
                     <span class="text-26 font-500">我的卷</span>
@@ -112,7 +125,7 @@ import { gotoPage } from "@/utils/uni";
                     <image src="@/static/img/tool-address.png" />
                     <div>地址管理</div>
                 </div>
-                <div class="tool-item" @click="gotoPage('/pages/my-tool/invite')" >
+                <div class="tool-item" @click="gotoPage('/pages/my-tool/invite')">
                     <image src="@/static/img/tool-yaoqing.png" />
                     <div>邀请分享</div>
                 </div>
@@ -142,7 +155,6 @@ import { gotoPage } from "@/utils/uni";
         <image src="@/static/bj/ruzhu.png" class="w-full h-200" @click="gotoPage('merchant-enter')" />
     </div>
 </template>
-
 
 <style scoped lang="scss">
 .order-item {

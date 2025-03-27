@@ -1,4 +1,4 @@
-// import { uploadImg as fetchUploadImg } from "@/api/login";
+import { userUploadFileApi } from "@/api";
 import { isObject, isString } from "@/utils/is";
 export function useUpload() {
     // 上传图片的公共逻辑
@@ -6,10 +6,14 @@ export function useUpload() {
         try {
             let urlArr = await Promise.all(
                 filePaths.map(async (filePath) => {
-                    // 调接口
-                    // const jsonRes = await fetchUploadImg({ filePath });
-                    // const res = JSON.parse(jsonRes);
-                    // return res.data; // 假设返回的数据结构为 { data: 'url' }
+                    const res = await userUploadFileApi({
+                        filePath: filePath,
+                        name: "file",
+                        formData: {
+                            type: "10",
+                        },
+                    });
+                    return res.body; 
                 })
             );
             return urlArr;
@@ -23,6 +27,7 @@ export function useUpload() {
         let params = isObject(count) ? count : { count };
         try {
             const chooseImageRes = await uni.chooseImage(params as UniApp.ChooseImageOptions);
+            console.log("chooseImageRes", chooseImageRes);
             const tempFilePaths = chooseImageRes.tempFilePaths;
             return isString(tempFilePaths) ? [tempFilePaths as string] : (tempFilePaths as string[]);
         } catch (error) {

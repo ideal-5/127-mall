@@ -1,19 +1,27 @@
 <script setup lang="ts">
-import { gotoPage, showToast } from "@/utils/uni";
+import { gotoPage } from "@/utils/uni";
 import { ref } from "vue";
+import { userCheckCodeApi } from "@/api";
+import { useUserStore } from "@/store";
+
+const userStore = useUserStore();
 
 const codeInp = ref("");
-
-const codeFinish = () => {
+const toast = useToast();
+const codeFinish = async () => {
     console.log("codeInp", codeInp);
     // 调用接口
+    let { code, msg } = await userCheckCodeApi({
+        msgCode: codeInp.value,
+        phone: userStore.user?.phone || "",
+        msgType: "20",
+    });
 
-    let code = 1;
-    if (code === 1) {
+    if (code === 200) {
         // code正确 跳转页面
-        gotoPage("edit-phone-change");
+        gotoPage(`edit-phone-change?code=${codeInp.value}`);
     } else {
-        showToast({ title: "验证码错误" });
+        toast.error(msg);
     }
 };
 </script>
@@ -26,7 +34,7 @@ const codeFinish = () => {
         <div class="flex-1 flex items-center">
             <div class="flex flex-col ml-66">
                 <span class="text-34 font500">验证码已发送至：</span>
-                <span class="text-34 font500 text-#FF9113"> 191****0101</span>
+                <span class="text-34 font500 text-#FF9113">{{ userStore.user?.phone }}</span>
             </div>
         </div>
         <div class="h-70vh w-full bg-#fff b-rd-tr-26 b-rd-tl-26 flex flex-col items-center">
@@ -42,6 +50,5 @@ const codeFinish = () => {
         </div>
     </div>
 </template>
-
 
 <style scoped lang="scss"></style>

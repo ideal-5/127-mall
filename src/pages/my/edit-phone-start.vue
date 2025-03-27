@@ -1,5 +1,9 @@
 <script setup lang="ts">
 import { gotoPage } from "@/utils/uni";
+import { useUserStore } from "@/store";
+
+const userStore = useUserStore();
+
 </script>
 
 <template>
@@ -13,7 +17,7 @@ import { gotoPage } from "@/utils/uni";
             </div>
             <div class="text-46 font-500 my-32">武庸</div>
             <div class="text-30 text-#FFAA48">当前手机号</div>
-            <div class="text-44 font-500 mt52 mb100">191****0101</div>
+            <div class="text-44 font-500 mt52 mb100">{{ userStore.user?.phone }}</div>
             <div
                 class="w-618 h-82 flex items-center justify-center text-#fff text-30 bg-#FFAA48 b-rd-full"
                 @click="gotoPage('edit-phone-code')"

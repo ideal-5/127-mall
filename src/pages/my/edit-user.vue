@@ -2,19 +2,40 @@
 import { ref } from "vue";
 import { useUpload } from "@/hooks/useUpload";
 import { gotoPage } from "@/utils/uni";
+import { useUserStore } from "@/store";
+import { userUpdateUserNameApi, userUpdateUserHeadImageApi } from "@/api";
 
-const { selectImage } = useUpload();
+const userStore = useUserStore();
+
+const { selectImage, uploadFiles } = useUpload();
+
+const toast = useToast();
 
 const showPopup = ref(false);
-const popupInp = ref("");
+
+/**
+ * 修改头像
+ */
 const tapAvatar = async () => {
     try {
-        await selectImage();
+        let imgList = await selectImage(1);
+        let [imageUrl] = await uploadFiles(imgList);
+        await userUpdateUserHeadImageApi({ imageUrl });
+        userStore.refreshUserInfo();
     } catch (error) {
-        uni.showToast({
-            title: error.message,
-            icon: "none",
-        });
+        toast.error("修改头像失败");
+    }
+};
+
+/**
+ * 修改昵称
+ */
+const popupInp = ref("");
+const editUserName = async () => {
+    let { code } = await userUpdateUserNameApi({ userName: popupInp.value });
+    if (code === 200) {
+        userStore.refreshUserInfo();
+        showPopup.value = false;
     }
 };
 </script>
@@ -26,29 +47,33 @@ const tapAvatar = async () => {
             <div class="line" @click="tapAvatar">
                 <div class="label">头像</div>
                 <div class="value">
-                    <image src="https://picsum.photos/200" mode="aspectFill" class="size-64 b-rd-full" />
+                    <image :src="userStore.user?.headImage" mode="aspectFill" class="size-64 b-rd-full" />
                     <span class="i-mdi:chevron-right text-#d6d6d6"></span>
                 </div>
             </div>
             <div class="line" @click="gotoPage('edit-phone-start')">
                 <div class="label">手机号</div>
                 <div class="value">
-                    <span class="text">191221151565645</span>
+                    <span class="text">{{ userStore.user?.phone }}</span>
                     <span class="i-mdi:chevron-right text-#d6d6d6"></span>
                 </div>
             </div>
             <div class="line" @click="showPopup = true">
                 <div class="label">昵称</div>
                 <div class="value">
-                    <span class="text">打开了圣诞节</span>
+                    <span class="text">{{ userStore.user?.userName }}</span>
                     <span class="i-mdi:chevron-right text-#d6d6d6"></span>
                 </div>
             </div>
         </div>
-        <nut-popup v-model:visible="showPopup" pop-class="w-600 b-rd-14">
+        <nut-popup
+            v-model:visible="showPopup"
+            pop-class="w-600 b-rd-14"
+            @open="popupInp = userStore.user?.userName || ''"
+        >
             <div class="h-100 text-32 font-500 flex items-center justify-center">修改昵称</div>
             <div class="w-full box-border px-34">
-                <nut-input v-model="popupInp" placeholder="请输入文本" clearable></nut-input>
+                <nut-input v-model="popupInp" placeholder="请输入昵称" clearable></nut-input>
             </div>
             <div class="w-full flex border-t-solid border-#DCDCDC border-1">
                 <div
@@ -57,12 +82,11 @@ const tapAvatar = async () => {
                 >
                     取消
                 </div>
-                <div class="flex-1 flex items-center justify-center h-100">确定</div>
+                <div class="flex-1 flex items-center justify-center h-100" @click="editUserName">确定</div>
             </div>
         </nut-popup>
     </div>
 </template>
-
 
 <style scoped lang="scss">
 .line {
