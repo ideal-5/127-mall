@@ -11,6 +11,7 @@ export namespace User {
         userName: string;
         phone: string;
         headImage: string;
+        unCode: string;
     }
     export interface UserScoreAndCouponResult {
         coin: number;
@@ -30,6 +31,19 @@ export namespace User {
         //    电话号
         phone: string;
     }
+    // 用户余额返回值
+    export interface UserScore {
+        id: number;
+        userId: number;
+        coin: number;
+        balance: number;
+        withdrawAmount: number;
+    }
+    // 邀请人数和总收入
+    export interface UserInviteAndIncome {
+        amount: number;
+        invite: number;
+    }
 }
 
 // 登陆
@@ -48,6 +62,18 @@ export const userUploadFileApi = (data: User.UploadFileParams) => {
 // 获取用户信息
 export const userGetUserApi = () => {
     return unInstance.post<UnData, null, IUnResponseData<null, User.UserInfo>>("/user/getUser");
+};
+
+// 获取用户余额
+export const userGetUserScoreApi = () => {
+    return unInstance.get<UnData, null, IUnResponseData<null, User.UserScore>>("/v1/user/getUserAmount");
+};
+
+// 获取用户邀请人数和总收入
+export const userGetUserInviteAndIncomeApi = () => {
+    return unInstance.get<UnData, null, IUnResponseData<null, User.UserInviteAndIncome>>(
+        "/v1/user/countInviteAndIncome"
+    );
 };
 
 // 获取用户总积分和优惠券数量

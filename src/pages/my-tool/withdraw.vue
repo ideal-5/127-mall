@@ -1,5 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { userGetUserScoreApi, userGetUserInviteAndIncomeApi } from "@/api";
+import type { User } from "@/api";
+
+const userScore = ref<User.UserScore>();
+onMounted(async () => {
+    let { body } = await userGetUserScoreApi();
+    userScore.value = body;
+});
 
 const moneyInp = ref("");
 </script>
@@ -10,7 +18,7 @@ const moneyInp = ref("");
         <div class="yue">
             <div class="text">账户余额</div>
             <div class="amount">
-                <span class="num">￥11.26</span>
+                <span class="num">￥{{ userScore?.balance }}</span>
             </div>
         </div>
         <div class="tixian">
