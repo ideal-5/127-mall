@@ -2,9 +2,14 @@ import { unInstance } from "@/service";
 export namespace User {
     export interface LoginParams {
         //  * 密码
-        password?: string;
+        password: string;
         //  * 电话
-        phone?: string;
+        phone: string;
+    }
+    export interface SinginParams {
+        password: string;
+        phone: string;
+        msgCode: string;
     }
     export interface UserInfo {
         id: number;
@@ -49,6 +54,11 @@ export namespace User {
 // 登陆
 export const userLoginApi = (data: User.LoginParams) => {
     return unInstance.post<UnData, User.LoginParams, IUnResponseData<null, User.UserInfo>>("/user/login", data);
+};
+
+// 注册
+export const userSigninApi = (data: User.SinginParams) => {
+    return unInstance.post<UnData, User.SinginParams, IUnResponseData<null, User.UserInfo>>("/user/register", data);
 };
 
 // 用户上传文件

@@ -1,48 +1,45 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import { userLoginApi, configGetAgreementApi } from "@/api";
-import type { Config } from "@/api";
+import { ref, nextTick } from "vue";
+import { userSigninApi } from "@/api";
 import { useUserStore } from "@/store";
 import { gotoPage } from "@/utils/uni";
 
 const toast = useToast();
 const userStore = useUserStore();
 
-const isAccredit = ref(false);
+
 const params = ref({
     phone: "19121140161",
     password: "123456",
+    msgCode: "",
 });
 
-const showPopup = ref(false);
+const countdownRef = ref();
 
-const yinsi = ref<Config.AgreementResult>();
-const xieyi = ref<Config.AgreementResult>();
-
-onMounted(async () => {
-    const [yinsiRes, xieyiRes] = await Promise.all(
-        (["10", "20"] as const).map((type) => configGetAgreementApi({ type }))
-    );
-    yinsi.value = yinsiRes.body;
-    xieyi.value = xieyiRes.body;
-});
-const showPopupData = ref<Config.AgreementResult>();
-
-const showPopupFun = (type: "10" | "20") => {
-    showPopupData.value = type === "10" ? yinsi.value : xieyi.value;
-    showPopup.value = true;
+const isSendCode = ref(true); // 是否显示发送验证码
+const startSendCode = () => {
+    isSendCode.value = false;
+    nextTick(() => {
+        countdownRef.value.start();
+    });
 };
-
+// 倒计时结束
+const countdownEnd = () => {
+    countdownRef.value.reset();
+    isSendCode.value = true;
+};
+// const isAccredit = ref(false);
 const loginClick = async () => {
     if (params.value.phone === "") return toast.text("请输入手机号");
     if (params.value.password === "") return toast.text("请输入密码");
-    if (!isAccredit.value) return toast.text("请先阅读并同意《隐私政策》和《用户协议》");
+    if (params.value.msgCode === "") return toast.text("请输入验证码");
+    // if (!isAccredit.value) return toast.text("请先阅读并同意《隐私政策》和《用户协议》");
 
-    let { accessToken, code, body } = await userLoginApi(params.value);
+    let { accessToken, code, body } = await userSigninApi(params.value);
     if (code && accessToken) {
         userStore.token = accessToken;
         userStore.user = body;
-        toast.loading("登陆成功!跳转中...", {
+        toast.loading("注册并成功!跳转中...", {
             duration: 800,
         });
         setTimeout(() => {
@@ -76,6 +73,32 @@ const loginClick = async () => {
                             style="--nut-input-padding: 10px 0"
                         ></nut-input>
                     </div>
+                    <div mb30>
+                        <div class="flex items-center">
+                            <span class="i-mdi:shield-check-outline size-34 mr18"></span>
+                            <span class="text-28 fw500">验证码</span>
+                        </div>
+                        <nut-input
+                            v-model="params.msgCode"
+                            placeholder="请输入您的验证码"
+                            style="--nut-input-padding: 10px 0"
+                        >
+                            <template #right>
+                                <div class="text-#1192EB text-24" @click="startSendCode" v-show="isSendCode">
+                                    获取验证码
+                                </div>
+                                <div v-show="!isSendCode">
+                                    <nut-countdown
+                                        format="mm:ss"
+                                        :time="60000"
+                                        :auto-start="false"
+                                        ref="countdownRef"
+                                        @on-end="countdownEnd"
+                                    ></nut-countdown>
+                                </div>
+                            </template>
+                        </nut-input>
+                    </div>
                     <div>
                         <div class="flex items-center">
                             <span class="i-mdi:lock-outline size-34 mr18"></span>
@@ -92,9 +115,9 @@ const loginClick = async () => {
                     class="bg-[linear-gradient(247deg,#FF9113_0%,#FECE62_100%)] text-30 w524 h76 shadow-[0rpx,6rpx,12rpx,0rpx,#FFDBB8] b-rd-full flex-center"
                     @click="loginClick"
                 >
-                    登录
+                    注册
                 </div>
-                <div class="mt54 text-20 flex items-center" @click="isAccredit = !isAccredit">
+                <!-- <div class="mt54 text-20 flex items-center" @click="isAccredit = !isAccredit">
                     <div
                         class="size-25 b-rd-full b-solid b-1rpx b-#FF9113 flex-center mr10"
                         :class="isAccredit && 'bg-#FF9113'"
@@ -102,37 +125,17 @@ const loginClick = async () => {
                         <span i-mdi:check v-if="isAccredit" class="text-#fff"></span>
                     </div>
                     <span>我已阅读并同意</span>
-                    <span class="text-#FE854E" @click.stop="showPopupFun('10')">《隐私政策》</span>
+                    <span class="text-#FE854E">《隐私政策》</span>
                     <span>和</span>
-                    <span class="text-#FE854E" @click.stop="showPopupFun('20')">《用户协议》</span>
-                </div>
+                    <span class="text-#FE854E">《用户协议》</span>
+                </div> -->
                 <div text-20 mt50>
-                    <span>没有账号？</span>
-                    <span underline @click="gotoPage('signin')">立即注册</span>
-                </div>
-            </div>
-            <div class="wfull h200 flex-col items-center mb100">
-                <div class="w300">
-                    <nut-divider style="--nut-divider-text-color: #a4a4a4; --nut-divider-text-font-size: 24rpx"
-                        >第三方登录</nut-divider
-                    >
-                </div>
-                <div class="wull flex items-center justify-around">
-                    <div class="size-64 b-rd-full bg-#28C445 flex-center">
-                        <span i-uiw:weixin class="text-#fff size-40"></span>
-                    </div>
+                    <span>已有账号？</span>
+                    <span underline @click="gotoPage('login')">立即登录</span>
                 </div>
             </div>
         </div>
     </div>
-    <nut-popup v-model:visible="showPopup" transition="zoom" pop-class="w600 px-25 flex flex-col items-center b-rd-22">
-        <div
-            class="bg-[linear-gradient(95deg,#FECE62_0%,#FFFFFF_18%,#FFFFFF_47%,#FFFFFF_82%,#FECE62_100%)] text-34 text-#FF9113 b-rd-full px-20 my-30"
-        >
-            {{ showPopupData?.name }}
-        </div>
-        <rich-text :nodes="showPopupData?.policy"></rich-text>
-    </nut-popup>
 </template>
 
 <style scoped lang="scss">
