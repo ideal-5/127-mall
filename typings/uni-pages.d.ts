@@ -22,6 +22,7 @@ interface NavigateToOptions {
        "/pages/my/merchant-enter" |
        "/pages/my/my" |
        "/pages/my/point-exchange" |
+       "/pages/my/vip-center" |
        "/pages/my-tool/address-add" |
        "/pages/my-tool/address-list" |
        "/pages/my-tool/distribution" |
