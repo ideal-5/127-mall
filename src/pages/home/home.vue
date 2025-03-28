@@ -15,7 +15,6 @@ const swiperList = ref(Array.from({ length: 5 }, (_, i) => `https://picsum.photo
 
 
 onMounted(async () => {
-
     // console.log("*******",  res.body.wwwww   );
 });
 </script>

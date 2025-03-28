@@ -1,16 +1,47 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, watch } from "vue";
+import { secondHandGetSecondHandSortListApi, secondHanProductListApi } from "@/api";
+import type { SecondHand } from "@/api";
+
 const searchValue = ref("");
 
-const tabList = ref([
-    { title: "热卖", value: "1" },
-    { title: "鞋服衣饰", value: "2" },
-    { title: "纸巾清洁", value: "3" },
-    { title: "家居百货", value: "4" },
-    { title: "情趣内衣", value: "5" },
-]);
-
-const activeTab = ref(0);
+const activeTab = ref<number>(-1);
+const tabList = ref<SecondHand.Sort[]>();
+onMounted(async () => {
+    let { body } = await secondHandGetSecondHandSortListApi();
+    tabList.value = body;
+    activeTab.value = 0;
+});
+const paging = ref({
+    page: 1,
+    limit: 10,
+});
+const list = ref<SecondHand.Product[]>([]);
+const getList = async (isPush: boolean = false) => {
+    if (!tabList.value) return;
+    if (isPush) {
+        paging.value.page++;
+    } else {
+        paging.value.page = 1;
+    }
+    let { data } = await secondHanProductListApi({
+        merchName: searchValue.value,
+        sortId: tabList.value[activeTab.value].id,
+        ...paging.value,
+    });
+    if (isPush) {
+        list.value.push(...data);
+    } else {
+        list.value = data;
+    }
+};
+watch(
+    () => activeTab.value,
+    () => {
+        getList(false);
+    }
+);
+const toast = useToast();
 </script>
 
 <template>
@@ -21,6 +52,9 @@ const activeTab = ref(0);
                     <span class="text-42 text-#fff mx-10 whitespace-nowrap">二手市场</span>
                     <nut-searchbar
                         v-model="searchValue"
+                        confirm-type="search"
+                        @search="getList(false)"
+                        @clear="getList(false)"
                         style="
                             --nut-searchbar-input-height: 70rpx;
                             --nut-searchbar-input-border-radius: 14rpx;
@@ -46,44 +80,53 @@ const activeTab = ref(0);
             <div class="flex-1 min-h0 wfull flex flex-col">
                 <div class="flex items-center h100">
                     <Tabs
+                        v-if="tabList"
                         :tabList="tabList"
                         v-model:activeTab="activeTab"
-                        keyName="title"
+                        keyName="name"
                         style="--tabs-line-bagcolor: linear-gradient(180deg, #ffffff 0%, #5eb9d6 100%)"
                     ></Tabs>
                 </div>
-                <div class="flex-1 min-h0 wfull overflow-scroll">
-                    <div class="wfull flex mb30" v-for="(item, index) in 10">
-                        <div class="size-220 flex-shrink-0">
-                            <image :src="`https://picsum.photos/700/350?random=${Math.random()}`" mode="aspectFill" class="b-rd-10 size-full" />
-                        </div>
-                        <div class="flex-1 min-w-0 box-border pl-44">
-                            <div class="text-30 font-500">【新人福利】一次性洗脸巾</div>
-                            <div class="wfull flex items-center mt20">
-                                <div class="text-20 font-500 text-#949494 mr30 ">原价:￥399.00</div>
-                                <div class="bg-#FFECC1 b-rd-full text-#6B582B text-18 box-border px15 py5">立省10.1元</div>
+                <div class="flex-1 min-h0 wfull">
+                    <scroll-view class="hfull wfull overflow-scroll" scroll-y @scrolltolower="getList(true)">
+                        <div class="wfull flex mb30" v-for="(item, index) in list" :key="item.id">
+                            <div class="size-220 flex-shrink-0">
+                                <image :src="item.imageUrl" mode="aspectFill" class="b-rd-10 size-full" />
                             </div>
-                            <div class="wfull flex items-center my-20">
-                                <div
-                                    class="text-22 text-#EC3013 b-1 b-solid b-#EC3013 b-rd-4 flex-center box-border px5 py3"
-                                >
-                                    九成新
-                                </div>
-                            </div>
-                            <div class="wfull flex items-center">
-                                <div class="flex-1 min-w-0 bg-#FEEAE7 h58 b-rd-8 text-#EC3013 flex items-center">
-                                    <div class="font-500 mx15">
-                                        <span class="text-22">￥</span>
-                                        <span class="text-32">9.99</span>
+                            <div class="flex-1 min-w-0 box-border pl-44">
+                                <div class="text-30 font-500">{{ item.merchName }}</div>
+                                <div class="wfull flex items-center mt20">
+                                    <div class="text-20 font-500 text-#949494 mr30">原价:￥{{ item.price }}</div>
+                                    <div class="bg-#FFECC1 b-rd-full text-#6B582B text-18 box-border px15 py5">
+                                        立省{{ item.price - item.currentPrice }}元
                                     </div>
-                                    <!-- <div class="text-18">券后价</div> -->
                                 </div>
-                                <div class="h58 w150 bg-#EC3013 text-38 text-#fff flex-center b-rd-8 flex-shrink-0 ml8">
-                                    去抢购
+                                <div class="wfull flex items-center my-20 overflow-scroll">
+                                    <div
+                                        class="text-22 whitespace-nowrap text-#EC3013 b-1 b-solid b-#EC3013 b-rd-4 flex-center box-border px5 py3 mr15"
+                                        v-for="(text, ind) in item.properties"
+                                        :key="ind"
+                                    >
+                                        {{ text }}
+                                    </div>
+                                </div>
+                                <div class="wfull flex items-center">
+                                    <div class="flex-1 min-w-0 bg-#FEEAE7 h58 b-rd-8 text-#EC3013 flex items-center">
+                                        <div class="font-500 mx15">
+                                            <span class="text-22">￥</span>
+                                            <span class="text-32">{{ item.currentPrice }}</span>
+                                        </div>
+                                        <!-- <div class="text-18">券后价</div> -->
+                                    </div>
+                                    <div
+                                        class="h58 w150 bg-#EC3013 text-38 text-#fff flex-center b-rd-8 flex-shrink-0 ml8"
+                                    >
+                                        去抢购
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </scroll-view>
                 </div>
             </div>
         </div>
