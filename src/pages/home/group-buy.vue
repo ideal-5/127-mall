@@ -1,7 +1,36 @@
 <!-- 团购专区 -->
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import { groupBuyProductListApi } from "@/api";
+import type { GroupBuy } from "@/api";
+
 const searchValue = ref("");
+
+const paging = ref({
+    page: 1,
+    limit: 10,
+});
+const list = ref<GroupBuy.Product[]>([]);
+const getList = async (isPush: boolean = false) => {
+    if (isPush) {
+        paging.value.page++;
+    } else {
+        paging.value.page = 1;
+    }
+    let { data } = await groupBuyProductListApi({
+        merchName: searchValue.value,
+        ...paging.value,
+    });
+    if (isPush) {
+        list.value.push(...data);
+    } else {
+        list.value = data;
+    }
+};
+
+onMounted(() => {
+    getList(false);
+});
 </script>
 
 <template>
@@ -16,8 +45,10 @@ const searchValue = ref("");
                             --nut-searchbar-input-border-radius: 14rpx;
                             --nut-searchbar-padding: 0;
                             --nut-searchbar-background: transparent;
-                            --nut-searchbar-input-background: rgba(255,255,255,0.5);
+                            --nut-searchbar-input-background: rgba(255, 255, 255, 0.5);
                         "
+                        @search="getList(false)"
+                        @clear="getList(false)"
                     >
                         <template #leftin>
                             <div class="size-40 flex-center">
@@ -33,30 +64,46 @@ const searchValue = ref("");
         <div
             class="flex-1 min-h0 wfull bg-[linear-gradient(180deg,#F81517_0%,#F6F6F6_17%,#F3F3F3_56%,#FFFFFF_100%)] box-border px-32 overflow-scroll"
         >
-            <div class="wfull flex mb30 bg-#fff b-rd-16 box-border py20 px16" v-for="(item, index) in 10">
-                <div class="size-210 flex-shrink-0">
-                    <image src="https://picsum.photos/200" mode="aspectFill" class="b-rd-10 size-full" />
-                </div>
-                <div class="flex-1 min-w-0 box-border pl-44">
-                    <div class="wfull flex items-center">
-                        <div class="bg-#EC3013 b-rd-4 text-#fff text-20 box-border px10 py3">3人团</div>
+            <scroll-view class="wfull hfull" scroll-y @scrolltolower="getList(true)">
+                <div
+                    class="wfull flex mb30 bg-#fff b-rd-16 box-border py20 px16"
+                    v-for="(item, index) in list"
+                    :key="item.id"
+                >
+                    <div class="size-210 flex-shrink-0">
+                        <image :src="item.skuImage" mode="aspectFill" class="b-rd-10 size-full" />
                     </div>
-                    <div class="text-30 font-500">【新人福利】一次性洗脸巾</div>
-                    <div class="wfull flex items-center my20">
-                        <div class="bg-#FFECC1 b-rd-full text-#6B582B text-18 box-border px15 py5">立省10.1元</div>
-                    </div>
-                    <div class="wfull flex items-center">
-                        <div class="flex-1 min-w-0 bg-#FEEAE7 h58 b-rd-8 text-#EC3013 flex items-center">
-                            <div class="font-500 mx15">
-                                <span class="text-22">￥</span>
-                                <span class="text-32">9.99</span>
+                    <div class="flex-1 min-w-0 box-border pl-44">
+                        <div class="wfull flex items-center overflow-scroll mb10">
+                            <div
+                                class="bg-#EC3013 b-rd-4 text-#fff text-20 box-border px10 py3 mr10 whitespace-nowrap"
+                                v-for="(it, ind) in item.properties"
+                                :key="ind"
+                            >
+                                {{ it.value }}
                             </div>
-                            <div class="text-18">券后价</div>
                         </div>
-                        <div class="h58 w94 bg-#EC3013 text-38 text-#fff flex-center b-rd-8 flex-shrink-0 ml8">抢</div>
+                        <div class="text-30 font-500">{{ item.skuName }}</div>
+                        <div class="wfull flex items-center mb20 mt10">
+                            <div class="bg-#FFECC1 b-rd-full text-#6B582B text-18 box-border px15 py5">
+                                立省{{ item.price - item.currentPrice }}元
+                            </div>
+                        </div>
+                        <div class="wfull flex items-center">
+                            <div class="flex-1 min-w-0 bg-#FEEAE7 h58 b-rd-8 text-#EC3013 flex items-center">
+                                <div class="font-500 mx15">
+                                    <span class="text-22">￥</span>
+                                    <span class="text-32">{{ item.currentPrice }}</span>
+                                </div>
+                                <div class="text-18">券后价</div>
+                            </div>
+                            <div class="h58 w94 bg-#EC3013 text-38 text-#fff flex-center b-rd-8 flex-shrink-0 ml8">
+                                抢
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </scroll-view>
         </div>
     </div>
 </template>

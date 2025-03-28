@@ -104,10 +104,10 @@ const toast = useToast();
                                 <div class="wfull flex items-center my-20 overflow-scroll">
                                     <div
                                         class="text-22 whitespace-nowrap text-#EC3013 b-1 b-solid b-#EC3013 b-rd-4 flex-center box-border px5 py3 mr15"
-                                        v-for="(text, ind) in item.properties"
+                                        v-for="(it, ind) in item.properties"
                                         :key="ind"
                                     >
-                                        {{ text }}
+                                        {{ it.value }}
                                     </div>
                                 </div>
                                 <div class="wfull flex items-center">

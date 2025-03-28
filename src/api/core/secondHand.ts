@@ -15,12 +15,12 @@ export namespace SecondHand {
         merchName?: string;
     }
     export interface Product {
-        id:number;
+        id: number;
         merchName: string;
         price: number;
         currentPrice: number;
         imageUrl: string;
-        properties: string[];
+        properties: { value: string; id: number }[];
     }
 }
 
