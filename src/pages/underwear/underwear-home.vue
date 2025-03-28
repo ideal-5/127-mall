@@ -1,7 +1,9 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { onPageScroll } from "@dcloudio/uni-app";
-import {gotoPage} from "@/utils/uni";
+import { gotoPage } from "@/utils/uni";
+import { configGetBannerListApi } from "@/api";
+import type { Config } from "@/api";
 
 const scrollTop = ref(0);
 onPageScroll((e) => {
@@ -9,7 +11,12 @@ onPageScroll((e) => {
 });
 
 const searchValue = ref("");
-const swiperList = ref(Array.from({ length: 5 }, (_, i) => `https://picsum.photos/700/350?random=${Math.random()}`));
+
+const bannerList = ref<Config.BannerResult[]>([]);
+onMounted(async () => {
+    let { data } = await configGetBannerListApi({ type: "20", page: 1, limit: 99999 });
+    bannerList.value = data;
+});
 </script>
 
 <template>
@@ -45,22 +52,22 @@ const swiperList = ref(Array.from({ length: 5 }, (_, i) => `https://picsum.photo
             auto-play="30000"
             class="w-full h-1104"
         >
-            <nut-swiper-item v-for="(item, index) in swiperList" :key="index">
+            <nut-swiper-item v-for="(item, index) in bannerList" :key="item.id">
                 <!-- <image src="" mode="aspectFill" class="wfull hfull bg-emerald" /> -->
-                <image :src="item" mode="aspectFill" class="wfull hfull" />
+                <image :src="item.imageUrl" mode="aspectFill" class="wfull hfull" />
             </nut-swiper-item>
         </nut-swiper>
         <div wfull box-border px34>
             <div wfull flex items-center justify-between my20>
-                <div flex-col items-center @click="gotoPage('underwear-hot')" >
+                <div flex-col items-center @click="gotoPage('underwear-hot')">
                     <image src="@/static/img/underwear-1.png" size-88 mb10 />
                     <span text-27>热卖爆品</span>
                 </div>
-                <div flex-col items-center @click="gotoPage('underwear-tide')"  >
+                <div flex-col items-center @click="gotoPage('underwear-tide')">
                     <image src="@/static/img/underwear-2.png" size-88 mb10 />
                     <span text-27>潮流服饰</span>
                 </div>
-                <div flex-col items-center @click="gotoPage('underwear-major')" >
+                <div flex-col items-center @click="gotoPage('underwear-major')">
                     <image src="@/static/img/underwear-3.png" size-88 mb10 />
                     <span text-27>大牌内衣</span>
                 </div>

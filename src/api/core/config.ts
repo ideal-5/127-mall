@@ -17,6 +17,13 @@ export namespace Config {
         id: number;
         name: string;
     }
+    export interface BannerParams extends ConfigPaging {
+        type: "10" | "20"; // 10: 首页 20: 内衣
+    }
+    export interface BannerResult {
+        id: number;
+        imageUrl: string;
+    }
 }
 
 // 获取协议
@@ -31,6 +38,14 @@ export const configGetAgreementApi = (params: Config.AgreementParams) => {
 export const configGetShopSortListApi = (data: Config.ConfigPaging) => {
     return unInstance.post<UnData, Config.ConfigPaging, IUnResponseData<Config.ConfigShopSortResult[], null>>(
         `/sys/shopSortList`,
+        data
+    );
+};
+
+// 轮播图
+export const configGetBannerListApi = (data: Config.BannerParams) => {
+    return unInstance.post<UnData, Config.BannerParams, IUnResponseData<Config.BannerResult[], null>>(
+        `/sys/bannerList`,
         data
     );
 };

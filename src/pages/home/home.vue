@@ -4,6 +4,8 @@ import ProductModule from "./components/ProductModule/index.vue";
 import Hot from "./components/Hot/index.vue";
 import { onPageScroll } from "@dcloudio/uni-app";
 import { gotoPage } from "@/utils/uni";
+import { configGetBannerListApi } from "@/api";
+import type { Config } from "@/api";
 
 const scrollTop = ref(0);
 onPageScroll((e) => {
@@ -11,11 +13,11 @@ onPageScroll((e) => {
 });
 
 const searchValue = ref<string>("");
-const swiperList = ref(Array.from({ length: 5 }, (_, i) => `https://picsum.photos/700/350?random=${Math.random()}`));
 
-
+const bannerList = ref<Config.BannerResult[]>([]);
 onMounted(async () => {
-    // console.log("*******",  res.body.wwwww   );
+    let { data } = await configGetBannerListApi({ type: "10", page: 1, limit: 99999 });
+    bannerList.value = data;
 });
 </script>
 
@@ -54,8 +56,8 @@ onMounted(async () => {
             auto-play="3000"
             class="w-full h-344 b-rd-12 mt-22 mb-24"
         >
-            <nut-swiper-item v-for="(item, index) in swiperList" :key="index">
-                <image :src="item" mode="aspectFill" class="wfull hfull" />
+            <nut-swiper-item v-for="(item, index) in bannerList" :key="item.id">
+                <image :src="item.imageUrl" mode="aspectFill" class="wfull hfull" />
             </nut-swiper-item>
         </nut-swiper>
         <!-- <div style="width: 750rpx; height: 500rpx; background-color: aquamarine;" ></div> -->
