@@ -1,47 +1,51 @@
 <script setup lang="ts">
-import { ref, watch, nextTick,onMounted } from "vue";
+import { ref, watch, nextTick, onMounted } from "vue";
 import WaterfallsFlow from "@/components/WaterfallsFlow.vue";
+import { newProductSortListApi, newProductProductListApi } from "@/api";
+import type { NewProduct } from "@/api";
+
 const searchValue = ref("");
 
-const tabList = ref([
-    { title: "热卖", value: "1" },
-    { title: "鞋服衣饰", value: "2" },
-    { title: "纸巾清洁", value: "3" },
-    { title: "家居百货", value: "4" },
-    { title: "情趣内衣", value: "5" },
-]);
+const activeTab = ref<number>(-1);
+const tabList = ref<NewProduct.Sort[]>([]);
+onMounted(async () => {
+    let { body } = await newProductSortListApi();
+    tabList.value = body;
+    activeTab.value = 0;
+});
 
-const activeTab = ref(0);
-
-const list = ref([
-    {
-        img: "https://picsum.photos/300/450",
-        name: "家用3C 数码电器电饭煲",
-        price: "311.99",
-        vprice: "18.00",
-        idKey: "a1",
-    },
-    { img: "https://picsum.photos/300/520", name: "智能手表 运动监测", price: "199.99", vprice: "25.00", idKey: "a2" },
-    {
-        img: "https://picsum.photos/300/430",
-        name: "无线蓝牙耳机 降噪版",
-        price: "129.99",
-        vprice: "15.00",
-        idKey: "a3",
-    },
-]);
-const WaterfallsFlowRef = ref<{ pushData: (data: Product[]) => void }>();
-
-onMounted(()=>{
-    WaterfallsFlowRef.value && WaterfallsFlowRef.value.pushData(list.value);
-})
+const paging = ref({
+    page: 1,
+    limit: 6,
+});
+const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
+const getList = async (isPush: boolean = false) => {
+    if (!tabList.value) return;
+    let { data } = await newProductProductListApi({
+        merchName: searchValue.value,
+        sortId: tabList.value[activeTab.value].id,
+        page: isPush ? paging.value.page + 1 : 1,
+        limit: paging.value.limit,
+    });
+    if (isPush) {
+        if (WaterfallsFlowRef.value) {
+            let complete = await WaterfallsFlowRef.value.pushData(
+                data.map((item) => ({ ...item, img: item.imageUrl }))
+            );
+            complete && paging.value.page++;
+        }
+    } else {
+        if (WaterfallsFlowRef.value) {
+            WaterfallsFlowRef.value.clearList();
+            await WaterfallsFlowRef.value.pushData(data.map((item) => ({ ...item, img: item.imageUrl })));
+        }
+    }
+};
 
 watch(
     () => activeTab.value,
     () => {
-        nextTick(() => {
-            WaterfallsFlowRef.value && WaterfallsFlowRef.value.pushData(list.value);
-        });
+        getList(false);
     }
 );
 </script>
@@ -61,6 +65,8 @@ watch(
                             --nut-searchbar-background: transparent;
                             --nut-searchbar-input-background: #fff;
                         "
+                        @search="getList(false)"
+                        @clear="getList(false)"
                     >
                         <template #leftin>
                             <div class="size-40 flex-center">
@@ -77,26 +83,30 @@ watch(
             <div class="wfull h100">
                 <Tabs
                     :tabList="tabList"
-                    keyName="title"
+                    keyName="name"
                     v-model:activeTab="activeTab"
                     style="--tabs-line-bagcolor: linear-gradient(180deg, #ffffff 0%, #fd797d 100%)"
                 ></Tabs>
             </div>
             <div class="flex-1 min-h-0 wfull overflow-scroll">
-                <scroll-view class="wfull flex-1 min-h-0 overflow-scroll box-border px-34" scroll-y>
+                <scroll-view
+                    class="wfull hfull min-h-0 overflow-scroll box-border px-34"
+                    scroll-y
+                    @scrolltolower="getList(true)"
+                >
                     <!-- 商品列表 -->
                     <WaterfallsFlow ref="WaterfallsFlowRef" :key="activeTab">
                         <template #text="{ item }">
                             <div class="bg-#fff b-rd-b-16 box-border p-16">
-                                <div class="text-24">{{ item.name }}</div>
+                                <div class="text-24">{{ item.merchName }}</div>
                                 <div>
                                     <span class="font-500 text-18">￥</span>
-                                    <span class="text-24 font-700">{{ item.price }}</span>
+                                    <span class="text-24 font-700">{{ item.currentPrice }}</span>
                                 </div>
                                 <div class="flex items-center">
                                     <div class="flex items-center border-1 border-#000 border-solid">
                                         <image src="@/static/img/vip1.png" mode="scaleToFill" class="size-25" />
-                                        <span class="text-12 mx-10">省{{ item.vprice }}</span>
+                                        <span class="text-12 mx-10">省{{ item.price - item.currentPrice }}</span>
                                     </div>
                                 </div>
                             </div>

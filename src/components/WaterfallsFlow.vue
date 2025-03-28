@@ -20,12 +20,20 @@ const columns = ref<Columns[]>([
     { idKey: "column2", data: [], height: 0 },
 ]);
 
-const pushData = async (list: ReceiveData[]) => {
+const clearList = () => {
+    columns.value.forEach((item) => {
+        item.data = [];
+        item.height = 0;
+    });
+};
+const pushData = async (list: ReceiveData[] | []): Promise<boolean> => {
     if (!isLoaded.value) {
         await nextTick();
         await pushList(list);
         isLoaded.value = false;
+        return true;
     }
+    return false;
 };
 const instance = getCurrentInstance();
 const pushList = async (list: ReceiveData[]) => {
@@ -79,7 +87,7 @@ const pushList = async (list: ReceiveData[]) => {
         column.height = column.height + columnDom.height + listItem.imgInfo.width + 24;
     }
 };
-defineExpose({ pushData });
+defineExpose({ pushData, clearList });
 </script>
 
 <template>

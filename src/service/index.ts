@@ -72,7 +72,7 @@ instance.interceptors.response.use(
             throw response.data;
         }
 
-        console.log("response", response);
+        // console.log("response", response);
         return response.data as any;
     },
     (error) => {

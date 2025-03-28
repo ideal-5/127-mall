@@ -31,7 +31,7 @@ const initTabData = () => {
         .select("#customTabsContainer")
         .boundingClientRect((data) => {
             boxLeft.value = (data as UniApp.NodeInfo).left || 0;
-            console.log("boxLeft.value", boxLeft.value);
+            // console.log("boxLeft.value", boxLeft.value);
         })
         .exec();
 
@@ -40,7 +40,7 @@ const initTabData = () => {
             .selectAll("#customTabItem")
             .boundingClientRect((data) => {
                 tagNodeXY.value = data as UniApp.NodeInfo[];
-                console.log("tagNodeXY.value", tagNodeXY.value);
+                // console.log("tagNodeXY.value", tagNodeXY.value);
             })
             .exec();
     }
