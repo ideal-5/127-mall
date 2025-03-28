@@ -13,6 +13,8 @@ interface Columns {
     height: number;
 }
 
+const emit = defineEmits(["itemClick"]);
+
 const isLoaded = ref(false); // 是否加载中
 
 const columns = ref<Columns[]>([
@@ -87,6 +89,11 @@ const pushList = async (list: ReceiveData[]) => {
         column.height = column.height + columnDom.height + listItem.imgInfo.width + 24;
     }
 };
+
+// 点击item
+const itemClick = (item: ReceiveData) => {
+    emit("itemClick", item);
+};
 defineExpose({ pushData, clearList });
 </script>
 
@@ -94,7 +101,13 @@ defineExpose({ pushData, clearList });
     <!-- 瀑布流列表 -->
     <div class="flex justify-between">
         <div v-for="(colItem, colIndex) in columns" :key="colIndex" class="h-[fit-content]">
-            <div v-for="(item, index) in colItem.data" :key="index" :id="item.idKey" class="w-326 mb-[24px]">
+            <div
+                v-for="(item, index) in colItem.data"
+                :key="index"
+                :id="item.idKey"
+                class="w-326 mb-[24px]"
+                @click="itemClick(item)"
+            >
                 <div class="w-full h-[fit-content] overflow-hidden flex" v-if="item.img">
                     <image :src="item.img" mode="widthFix" class="w-full" />
                 </div>

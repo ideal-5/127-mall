@@ -17,6 +17,7 @@ export namespace User {
         phone: string;
         headImage: string;
         unCode: string;
+        vipStatus: "10" | "20"; // 10未开通 20已开通
     }
     export interface UserScoreAndCouponResult {
         coin: number;

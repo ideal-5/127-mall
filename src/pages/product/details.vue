@@ -1,116 +1,81 @@
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { onLoad } from "@dcloudio/uni-app";
 import { useStyle } from "@/hooks/useStyle";
-import type { Product } from "@/types";
 import WaterfallsFlow from "@/components/WaterfallsFlow.vue";
 import { gotoPage } from "@/utils/uni";
+import { productDetailApi } from "@/api";
+import type { Product } from "@/api";
+import SubmitOrderPopup from "./components/SubmitOrderPopup.vue";
+import { useUserStore } from "@/store";
+
+const userStore = useUserStore();
+
+const bannerList = ref<Product.Banner[]>([]); // 轮播图
+const productInfo = ref<{ activePrice: number } & Product.Product>(); // 商品信息
+const productTag = ref<{
+    logistics: { type: "10"; data: Product.Detail["properties"] };
+    sendGoods: { type: "70"; data: Product.Detail["properties"] };
+    all: Product.Detail["properties"];
+}>({
+    all: [], // 全部标签
+    logistics: { type: "10", data: [] }, // 物流标签
+    sendGoods: { type: "70", data: [] }, // 发货标签
+});
+
+const recommendProduct = ref<Product.Detail["recommendMerch"]>([]);
+
+const specificationList = ref<(Product.Specification & { activePrice: number })[]>(); // 规格列表
+
+const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
+
+onLoad(async (query) => {
+    if (!query) return;
+    let { body } = await productDetailApi({ id: query.id as number });
+    bannerList.value = body.merchBannerList;
+    productInfo.value = {
+        ...body.shopMerch,
+        activePrice: userStore.user?.vipStatus === "20" ? body.shopMerch.currentPrice : body.shopMerch.price,
+    };
+    productTag.value.all = body.properties;
+    productTag.value.logistics.data = body.properties.filter((item) => item.type === productTag.value.logistics.type);
+    productTag.value.sendGoods.data = body.properties.filter((item) => item.type === productTag.value.sendGoods.type);
+    specificationList.value = body.merchSkuList.map((item) => ({
+        ...item,
+        activePrice: userStore.user?.vipStatus === "20" ? item.currentPrice : item.price,
+    }));
+    recommendProduct.value = body.recommendMerch;
+    WaterfallsFlowRef.value &&
+        WaterfallsFlowRef.value.pushData(recommendProduct.value.map((item) => ({ ...item, img: item.imageUrl })));
+});
+
+const showExplainPopup = ref(false); // 说明弹窗
+const showExplainPopupData = ref<{ title: string; content: Product.Detail["properties"] }>({
+    title: "",
+    content: [],
+});
+const showExplainPopupFunc = (title: string, content: Product.Detail["properties"]) => {
+    showExplainPopupData.value = { title, content };
+    showExplainPopup.value = true;
+};
 
 const { bottomHeightNum, bottomStyle } = useStyle().absoluteBottom(120);
 
-const swiperList = ref(Array.from({ length: 5 }, (_, i) => `https://picsum.photos/700/350?random=${Math.random()}`));
-
-onMounted(() => {
-    WaterfallsFlowRef.value && WaterfallsFlowRef.value.pushData(list.value);
-});
-
-const list = ref<Product[]>([
-    {
-        img: "https://picsum.photos/300/450",
-        name: "家用3C 数码电器电饭煲",
-        price: "311.99",
-        vprice: "18.00",
-    },
-    { img: "https://picsum.photos789/300/520", name: "智能手表 运动监测", price: "199.99", vprice: "25.00" },
-    {
-        img: "https://picsum.photos/300/430",
-        name: "无线蓝牙耳机 降噪版",
-        price: "129.99",
-        vprice: "15.00",
-    },
-    {
-        img: "https://picsum.photos/300/480",
-        name: "家用空气炸锅 健康低脂",
-        price: "279.99",
-        vprice: "22.00",
-    },
-    { img: "https://picsum.photos/300/510", name: "便携式投影仪 高清", price: "459.99", vprice: "30.00" },
-    {
-        img: "https://picsum.photos/300/400",
-        name: "高性能游戏鼠标 RGB灯光",
-        price: "89.99",
-        vprice: "10.00",
-    },
-    {
-        img: "https://picsum.photos/300/550",
-        name: "时尚智能音箱 语音助手",
-        price: "159.99",
-        vprice: "18.50",
-    },
-    {
-        img: "https://picsum.photos/300/470",
-        name: "家用电动剃须刀 便捷",
-        price: "109.99",
-        vprice: "12.00",
-    },
-    {
-        img: "https://picsum.photos/300/530",
-        name: "办公无线键盘 机械手感",
-        price: "139.99",
-        vprice: "17.00",
-    },
-    {
-        img: "https://picsum.photos/300/490",
-        name: "高清摄像头 直播专用",
-        price: "249.99",
-        vprice: "28.00",
-    },
-]);
-const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
-
-const showBottomPopup = ref(false);
-const showBottomPopupData = ref({
-    title: "",
-    content: "",
-});
-const showBottomPopupFunc = (type: "service" | "deliver-goods") => {
-    if (type === "service") {
-        showBottomPopupData.value = {
-            title: "服务说明",
-            content: `
-    <p>感谢您选择我们的服务！我们提供一系列专业的解决方案，旨在为您的需求提供高效且个性化的支持。以下是我们服务的主要内容：</p>
-    <ul>
-      <li><strong>产品售后支持：</strong>在产品购买后，我们为您提供 30 天内的无理由退换货服务，确保您能够放心使用我们的产品。</li>
-      <li><strong>定期更新和维护：</strong>我们会定期对产品进行系统升级，确保您始终使用最新版本的软件，以获得最佳的使用体验。</li>
-      <li><strong>个性化定制服务：</strong>根据您的需求，我们可以提供产品的定制化服务，包括功能定制、UI 设计等。</li>
-      <li><strong>全天候技术支持：</strong>我们的客服团队会在工作日 9:00 - 18:00 提供及时的技术支持，并在紧急情况下提供加急支持。</li>
-    </ul>
-    <p>如有任何问题，欢迎随时联系我们的客服团队，我们将竭诚为您服务。</p>
-    <p><strong>联系方式：</strong><br>电话：400-123-4567<br>邮箱：support@example.com</p>
-  `,
-        };
-    } else if (type === "deliver-goods") {
-        showBottomPopupData.value = {
-            title: "发货说明",
-            content: `
-    <p>我们致力于为每一位客户提供快速、准时的发货服务。以下是我们的发货政策：</p>
-    <ol>
-      <li><strong>标准快递：</strong>在确认订单并收到付款后的 1-2 个工作日内，我们将通过标准快递为您发货。预计配送时间为 3-5 个工作日。</li>
-      <li><strong>加急配送：</strong>如果您需要更快的配送服务，我们提供加急配送选项。选择加急配送后，我们会在收到付款后的 1 个工作日内发货，预计 1-2 个工作日内送达。</li>
-      <li><strong>海外发货：</strong>对于国际订单，我们提供海外发货服务。国际配送时间依据目的地国家的不同会有所不同，通常在 7-14 个工作日内送达。</li>
-      <li><strong>订单追踪：</strong>发货后，我们将通过短信或电子邮件将快递单号发送给您。您可以使用该单号在快递公司的官网进行订单追踪。</li>
-    </ol>
-    <p>请注意，在特殊节假日或恶劣天气情况下，配送可能会有所延迟。我们会尽最大努力保证准时发货并及时通知您订单的状态。</p>
-    <p><strong>特别提醒：</strong>请确保您在订单中填写的收货地址准确无误。如果因地址错误导致无法送达，我们将无法承担相应的责任。</p>
-  `,
-        };
-    }
-    showBottomPopup.value = true;
+// 点击轮播图
+const swiperClick = (index: number) => {
+    uni.navigateTo({
+        url: "swiper",
+        events: {},
+        success: function (res) {
+            res.eventChannel.emit("sendBanner", { list: bannerList.value, index, productInfo: productInfo.value });
+        },
+    });
 };
 
 /**
  * 下单
  */
-const showSubmitPopup = ref(true);
+const showSubmitPopup = ref(false);
 const submitCount = ref(1);
 </script>
 
@@ -118,17 +83,17 @@ const submitCount = ref(1);
     <div class="main box-border bg-#F8F8F8" :style="{ paddingBottom: bottomHeightNum + 30 + 'rpx' }">
         <NavBar isEmptyFill></NavBar>
         <!-- 轮播图 -->
-        <div class="wfull h730" @click="gotoPage('swiper')">
+        <div class="wfull h730">
             <nut-swiper
-                :init-page="1"
+                :init-page="0"
                 :pagination-visible="true"
                 pagination-color="#426543"
                 pagination-unselected-color="#808080"
                 auto-play="8000"
                 class="w-full hfull"
             >
-                <nut-swiper-item v-for="(item, index) in swiperList" :key="index">
-                    <image :src="item" mode="aspectFill" class="wfull hfull" />
+                <nut-swiper-item v-for="(item, index) in bannerList" :key="item.id">
+                    <image :src="item.imageUrl" mode="aspectFill" class="wfull hfull" @click="swiperClick(index)" />
                 </nut-swiper-item>
             </nut-swiper>
         </div>
@@ -138,47 +103,56 @@ const submitCount = ref(1);
                 <div class="flex items-center">
                     <div class="font-500 text-#EC3013 mr32">
                         <span class="text-28">￥</span>
-                        <span class="text-42">12.99</span>
+                        <span class="text-42">{{ productInfo?.currentPrice }}</span>
                     </div>
-                    <span class="text-#949494 text-24 line-through">￥19.99</span>
+                    <span class="text-#949494 text-24 line-through">￥{{ productInfo?.price }}</span>
                 </div>
-                <div class="text-#EC3013 text-24">已售1万件+</div>
+                <div class="text-#EC3013 text-24">已售{{ productInfo?.saleCount }}件</div>
             </div>
             <div class="text-30 font-500 wfull mt20 mb40">
-                植护悬挂洗脸巾一次性干湿两用壁挂式界面擦脸巾 加厚棉柔巾100抽
+                {{ productInfo?.merchName }}
             </div>
             <div class="wfull flex items-center flex-wrap">
                 <div
                     class="text-20 text-#A2833B b-solid b-1 b-#A2833B b-rd-6 bg-#FFFAEF box-border px13 py6 mr15 mb15"
-                    v-for="(item, index) in 3"
-                    :key="index"
+                    v-for="(item, index) in productTag.all"
+                    :key="item.id"
                 >
-                    同款好评12.8万
+                    {{ item.value }}
                 </div>
             </div>
             <div class="wfull bg-#fff b-rd-14 mt20">
-                <div class="wfull flex box-border py15" @click="showBottomPopupFunc('service')">
-                    <div class="w80 flex justify-center flex-shrink-0">
+                <div
+                    class="wfull flex-center box-border py25"
+                    @click="showExplainPopupFunc('服务说明', productTag.logistics.data)"
+                >
+                    <div class="w80 flex-center flex-shrink-0">
                         <span class="i-mdi:shield-check-outline"></span>
                     </div>
-                    <div class="flex-1 min-w-0">
+                    <div class="flex-1 min-w-0 flex-center">
                         <div class="wfull flex items-center justify-between">
-                            <div class="text-22 mb10">运费险·7天无理由退货·极速退款</div>
+                            <div class="text-22">
+                                {{ productTag.logistics.data.map((item) => item.value).join("·") }}
+                            </div>
                             <div class="i-mdi:chevron-right"></div>
                         </div>
                         <!-- <div class="text-16 text-#AEAEAE">福建省福州市 发货 | 免运费</div> -->
                     </div>
                 </div>
-                <div class="wfull flex box-border py15" @click="showBottomPopupFunc('deliver-goods')">
+                <div
+                    class="wfull flex box-border py25"
+                    @click="showExplainPopupFunc('发货说明', productTag.sendGoods.data)"
+                    v-if="productTag.sendGoods.data[0]"
+                >
                     <div class="w80 flex justify-center flex-shrink-0">
                         <span class="i-mdi:truck-outline"></span>
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="wfull flex items-center justify-between">
-                            <div class="text-22 mb10">最晚48小时内发货，晚发即赔</div>
+                            <div class="text-22 mb10">{{ productTag.sendGoods.data[0].value }}，晚发即赔</div>
                             <div class="i-mdi:chevron-right"></div>
                         </div>
-                        <div class="text-16 text-#AEAEAE">福建省福州市 发货 | 免运费</div>
+                        <!-- <div class="text-16 text-#AEAEAE">福建省福州市 发货 | 免运费</div> -->
                     </div>
                 </div>
             </div>
@@ -187,7 +161,7 @@ const submitCount = ref(1);
                 <div class="wfull h80 flex-center">
                     <span class="title-class fw500 text-28">商品详情</span>
                 </div>
-                <image src="https://picsum.photos/300/600" mode="widthFix" class="wfull" />
+                <image :src="productInfo?.description" mode="widthFix" class="wfull" />
             </div>
             <!-- 评论 -->
             <div bg-white wfull mt20 mb20 @click.stop="gotoPage('comment')">
@@ -246,15 +220,15 @@ const submitCount = ref(1);
                 <WaterfallsFlow ref="WaterfallsFlowRef">
                     <template #text="{ item }">
                         <div class="bg-#fff b-rd-b-16 box-border p-16">
-                            <div class="text-24">{{ item.name }}</div>
+                            <div class="text-24">{{ item.merchName }}</div>
                             <div>
                                 <span class="font-500 text-18">￥</span>
-                                <span class="text-24 font-700">{{ item.price }}</span>
+                                <span class="text-24 font-700">{{ item.currentPrice }}</span>
                             </div>
                             <div class="flex items-center">
                                 <div class="flex items-center border-1 border-#000 border-solid">
                                     <image src="@/static/img/vip1.png" mode="scaleToFill" class="size-25" />
-                                    <span class="text-12 mx-10">省{{ item.vprice }}</span>
+                                    <span class="text-12 mx-10">省{{ item.price - item.currentPrice }}</span>
                                 </div>
                             </div>
                         </div>
@@ -284,8 +258,9 @@ const submitCount = ref(1);
                 </div>
                 <div
                     class="hfull flex-col items-center justify-center text-#fff bg-#FFAA48 b-rd-r-full box-border px50"
+                    @click="showSubmitPopup = true"
                 >
-                    <span class="fw500 text-30">￥12.90</span>
+                    <span class="fw500 text-30">￥{{ productInfo?.activePrice }}</span>
                     <span class="text-20">立即购买</span>
                 </div>
             </div>
@@ -294,88 +269,30 @@ const submitCount = ref(1);
     <nut-popup
         position="bottom"
         :custom-style="{ height: '60vh' }"
-        v-model:visible="showBottomPopup"
+        v-model:visible="showExplainPopup"
         round
         closeable
         lock-scroll
     >
         <div class="flex-col wfull hfull">
-            <div wfull h100 flex-center text-34 flex-shrink-0>{{ showBottomPopupData.title }}</div>
+            <div wfull h100 flex-center text-34 flex-shrink-0>{{ showExplainPopupData.title }}</div>
             <div class="flex-1 min-h-0 wfull overflow-scroll box-border px32">
-                <rich-text :nodes="showBottomPopupData.content"></rich-text>
+                <div class="wfull mb15" v-for="(item, index) in showExplainPopupData.content" :key="item.id">
+                    <div class="fw500 text-26">· {{ item.value }}</div>
+                    <div class="fw500 text-24 text-#AEAEAE">
+                        {{ item.remark }}
+                    </div>
+                </div>
             </div>
         </div>
     </nut-popup>
-    <nut-popup
-        position="bottom"
-        :custom-style="{ height: '80vh', display: 'flex', 'flex-direction': 'column' }"
+    <SubmitOrderPopup
+        v-if="productInfo && specificationList"
         v-model:visible="showSubmitPopup"
-        round
-        lock-scroll
-    >
-        <div class="flex-1 min-h-0 wfull overflow-scroll">
-            <!--   position: "sticky",
-            top: top ? topValue[top] : "0px",
-            "z-index": 10, -->
-            <div class="h100 wfull flex justify-end items-center box-border px32 sticky top-0">
-                <span i-mdi:close></span>
-            </div>
-            <!-- 地址 -->
-            <div class="wfull flex items-center h-fit b-b-solid b-b-4rpx b-b-#F2F2F2 box-border py20">
-                <div class="flex-1 min-w-0 flex hfull flex items-center">
-                    <div class="w100 hfull flex-center flex-shrink-0">
-                        <span i-mdi:map-marker-radius></span>
-                    </div>
-                    <div class="fw500 text-30 flex-1 min-w-0">
-                        <div mb8>我是地址大概</div>
-                        <div>我是地址详情</div>
-                        <div class="text-#949494 text-22 mt15">
-                            <span mr20>名字</span>
-                            <span>1212313456</span>
-                        </div>
-                    </div>
-                </div>
-                <div class="w100 hfull flex-center flex-shrink-0">
-                    <span i-mdi:chevron-right></span>
-                </div>
-            </div>
-            <!-- 商品 -->
-            <div class="wfull box-border py32 flex box-border px32 b-b-solid b-b-4rpx b-b-#F2F2F2">
-                <div size-190 flex-shrink-0 mr32>
-                    <image src="" mode="aspectFill" class="size-190 b-rd-12 bg-fuchsia" />
-                </div>
-                <div class="flex-1 min-w-0">
-                    <div class="flex items-center">
-                        <div class="text-#EC3013 fw500 mr32">
-                            <span text-28>￥</span>
-                            <span text-42>12.99</span>
-                        </div>
-                        <div class="text-#949494 text-24 line-through">￥19.99</div>
-                    </div>
-                    <div text-26 my28>已选: 的撒进口的哈卡刷点卡是的</div>
-                    <nut-input-number v-model="submitCount"></nut-input-number>
-                </div>
-            </div>
-            <!-- 分类 先不写 -->
-            <!-- 订单备注 -->
-            <div
-                class="wfull flex items-center justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2"
-                v-for="item in 30"
-                :key="item"
-            >
-                <div text-26 fw500>订单备注</div>
-                <div i-mdi:chevron-right></div>
-            </div>
-        </div>
-        <div class="wfull h120 flex-center box-border px32">
-            <div
-                class="bg-[linear-gradient(109deg,#FFAA48_0%,#FF9113_100%)] wfull h92 fw500 flex-center text-#fff b-rd-16"
-            >
-                <span text-28>立即支付</span>
-                <span text-34>￥12.90</span>
-            </div>
-        </div>
-    </nut-popup>
+        v-model:count="submitCount"
+        :productInfo="productInfo"
+        :specificationList="specificationList"
+    ></SubmitOrderPopup>
 </template>
 
 <style scoped lang="scss">

@@ -3,6 +3,7 @@ import { ref, watch, nextTick, onMounted } from "vue";
 import WaterfallsFlow from "@/components/WaterfallsFlow.vue";
 import { newProductSortListApi, newProductProductListApi } from "@/api";
 import type { NewProduct } from "@/api";
+import { gotoPage } from "@/utils/uni";
 
 const searchValue = ref("");
 
@@ -95,7 +96,15 @@ watch(
                     @scrolltolower="getList(true)"
                 >
                     <!-- 商品列表 -->
-                    <WaterfallsFlow ref="WaterfallsFlowRef" :key="activeTab">
+                    <WaterfallsFlow
+                        ref="WaterfallsFlowRef"
+                        :key="activeTab"
+                        @itemClick="
+                            (i) => {
+                                gotoPage(`/pages/product/details?id=${i.id}`);
+                            }
+                        "
+                    >
                         <template #text="{ item }">
                             <div class="bg-#fff b-rd-b-16 box-border p-16">
                                 <div class="text-24">{{ item.merchName }}</div>
