@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useStyle } from "@/hooks/useStyle";
-import { ref } from "vue";
+import { ref, onMounted, getCurrentInstance } from "vue";
 import { gotoPage } from "@/utils/uni";
 import { addressListApi, addressChangeDefaultStatusApi, addressDeleteApi } from "@/api";
 import type { Address } from "@/api";
@@ -59,6 +59,31 @@ function editAddress(item: Address.Detail) {
         },
     });
 }
+
+/**
+ * 商品跳转过来选中地址
+ */
+let eventChannel: any = null;
+const activeAddress = ref<Address.Detail>();
+
+onMounted(() => {
+    const instance = getCurrentInstance()?.proxy;
+    if (instance) {
+        eventChannel = instance.getOpenerEventChannel();
+
+        eventChannel.on("activeAddress", function (data: Address.Detail | null) {
+            if (data) {
+                activeAddress.value = data;
+            }
+            console.log("activeAddress", data);
+        });
+    }
+});
+function selectAddress(item: Address.Detail) {
+    if (!eventChannel) return;
+    eventChannel.emit("selectWinAddress", item);
+    uni.navigateBack();
+}
 </script>
 
 <template>
@@ -69,9 +94,10 @@ function editAddress(item: Address.Detail) {
                 class="w-full shadow-[0rpx_6rpx_12rpx_0rpx_rgba(0,0,0,0.1608)] b-rd-12 mt-30 last:mb-20"
                 v-for="(item, index) in list"
                 :key="item.id"
+                @click="selectAddress(item)"
             >
-                <div class="flex items-center box-border py-25 pr-20">
-                    <div class="w-70 flex-center flex-shrink-0">
+                <div class="flex items-center box-border py-25 pr-20 px15">
+                    <div class="w-70 flex-center flex-shrink-0" v-if="activeAddress && activeAddress.id === item.id">
                         <div class="size-40 flex-center bg-[#FFAA48] b-rd-full">
                             <span class="i-mdi:check text-#fff"></span>
                         </div>
@@ -99,11 +125,11 @@ function editAddress(item: Address.Detail) {
                         <span class="ml-20">默认地址</span>
                     </div>
                     <div class="flex-center">
-                        <div class="flex-center mr-30" @click="editAddress(item)">
+                        <div class="flex-center mr-30" @click.stop="editAddress(item)">
                             <span class="i-mdi:pencil-outline"></span>
                             <span>编辑</span>
                         </div>
-                        <div class="flex-center" @click="deleteAddress(item)">
+                        <div class="flex-center" @click.stop="deleteAddress(item)">
                             <span class="i-proicons:delete"></span>
                             <span>删除</span>
                         </div>

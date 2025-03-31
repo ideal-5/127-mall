@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref } from "vue";
-import type { Product } from "@/api";
+import { ref, onMounted } from "vue";
+import { addressGetDefaultApi } from "@/api";
+import type { Product, Address } from "@/api";
 
 interface Props {
     productInfo: (Product.Product & { activePrice: number }) | null;
@@ -24,7 +25,47 @@ const activeSpecificationInfo = computed(() => {
     return null;
 });
 
-const isListShow = ref(true);
+const isListShow = ref(true); // 列表&大图
+
+/**
+ * 地址
+ */
+const activeAddress = ref<Address.Detail | null>(null);
+onMounted(async () => {
+    let { body } = await addressGetDefaultApi();
+    activeAddress.value = body;
+});
+
+// 选择地址
+function selectAddress() {
+    uni.navigateTo({
+        url: "/pages/my-tool/address-list",
+        events: {
+            selectWinAddress: function (data: Address.Detail) {
+                activeAddress.value = data;
+            },
+        },
+        success: function (res) {
+            res.eventChannel.emit("activeAddress", activeAddress.value);
+        },
+    });
+}
+
+/**
+ * 备注
+ */
+const remarkInp = ref("");
+
+/**
+ * 支付方式
+ */
+const activePayType = ref("20");
+const payType = ref([
+    { label: "微信支付", value: "20", icon: "i-ri:wechat-pay-fill", color: "#3BCA72" },
+    { label: "支付宝支付", value: "10", icon: "i-ri:alipay-fill", color: "#1296DB" },
+    { label: "银行卡支付", value: "30", icon: "i-ri:bank-card-fill", color: "#FFB346" },
+]);
+
 /**
  * 下单
  */
@@ -43,22 +84,30 @@ const isListShow = ref(true);
                 <!--   position: "sticky",
             top: top ? topValue[top] : "0px",
             "z-index": 10, -->
-                <div class="h100 wfull flex justify-end items-center box-border px32 sticky top-0">
+                <div class="h100 wfull flex justify-end items-center box-border px32 sticky top-0 bg-white">
                     <span i-mdi:close @click="showSubmitPopup = false"></span>
                 </div>
                 <!-- 地址 -->
-                <div class="wfull flex items-center h-fit b-b-solid b-b-4rpx b-b-#F2F2F2 box-border py20">
+                <div
+                    class="wfull flex items-center h-fit b-b-solid b-b-4rpx b-b-#F2F2F2 box-border py20"
+                    @click="selectAddress"
+                >
                     <div class="flex-1 min-w-0 flex hfull flex items-center">
                         <div class="w100 hfull flex-center flex-shrink-0">
                             <span i-mdi:map-marker-radius></span>
                         </div>
                         <div class="fw500 text-30 flex-1 min-w-0">
-                            <div mb8>我是地址大概</div>
-                            <div>我是地址详情</div>
-                            <div class="text-#949494 text-22 mt15">
-                                <span mr20>名字</span>
-                                <span>1212313456</span>
-                            </div>
+                            <template v-if="activeAddress">
+                                <div mb8>{{ activeAddress?.address }}</div>
+                                <div>{{ activeAddress?.doorplate }}</div>
+                                <div class="text-#949494 text-22 mt15">
+                                    <span mr20>{{ activeAddress?.contactName }}</span>
+                                    <span>{{ activeAddress?.contactPhone }}</span>
+                                </div>
+                            </template>
+                            <template v-else>
+                                <span>请选择地址</span>
+                            </template>
                         </div>
                     </div>
                     <div class="w100 hfull flex-center flex-shrink-0">
@@ -89,7 +138,7 @@ const isListShow = ref(true);
                         <nut-input-number v-model="submitCount"></nut-input-number>
                     </div>
                 </div>
-                <!-- 分类 先不写 -->
+                <!-- 分类 -->
                 <div class="wfull box-border py32 box-border px32 b-b-solid b-b-4rpx b-b-#F2F2F2">
                     <div class="flex items-center justify-between wfull">
                         <div text-30 fw500>规格分类({{ props.specificationList?.length }})</div>
@@ -141,13 +190,36 @@ const isListShow = ref(true);
                     </div>
                 </div>
                 <!-- 订单备注 -->
-                <div
-                    class="wfull flex items-center justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2"
-                    v-for="item in 30"
-                    :key="item"
-                >
-                    <div text-26 fw500>订单备注</div>
-                    <div i-mdi:chevron-right></div>
+                <div class="wfull flex-col justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2">
+                    <div text-26 fw500 mb20>订单备注</div>
+                    <!-- <div i-mdi:chevron-right></div> -->
+                    <nut-textarea v-model="remarkInp" limit-show max-length="200" />
+                </div>
+                <!-- 支付方式 -->
+                <div class="wfull flex-col justify-between box-border">
+                    <div
+                        class="wfull flex items-center justify-between box-border py15 b-b-solid b-1rpx b-#F2F2F2 box-border p-x32"
+                        v-for="(item, index) in payType"
+                        :key="index"
+                        @click="activePayType = item.value"
+                    >
+                        <div class="flex-center">
+                            <div class="size-50 mr32">
+                                <span size-full :class="item.icon" :style="{ color: item.color }"></span>
+                            </div>
+                            <div>
+                                <span class="fw500 text-26">{{ item.label }}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div
+                                class="size-35 b-1rpx b-solid b-rd-full flex-center transition"
+                                :class="activePayType === item.value ? 'bg-#FFAA48 b-#FFAA48' : 'b-#AEAEAE'"
+                            >
+                                <span i-mdi:check text-white v-if="activePayType === item.value"></span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="wfull h120 flex-center box-border px32">
@@ -165,7 +237,9 @@ const isListShow = ref(true);
 </template>
 
 <style scoped lang="scss">
-.a {
-    transition: all 0.3;
+:deep(.nut-textarea) {
+    padding: 18rpx;
+    background-color: #f6f6f7 !important;
+    border-radius: 10rpx;
 }
 </style>

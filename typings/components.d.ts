@@ -14,6 +14,7 @@ declare module 'vue' {
     'NavBar copy': typeof import('./../src/components/NavBar copy.vue')['default']
     NutAddress: typeof import('nutui-uniapp/components/address/address.vue')['default']
     NutButton: typeof import('nutui-uniapp/components/button/button.vue')['default']
+    NutCollapseItem: typeof import('nutui-uniapp/components/collapseitem/collapseitem.vue')['default']
     NutDivider: typeof import('nutui-uniapp/components/divider/divider.vue')['default']
     NutInput: typeof import('nutui-uniapp/components/input/input.vue')['default']
     NutInputNumber: typeof import('nutui-uniapp/components/inputnumber/inputnumber.vue')['default']

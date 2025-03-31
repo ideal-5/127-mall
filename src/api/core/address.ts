@@ -55,3 +55,8 @@ export const addressUpdateApi = (data: Address.AddParams & { id: number }) => {
         data
     );
 };
+
+// 获取默认地址
+export const addressGetDefaultApi = () => {
+    return unInstance.get<UnData, null, IUnResponseData<Address.Detail, null>>("/v1/user/getDefaultAddress", null);
+};
