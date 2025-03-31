@@ -7,9 +7,12 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    AddressAdd: typeof import('./../src/components/address-add.vue')['default']
+    AddressList: typeof import('./../src/components/address-list.vue')['default']
     copy: typeof import('./../src/components/NavBar copy.vue')['default']
     NavBar: typeof import('./../src/components/NavBar.vue')['default']
     'NavBar copy': typeof import('./../src/components/NavBar copy.vue')['default']
+    NutAddress: typeof import('nutui-uniapp/components/address/address.vue')['default']
     NutButton: typeof import('nutui-uniapp/components/button/button.vue')['default']
     NutDivider: typeof import('nutui-uniapp/components/divider/divider.vue')['default']
     NutInput: typeof import('nutui-uniapp/components/input/input.vue')['default']
