@@ -33,6 +33,7 @@ interface NavigateToOptions {
        "/pages/product/comment" |
        "/pages/product/details" |
        "/pages/product/point-details" |
+       "/pages/product/point-place-order" |
        "/pages/product/swiper" |
        "/pages/shopping-cart/shopping-cart" |
        "/pages/underwear/underwear-home" |

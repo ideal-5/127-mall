@@ -84,31 +84,11 @@ const submitCount = ref(1);
         </div>
         <!-- 底部 -->
         <div class="flex items-center box-border px32" :style="bottomStyle">
-            <div flex-1 min-w-0 h100 flex items-center justify-around>
-                <div flex-col items-center>
-                    <image src="https://picsum.photos/seed/picsum/200/300" mode="aspectFill" size-48 b-rd-full />
-                    <span text-22>进店</span>
-                </div>
-                <div flex-col items-center>
-                    <span i-ri:customer-service-line size-48 />
-                    <span text-22>客服</span>
-                </div>
-                <div flex-col items-center>
-                    <span i-mdi:cart-minus size-48 />
-                    <span text-22>购物车</span>
-                </div>
-            </div>
-            <div class="flex h76 flex-shrink-0">
-                <div class="hfull text-24 text-#FF8B06 bg-#FFEDC4 b-rd-l-full flex-center box-content px22">
-                    加入购物车
-                </div>
-                <div
-                    class="hfull flex-col items-center justify-center text-#fff bg-#FFAA48 b-rd-r-full box-border px50"
-                    @click="showSubmitPopup = true"
-                >
-                    <span class="fw500 text-30">{{ detail?.coin }}积分</span>
-                    <span class="text-20">立即购买</span>
-                </div>
+            <div
+                class="h76 wfull flex-col items-center justify-center text-#fff bg-#FFAA48 b-rd-full box-border px50"
+                @click="gotoPage(`point-place-order?id=${detail?.id}`)"
+            >
+                <span class="text-20">立即购买</span>
             </div>
         </div>
     </div>
