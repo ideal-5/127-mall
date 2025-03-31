@@ -74,7 +74,10 @@ onShow(async () => {
         <!-- 会员 -->
         <Member class="mb-30"></Member>
         <!-- 订单 -->
-        <div class="w-full bg-#fff b-rd-10 shadow-[0rpx_2rpx_4rpx_0rpx_rgba(0,0,0,0.1608)] box-border p-25">
+        <div
+            class="w-full bg-#fff b-rd-10 shadow-[0rpx_2rpx_4rpx_0rpx_rgba(0,0,0,0.1608)] box-border p-25"
+            @click="gotoPage('/pages/order/order-list')"
+        >
             <div class="flex items-center justify-between mb-20">
                 <div class="text-30">我的订单</div>
                 <div class="flex items-center">

@@ -30,6 +30,7 @@ interface NavigateToOptions {
        "/pages/my-tool/invite" |
        "/pages/my-tool/settings" |
        "/pages/my-tool/withdraw" |
+       "/pages/order/order-list" |
        "/pages/product/comment" |
        "/pages/product/details" |
        "/pages/product/point-details" |
