@@ -4,6 +4,7 @@ import WaterfallsFlow from "@/components/WaterfallsFlow.vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { userGetUserScoreAndCouponApi, pointsProductListApi, configGetAgreementApi } from "@/api";
 import type { User, Points, Config } from "@/api";
+import { gotoPage } from "@/utils/uni";
 
 const tabList = ref([
     { name: "积分兑换", id: "1" },
@@ -96,7 +97,16 @@ const showProps = ref(false);
                 <div class="flex-1 min-h-0 wfull box-border pt20">
                     <scroll-view class="wfull hfull overflow-scroll" scroll-y @scrolltolower="getList(true)">
                         <!-- 商品列表 -->
-                        <WaterfallsFlow ref="WaterfallsFlowRef" :key="activeTab" v-if="activeTab === 0">
+                        <WaterfallsFlow
+                            ref="WaterfallsFlowRef"
+                            :key="activeTab"
+                            v-if="activeTab === 0"
+                            @itemClick="
+                                (item) => {
+                                    gotoPage(`/pages/product/point-details?id=${item.id}`);
+                                }
+                            "
+                        >
                             <template #text="{ item }">
                                 <div class="bg-#fff b-rd-b-16 box-border p-16">
                                     <div class="text-24">{{ item.merchName }}</div>

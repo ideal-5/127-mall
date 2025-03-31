@@ -32,6 +32,7 @@ interface NavigateToOptions {
        "/pages/my-tool/withdraw" |
        "/pages/product/comment" |
        "/pages/product/details" |
+       "/pages/product/point-details" |
        "/pages/product/swiper" |
        "/pages/shopping-cart/shopping-cart" |
        "/pages/underwear/underwear-home" |
