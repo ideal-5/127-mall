@@ -16,6 +16,15 @@ const showSubmitPopup = defineModel<boolean>("visible", { required: true });
 const submitCount = defineModel<number>("count", { required: true });
 
 const activeSpecification = ref(0); // 选中的规格
+
+const activeSpecificationInfo = computed(() => {
+    if (props.specificationList) {
+        return props.specificationList[activeSpecification.value];
+    }
+    return null;
+});
+
+const isListShow = ref(true);
 /**
  * 下单
  */
@@ -35,7 +44,7 @@ const activeSpecification = ref(0); // 选中的规格
             top: top ? topValue[top] : "0px",
             "z-index": 10, -->
                 <div class="h100 wfull flex justify-end items-center box-border px32 sticky top-0">
-                    <span i-mdi:close></span>
+                    <span i-mdi:close @click="showSubmitPopup = false"></span>
                 </div>
                 <!-- 地址 -->
                 <div class="wfull flex items-center h-fit b-b-solid b-b-4rpx b-b-#F2F2F2 box-border py20">
@@ -57,19 +66,26 @@ const activeSpecification = ref(0); // 选中的规格
                     </div>
                 </div>
                 <!-- 商品 -->
-                <div class="wfull box-border py32 flex box-border px32 b-b-solid b-b-4rpx b-b-#F2F2F2">
+                <div
+                    class="wfull box-border py32 flex box-border px32 b-b-solid b-b-4rpx b-b-#F2F2F2"
+                    v-if="activeSpecificationInfo"
+                >
                     <div size-190 flex-shrink-0 mr32>
-                        <image src="" mode="aspectFill" class="size-190 b-rd-12 bg-fuchsia" />
+                        <image
+                            :src="activeSpecificationInfo.skuImage"
+                            mode="aspectFill"
+                            class="size-190 b-rd-12 bg-fuchsia"
+                        />
                     </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center">
                             <div class="text-#EC3013 fw500 mr32">
                                 <span text-28>￥</span>
-                                <span text-42>12.99</span>
+                                <span text-42>{{ activeSpecificationInfo.activePrice }}</span>
                             </div>
-                            <div class="text-#949494 text-24 line-through">￥19.99</div>
+                            <!-- <div class="text-#949494 text-24 line-through">￥19.99</div> -->
                         </div>
-                        <div text-26 my28>已选: 的撒进口的哈卡刷点卡是的</div>
+                        <div text-26 my28>已选: {{ activeSpecificationInfo.skuName }}</div>
                         <nut-input-number v-model="submitCount"></nut-input-number>
                     </div>
                 </div>
@@ -77,28 +93,50 @@ const activeSpecification = ref(0); // 选中的规格
                 <div class="wfull box-border py32 box-border px32 b-b-solid b-b-4rpx b-b-#F2F2F2">
                     <div class="flex items-center justify-between wfull">
                         <div text-30 fw500>规格分类({{ props.specificationList?.length }})</div>
-                        <div>
-                            <span i-mdi:format-list-bulleted></span>
-                            <span text-24>列表</span>
+                        <div @click="isListShow = !isListShow">
+                            <span :class="isListShow ? 'i-mdi:format-list-bulleted' : 'i-mdi:view-grid-outline'"></span>
+                            <span text-24>{{ isListShow ? "列表" : "大图" }}</span>
                         </div>
                     </div>
-                    <div class="wfull">
+                    <div class="wfull transition-all-300" :class="!isListShow && 'grid grid-cols-3 gap-10'">
                         <div
-                            class="wfull b-rd-10 flex-center justify-between box-border p15 mt20 b-solid b-2rpx transition"
-                            :class="index === activeSpecification ? `b-#FF9113 bg-#FFEDC4` : `b-transparent bg-#F5F5F5`"
-                            v-for="(item, index) in 10"
-                            :key="item"
+                            class="wfull b-rd-10 flex-center justify-between box-border mt20 b-solid b-2rpx transition-all-300"
+                            :class="[
+                                index === activeSpecification ? `b-#FF9113 bg-#FFEDC4` : `b-transparent bg-#F5F5F5`,
+                                isListShow ? 'p15' : 'flex-col',
+                            ]"
+                            v-if="props.specificationList"
+                            v-for="(item, index) in props.specificationList"
+                            :key="item.id"
                             @click="activeSpecification = index"
                         >
-                            <div class="flex-1 min-w-0" flex items-center>
-                                <div size-56 flex-shrink-0 mr15>
-                                    <image class="size-full b-rd-8 bg-fuchsia" src="" mode="aspectFill" />
+                            <div
+                                class="flex-1 transition-all-300"
+                                :class="isListShow ? 'min-w-0 flex items-center' : 'min-h-0 wfull'"
+                            >
+                                <div
+                                    transition-all-300
+                                    :class="isListShow ? 'size-56 flex-shrink-0 mr15 ' : 'wfull h206'"
+                                >
+                                    <image
+                                        class="size-full b-rd-8 bg-fuchsia transition-all-300"
+                                        :src="item.skuImage"
+                                        mode="aspectFill"
+                                    />
                                 </div>
-                                <div flex-1 min-w-0 truncate text-26>
-                                    附件客户是的开发计划房价的快速了解法律手段家乐福肯定是
+                                <div
+                                    class="flex-1 min-w-0 truncate text-26 transition-all-300"
+                                    :class="isListShow ? '' : 'my8 box-border px15'"
+                                >
+                                    {{ item.skuName }}
                                 </div>
                             </div>
-                            <div class="w100 flex-shrink-0 flex-center fw500 text-26 text-#949494">￥12.55</div>
+                            <div
+                                class="flex-shrink-0 fw500 text-26 text-#949494 transition-all-300"
+                                :class="isListShow ? 'w100 flex-center' : 'h40 wfull box-border px15 '"
+                            >
+                                ￥{{ item.activePrice }}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -117,11 +155,17 @@ const activeSpecification = ref(0); // 选中的规格
                     class="bg-[linear-gradient(109deg,#FFAA48_0%,#FF9113_100%)] wfull h92 fw500 flex-center text-#fff b-rd-16"
                 >
                     <span text-28>立即支付</span>
-                    <span text-34>￥12.90</span>
+                    <span text-34 v-if="activeSpecificationInfo"
+                        >￥{{ activeSpecificationInfo?.activePrice * submitCount }}</span
+                    >
                 </div>
             </div>
         </nut-popup>
     </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.a {
+    transition: all 0.3;
+}
+</style>

@@ -75,7 +75,7 @@ const swiperClick = (index: number) => {
 /**
  * 下单
  */
-const showSubmitPopup = ref(false);
+const showSubmitPopup = ref(true);
 const submitCount = ref(1);
 </script>
 
@@ -125,6 +125,7 @@ const submitCount = ref(1);
                 <div
                     class="wfull flex-center box-border py25"
                     @click="showExplainPopupFunc('服务说明', productTag.logistics.data)"
+                     v-if="productTag.logistics.data[0]"
                 >
                     <div class="w80 flex-center flex-shrink-0">
                         <span class="i-mdi:shield-check-outline"></span>
