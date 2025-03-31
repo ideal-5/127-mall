@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import WaterfallsFlow from "@/components/WaterfallsFlow.vue";
+import { onLoad } from "@dcloudio/uni-app";
+import { userGetUserScoreAndCouponApi, pointsProductListApi, configGetAgreementApi } from "@/api";
+import type { User, Points, Config } from "@/api";
 
 const tabList = ref([
     { name: "积分兑换", id: "1" },
@@ -8,38 +11,56 @@ const tabList = ref([
 ]);
 const activeTab = ref(0);
 
-const list = ref([
-    {
-        img: "https://picsum.photos/300/450",
-        name: "家用3C 数码电器电饭煲",
-        price: "311.99",
-        vprice: "18.00",
-        idKey: "a1",
-    },
-    { img: "https://picsum.photos/300/520", name: "智能手表 运动监测", price: "199.99", vprice: "25.00", idKey: "a2" },
-    {
-        img: "https://picsum.photos/300/430",
-        name: "无线蓝牙耳机 降噪版",
-        price: "129.99",
-        vprice: "15.00",
-        idKey: "a3",
-    },
-]);
-const WaterfallsFlowRef = ref<{ pushData: (data: Product[]) => void }>();
+const scoreAndCoupon = ref<User.UserScoreAndCouponResult>();
+onLoad(async () => {
+    let { body } = await userGetUserScoreAndCouponApi();
+    scoreAndCoupon.value = body;
+});
+const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
+const paging = ref({
+    page: 1,
+    limit: 8,
+});
+const getList = async (isPush: boolean = false) => {
+    let { data } = await pointsProductListApi({
+        page: isPush ? paging.value.page + 1 : 1,
+        limit: paging.value.limit,
+    });
+    if (isPush) {
+        if (WaterfallsFlowRef.value) {
+            let complete = await WaterfallsFlowRef.value.pushData(
+                data.map((item) => ({ ...item, img: item.imageUrl }))
+            );
+            complete && paging.value.page++;
+        }
+    } else {
+        if (WaterfallsFlowRef.value) {
+            WaterfallsFlowRef.value.clearList();
+            await WaterfallsFlowRef.value.pushData(data.map((item) => ({ ...item, img: item.imageUrl })));
+        }
+    }
+};
 
 onMounted(() => {
-    WaterfallsFlowRef.value && WaterfallsFlowRef.value.pushData(list.value);
+    getList(false);
 });
 watch(
     () => activeTab.value,
     () => {
         nextTick(() => {
             if (activeTab.value === 0) {
-                WaterfallsFlowRef.value && WaterfallsFlowRef.value.pushData(list.value);
+                getList(false);
             }
         });
     }
 );
+
+const popupInfo = ref<Config.AgreementResult>();
+onMounted(async () => {
+    let { body } = await configGetAgreementApi({ type: "80" });
+    popupInfo.value = body;
+});
+
 const showProps = ref(false);
 </script>
 
@@ -49,7 +70,7 @@ const showProps = ref(false);
             <template #left>
                 <div class="wfull hfull flex-center relative">
                     <span class="text-34">积分兑换</span>
-                    <span class="text-26 absolute right-20" @click.stop="showProps = true" >活动规则</span>
+                    <span class="text-26 absolute right-20" @click.stop="showProps = true">活动规则</span>
                 </div>
             </template>
         </NavBar>
@@ -59,7 +80,7 @@ const showProps = ref(false);
                     <image class="size-40 mr5" src="@/static/img/gold-icon.png" mode="aspectFill" />
                     <span class="text-30 font-500">当前可用积分</span>
                 </div>
-                <div class="text-48">500</div>
+                <div class="text-48">{{ scoreAndCoupon?.coin }}</div>
             </div>
         </div>
         <div class="wfull flex-1 min-h-0 box-border px-32 -mt-245">
@@ -73,30 +94,22 @@ const showProps = ref(false);
                     ></Tabs>
                 </div>
                 <div class="flex-1 min-h-0 wfull box-border pt20">
-                    <scroll-view
-                        class="wfull hfull overflow-scroll"
-                        scroll-y
-                        @scrolltolower="
-                            () => {
-                                console.log('123');
-                            }
-                        "
-                    >
+                    <scroll-view class="wfull hfull overflow-scroll" scroll-y @scrolltolower="getList(true)">
                         <!-- 商品列表 -->
                         <WaterfallsFlow ref="WaterfallsFlowRef" :key="activeTab" v-if="activeTab === 0">
                             <template #text="{ item }">
                                 <div class="bg-#fff b-rd-b-16 box-border p-16">
-                                    <div class="text-24">{{ item.name }}</div>
+                                    <div class="text-24">{{ item.merchName }}</div>
                                     <div>
-                                        <span class="font-500 text-18">￥</span>
-                                        <span class="text-24 font-700">{{ item.price }}</span>
+                                        <span class="font-500 text-18"></span>
+                                        <span class="text-24 fw-500 text-#FF9113">{{ item.coin }}积分</span>
                                     </div>
-                                    <div class="flex items-center">
+                                    <!-- <div class="flex items-center">
                                         <div class="flex items-center border-1 border-#000 border-solid">
                                             <image src="@/static/img/vip1.png" mode="scaleToFill" class="size-25" />
                                             <span class="text-12 mx-10">省{{ item.vprice }}</span>
                                         </div>
-                                    </div>
+                                    </div> -->
                                 </div>
                             </template>
                         </WaterfallsFlow>
@@ -123,9 +136,9 @@ const showProps = ref(false);
         <div
             class="bg-[linear-gradient(95deg,#FECE62_0%,#FFFFFF_18%,#FFFFFF_47%,#FFFFFF_82%,#FECE62_100%)] text-34 text-#FF9113 b-rd-full px-20 my-30"
         >
-            分销规则
+            {{ popupInfo?.name }}
         </div>
-        <rich-text :nodes="'<div>我是HTML代码</div>'"></rich-text>
+        <rich-text :nodes="popupInfo?.policy"></rich-text>
     </nut-popup>
 </template>
 
