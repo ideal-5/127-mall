@@ -3,7 +3,7 @@
 import { useStyle } from "@/hooks/useStyle";
 import { ref } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
-import { pointsProductDetailApi } from "@/api";
+import { pointsProductDetailApi, pointsCreateOrderApi } from "@/api";
 import type { Points } from "@/api";
 import { useSelectAddress } from "@/hooks/useSelectAddress";
 
@@ -24,6 +24,28 @@ const totalScore = computed(() => {
     if (!detail.value) return 0;
     return count.value * detail.value?.coin;
 });
+
+const remarkInp = ref("");
+
+// 下单
+const toast = useToast();
+const submitFun = async () => {
+    if (!activeAddress.value) {
+        toast.error("请选择收货地址");
+        return;
+    }
+    if (detail.value) {
+        await pointsCreateOrderApi({
+            id: detail.value?.id,
+            addressId: activeAddress.value?.id,
+            remark: remarkInp.value,
+        });
+        toast.success("下单成功");
+        setTimeout(() => {
+            uni.navigateBack();
+        }, 500);
+    }
+};
 </script>
 
 <template>
@@ -79,6 +101,11 @@ const totalScore = computed(() => {
                 <div class="fw500 text-30 text-#FF9113">{{ totalScore }}积分</div>
             </div>
         </div>
+        <!-- 备注 -->
+        <div class="wfull bg-#fff box-border b-rd-12 box-border p20 mb20">
+            <div class="fw500 text-30 h70 flex items-center">备注</div>
+            <nut-textarea v-model="remarkInp" limit-show max-length="200" />
+        </div>
         <!-- 支付方式 -->
         <div class="wfull bg-#fff box-border b-rd-12 box-border p20">
             <div class="fw500 text-30 h70 flex items-center">支付方式</div>
@@ -103,6 +130,7 @@ const totalScore = computed(() => {
                 </div>
                 <div
                     class="bg-[linear-gradient(97deg,#FECE62_0%,#FF9113_100%)] text-#fff flex-center b-rd-full fw500 text-30 box-border px25 py10"
+                    @click="submitFun"
                 >
                     兑换
                 </div>
@@ -111,4 +139,10 @@ const totalScore = computed(() => {
     </div>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+:deep(.nut-textarea) {
+    padding: 18rpx;
+    background-color: #f6f6f7 !important;
+    border-radius: 10rpx;
+}
+</style>

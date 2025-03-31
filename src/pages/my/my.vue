@@ -2,7 +2,7 @@
 import Member from "./components/Member.vue";
 import { gotoPage } from "@/utils/uni";
 import { useUserStore } from "@/store";
-import { onLoad } from "@dcloudio/uni-app";
+import { onShow } from "@dcloudio/uni-app";
 import { userGetUserScoreAndCouponApi } from "@/api";
 import type { User } from "@/api";
 
@@ -10,7 +10,7 @@ const userStore = useUserStore();
 
 const scoreAndCoupon = ref<User.UserScoreAndCouponResult>();
 
-onLoad(async () => {
+onShow(async () => {
     let { body } = await userGetUserScoreAndCouponApi();
     scoreAndCoupon.value = body;
 });

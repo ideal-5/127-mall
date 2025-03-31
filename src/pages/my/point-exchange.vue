@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import WaterfallsFlow from "@/components/WaterfallsFlow.vue";
-import { onLoad } from "@dcloudio/uni-app";
-import { userGetUserScoreAndCouponApi, pointsProductListApi, configGetAgreementApi } from "@/api";
+import { onShow } from "@dcloudio/uni-app";
+import { userGetUserScoreAndCouponApi, pointsProductListApi, configGetAgreementApi, pointsDetailApi } from "@/api";
 import type { User, Points, Config } from "@/api";
 import { gotoPage } from "@/utils/uni";
 
@@ -13,7 +13,7 @@ const tabList = ref([
 const activeTab = ref(0);
 
 const scoreAndCoupon = ref<User.UserScoreAndCouponResult>();
-onLoad(async () => {
+onShow(async () => {
     let { body } = await userGetUserScoreAndCouponApi();
     scoreAndCoupon.value = body;
 });
@@ -63,6 +63,24 @@ onMounted(async () => {
 });
 
 const showProps = ref(false);
+
+/**
+ * 积分明细
+ */
+const listPaging = {
+    page: 1,
+    limit: 8,
+};
+onMounted(() => {
+    getDetailList();
+});
+
+async function getDetailList(isPush: boolean = false) {
+    await pointsDetailApi({
+        page: isPush ? listPaging.page + 1 : 1,
+        limit: listPaging.limit,
+    });
+}
 </script>
 
 <template>

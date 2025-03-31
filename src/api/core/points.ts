@@ -25,6 +25,12 @@ export namespace Points {
         banner: Banner[];
         merchCoin: Product;
     }
+
+    export interface CreateOrderParams {
+        id: number;
+        addressId: number;
+        remark: string;
+    }
 }
 
 // 积分商品列表
@@ -41,4 +47,17 @@ export const pointsProductDetailApi = (data: { id: number }) => {
         `/merch/coinMerchDetail`,
         data
     );
+};
+
+// 积分明细
+export const pointsDetailApi = (data: Points.Paging) => {
+    return unInstance.post<UnData, Points.Paging, IUnResponseData<null, Points.Product[]>>(
+        "/v1/user/userCoinChangeList",
+        data
+    );
+};
+
+// 创建积分订单
+export const pointsCreateOrderApi = (data: Points.CreateOrderParams) => {
+    return unInstance.post<UnData, Points.CreateOrderParams, IUnResponseData<null, null>>("/v1/order/createCoinOrder", data);
 };
