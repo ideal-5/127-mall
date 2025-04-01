@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { Product, User, NewProduct } from "@/api";
-import { newProductCreateOrderApi, underwearCreateOrderApi, userCouponListApi } from "@/api";
+import { newProductCreateOrderApi, userCouponListApi } from "@/api";
 import { useSelectAddress } from "@/hooks/useSelectAddress";
 
 interface Props {

@@ -1,36 +1,36 @@
 <!-- 团购专区 -->
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+import { onReachBottom } from "@dcloudio/uni-app";
 import { groupBuyProductListApi } from "@/api";
 import type { GroupBuy } from "@/api";
+import { gotoPage } from "@/utils/uni";
 
 const searchValue = ref("");
 
-const paging = ref({
+const paging = {
     page: 1,
     limit: 10,
-});
+};
 const list = ref<GroupBuy.Product[]>([]);
 const getList = async (isPush: boolean = false) => {
-    if (isPush) {
-        paging.value.page++;
-    } else {
-        paging.value.page = 1;
-    }
     let { data } = await groupBuyProductListApi({
         merchName: searchValue.value,
-        ...paging.value,
+        page: isPush ? paging.page + 1 : 1,
+        limit: 10,
     });
     if (isPush) {
+        if (data.length === 0) return;
+        paging.page++;
         list.value.push(...data);
     } else {
+        paging.page = 1;
         list.value = data;
     }
 };
 
-onMounted(() => {
-    getList(false);
-});
+onMounted(() => getList(false));
+onReachBottom(() => getList(true));
 </script>
 
 <template>
@@ -51,7 +51,7 @@ onMounted(() => {
                         @clear="getList(false)"
                     >
                         <template #leftin>
-                            <div class="size-40 flex-center">
+                            <div class="size-40 flex-center" @click="getList(false)">
                                 <span class="i-mdi:magnify text-#000 size-40"></span>
                             </div>
                         </template>
@@ -69,6 +69,7 @@ onMounted(() => {
                     class="wfull flex mb30 bg-#fff b-rd-16 box-border py20 px16"
                     v-for="(item, index) in list"
                     :key="item.id"
+                    @click="gotoPage(`/pages/product/details?id=${item.merchId}`)"
                 >
                     <div class="size-210 flex-shrink-0">
                         <image :src="item.skuImage" mode="aspectFill" class="b-rd-10 size-full" />

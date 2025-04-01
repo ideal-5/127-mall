@@ -15,6 +15,7 @@ export namespace GroupBuy {
     }
     export interface Product {
         id: number;
+        merchId: number;
         skuName: string;
         price: number;
         currentPrice: number;
