@@ -67,6 +67,8 @@ const showProps = ref(false);
 /**
  * 积分明细
  */
+const detailList = ref<Points.Detail[]>();
+
 const listPaging = {
     page: 1,
     limit: 8,
@@ -76,10 +78,17 @@ onMounted(() => {
 });
 
 async function getDetailList(isPush: boolean = false) {
-    await pointsDetailApi({
+    let { data } = await pointsDetailApi({
         page: isPush ? listPaging.page + 1 : 1,
         limit: listPaging.limit,
     });
+    if (isPush) {
+        listPaging.page++;
+        detailList.value?.push(...data);
+    } else {
+        listPaging.page = 1;
+        detailList.value = data;
+    }
 }
 </script>
 
@@ -113,12 +122,16 @@ async function getDetailList(isPush: boolean = false) {
                     ></Tabs>
                 </div>
                 <div class="flex-1 min-h-0 wfull box-border pt20">
-                    <scroll-view class="wfull hfull overflow-scroll" scroll-y @scrolltolower="getList(true)">
+                    <scroll-view
+                        class="wfull hfull overflow-scroll"
+                        scroll-y
+                        @scrolltolower="getList(true)"
+                        v-if="activeTab === 0"
+                    >
                         <!-- 商品列表 -->
                         <WaterfallsFlow
                             ref="WaterfallsFlowRef"
                             :key="activeTab"
-                            v-if="activeTab === 0"
                             @itemClick="
                                 (item) => {
                                     gotoPage(`/pages/product/point-details?id=${item.id}`);
@@ -141,18 +154,27 @@ async function getDetailList(isPush: boolean = false) {
                                 </div>
                             </template>
                         </WaterfallsFlow>
-                        <!-- 积分明细 -->
-                        <div v-if="activeTab === 1" class="hfull wfull box-border px30">
+                    </scroll-view>
+                    <!-- 积分明细 -->
+                    <scroll-view
+                        class="wfull hfull overflow-scroll"
+                        scroll-y
+                        @scrolltolower="getDetailList(true)"
+                        v-if="activeTab === 1"
+                    >
+                        <div class="hfull wfull box-border px30">
                             <div
                                 class="wfull flex items-center justify-between b-b-solid b-b-#EFEFEF b-b-1rpx box-border py20"
-                                v-for="(item, index) in 30"
-                                :key="index"
+                                v-for="(item, index) in detailList"
+                                :key="item.id"
                             >
                                 <div class="flex-col">
-                                    <span class="text-26 font-500 mb8">观看视频</span>
-                                    <span class="text-20 text-#AEAEAE">2024/12/19 14:21:34</span>
+                                    <span class="text-26 font-500 mb8">{{ item.remark }}</span>
+                                    <span class="text-20 text-#AEAEAE">{{ item.changeTime }}</span>
                                 </div>
-                                <div class="text-30 text-#FF9113 font-500">+30</div>
+                                <div class="text-30 text-#FF9113 font-500">
+                                    {{ `${item.accountType === "30" ? "+" : "-"}${item.changeAmount}` }}
+                                </div>
                             </div>
                         </div>
                     </scroll-view>

@@ -44,7 +44,7 @@ function changeTab(_: any, index: number | string) {
 
 <template>
     <div>
-        <nut-toast></nut-toast>
+        <nut-toast :z-index="99999"></nut-toast>
         <slot />
         <nut-tabbar
             v-model="activeIndex"

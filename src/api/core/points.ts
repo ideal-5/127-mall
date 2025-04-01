@@ -21,7 +21,7 @@ export namespace Points {
         imageUrl: string;
         merchCoinId: number;
     }
-    export interface DetailResult {
+    export interface ProductDetailResult {
         banner: Banner[];
         merchCoin: Product;
     }
@@ -29,6 +29,14 @@ export namespace Points {
     export interface CreateOrderParams {
         id: number;
         addressId: number;
+        remark: string;
+    }
+    // 明细
+    export interface Detail {
+        id: number;
+        accountType:'30'|'40'; // 30-收入 40-支出
+        changeAmount: number; // 变动金额
+        changeTime: string;
         remark: string;
     }
 }
@@ -43,7 +51,7 @@ export const pointsProductListApi = (data: Points.Paging) => {
 
 // 积分商品详情
 export const pointsProductDetailApi = (data: { id: number }) => {
-    return unInstance.post<UnData, { id: number }, IUnResponseData<null, Points.DetailResult>>(
+    return unInstance.post<UnData, { id: number }, IUnResponseData<null, Points.ProductDetailResult>>(
         `/merch/coinMerchDetail`,
         data
     );
@@ -51,7 +59,7 @@ export const pointsProductDetailApi = (data: { id: number }) => {
 
 // 积分明细
 export const pointsDetailApi = (data: Points.Paging) => {
-    return unInstance.post<UnData, Points.Paging, IUnResponseData<null, Points.Product[]>>(
+    return unInstance.post<UnData, Points.Paging, IUnResponseData<Points.Detail[],null>>(
         "/v1/user/userCoinChangeList",
         data
     );

@@ -1,6 +1,5 @@
 import { unInstance } from "@/service";
 
-// 文件1
 export namespace NewProduct {
     export interface Paging {
         page: number | string;
@@ -15,12 +14,20 @@ export namespace NewProduct {
         merchName?: string;
     }
     export interface Product {
-        id:number;
+        id: number;
         merchName: string;
         price: number;
         currentPrice: number;
         imageUrl: string;
         properties: string[];
+    }
+    export interface CreateOrderParams {
+        skuId: number;
+        addressId: number;
+        payType: string;
+        remark: string;
+        couponId?: number;
+        stock: number;
     }
 }
 
@@ -33,6 +40,14 @@ export const newProductSortListApi = () => {
 export const newProductProductListApi = (data: NewProduct.ProductParams) => {
     return unInstance.post<UnData, NewProduct.ProductParams, IUnResponseData<NewProduct.Product[], null>>(
         "/merch/newMerchList",
+        data
+    );
+};
+
+// 创建订单
+export const newProductCreateOrderApi = (data: NewProduct.CreateOrderParams) => {
+    return unInstance.post<UnData, NewProduct.CreateOrderParams, IUnResponseData<null, null>>(
+        "/v1/order/createNewOrder",
         data
     );
 };

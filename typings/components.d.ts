@@ -7,22 +7,12 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    AddressAdd: typeof import('./../src/components/address-add.vue')['default']
-    AddressList: typeof import('./../src/components/address-list.vue')['default']
     copy: typeof import('./../src/components/NavBar copy.vue')['default']
     NavBar: typeof import('./../src/components/NavBar.vue')['default']
     'NavBar copy': typeof import('./../src/components/NavBar copy.vue')['default']
-    NutAddress: typeof import('nutui-uniapp/components/address/address.vue')['default']
-    NutButton: typeof import('nutui-uniapp/components/button/button.vue')['default']
-    NutCollapseItem: typeof import('nutui-uniapp/components/collapseitem/collapseitem.vue')['default']
-    NutDivider: typeof import('nutui-uniapp/components/divider/divider.vue')['default']
-    NutInput: typeof import('nutui-uniapp/components/input/input.vue')['default']
     NutInputNumber: typeof import('nutui-uniapp/components/inputnumber/inputnumber.vue')['default']
     NutPopup: typeof import('nutui-uniapp/components/popup/popup.vue')['default']
-    NutProgress: typeof import('nutui-uniapp/components/progress/progress.vue')['default']
     NutSearchbar: typeof import('nutui-uniapp/components/searchbar/searchbar.vue')['default']
-    NutSwipe: typeof import('nutui-uniapp/components/swipe/swipe.vue')['default']
-    NutSwipeGroup: typeof import('nutui-uniapp/components/swipegroup/swipegroup.vue')['default']
     NutSwiper: typeof import('nutui-uniapp/components/swiper/swiper.vue')['default']
     NutSwiperItem: typeof import('nutui-uniapp/components/swiperitem/swiperitem.vue')['default']
     NutSwitch: typeof import('nutui-uniapp/components/switch/switch.vue')['default']

@@ -6,10 +6,8 @@ const activeTab = ref(0);
 const tabList = ref([
     { name: "全部", value: "" },
     { name: "待付款", value: "10" },
-    { name: "待发货", value: "40" },
-    { name: "待收货", value: "50" },
-    { name: "待评价", value: "60" },
-    { name: "退款", value: "70" },
+    { name: "待发货", value: "20" },
+    { name: "已完成", value: "30" },
 ]);
 
 const Paging = {

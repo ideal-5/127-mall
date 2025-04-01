@@ -6,7 +6,7 @@ export namespace Order {
         limit: number | string;
     }
     export interface ListParams extends Paging {
-        status: "10" | "20" | "30" | "40" | "50" | "60" | "70" | "80"; // 10待付款 20待发货 30待收货 40待评价 50已完成 60已取消 70已退款 80已退货
+        status:string; // 10未支付 20已支付 30已完成 40已发货 50已完成 60已评论 90拼团中 70退款
     }
     export interface OrderDetail {
         /**
@@ -94,5 +94,8 @@ export namespace Order {
 
 // 订单列表
 export const OrderListApi = (data: Order.ListParams) => {
-    return unInstance.post<UnData, Order.ListParams, IUnResponseData<Order.OrderInfo[], null>>("/v1/order/orderList", data);
+    return unInstance.post<UnData, Order.ListParams, IUnResponseData<Order.OrderInfo[], null>>(
+        "/v1/order/orderList",
+        data
+    );
 };

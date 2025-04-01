@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { Product } from "@/api";
+import { newProductCreateOrderApi } from "@/api";
 import { useSelectAddress } from "@/hooks/useSelectAddress";
 
 interface Props {
@@ -15,6 +16,8 @@ const props = withDefaults(defineProps<Props>(), {
 
 const showSubmitPopup = defineModel<boolean>("visible", { required: true });
 const submitCount = defineModel<number>("count", { required: true });
+
+const toast = useToast();
 
 const activeSpecification = ref(0); // 选中的规格
 
@@ -49,15 +52,43 @@ const payType = ref([
 ]);
 
 /**
+ * 优惠券
+ */
+const showCouponPopup = ref(false);
+const activeCoupon = ref(5);
+
+/**
  * 下单
  */
+
+async function submitOrder() {
+    toast.error("123");
+    try {
+        if (!props.specificationList || !activeAddress.value) return;
+        await newProductCreateOrderApi({
+            skuId: props.specificationList[activeSpecification.value].id,
+            addressId: activeAddress.value?.id,
+            payType: activePayType.value,
+            remark: remarkInp.value,
+            stock: submitCount.value,
+        });
+    } catch (error) {
+        let err = error as { msg: string };
+        toast.error(err?.msg || "下单失败,请稍后重试");
+    }
+}
 </script>
 
 <template>
     <div>
         <nut-popup
             position="bottom"
-            :custom-style="{ height: '80vh', display: 'flex', 'flex-direction': 'column' }"
+            :z-index="100"
+            :custom-style="{
+                height: '80vh',
+                display: 'flex',
+                'flex-direction': 'column',
+            }"
             v-model:visible="showSubmitPopup"
             round
             lock-scroll
@@ -171,6 +202,14 @@ const payType = ref([
                         </div>
                     </div>
                 </div>
+                <!-- 优惠券 -->
+                <div class="wfull flex items-center justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2">
+                    <div text-26 fw500>订单备注</div>
+                    <div>
+                        <span>-300</span>
+                        <span i-mdi:chevron-right></span>
+                    </div>
+                </div>
                 <!-- 订单备注 -->
                 <div class="wfull flex-col justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2">
                     <div text-26 fw500 mb20>订单备注</div>
@@ -207,6 +246,7 @@ const payType = ref([
             <div class="wfull h120 flex-center box-border px32">
                 <div
                     class="bg-[linear-gradient(109deg,#FFAA48_0%,#FF9113_100%)] wfull h92 fw500 flex-center text-#fff b-rd-16"
+                    @click="submitOrder"
                 >
                     <span text-28>立即支付</span>
                     <span text-34 v-if="activeSpecificationInfo"
@@ -214,6 +254,58 @@ const payType = ref([
                     >
                 </div>
             </div>
+        </nut-popup>
+
+        <!-- 优惠券弹窗 -->
+        <nut-popup
+            position="bottom"
+            :custom-style="{ height: '60vh', display: 'flex', 'flex-direction': 'column' }"
+            v-model:visible="showCouponPopup"
+            round
+            lock-scroll
+        >
+            <!-- 优惠券弹窗 -->
+            <!-- <view class="coupon-popup">
+            <view class="title">111111</view>
+            <scroll-view class="list-box" scroll-y enable-flex>
+                <view class="tem-coupon-box">
+                    <view
+                        class="quan-dizu"
+                        :class="[activeCoupon.id === item.id && 'quan-dizu--active']"
+                        v-for="(item, index) in couponList"
+                        :key="item.id"
+                        @click="tapCoupon(item)"
+                    >
+                        <view class="active-yuan">
+                            <up-icon name="checkbox-mark" color="#ff9113" size="20"></up-icon>
+                        </view>
+                        <view class="quan">
+                            <view class="qian">
+                                <view class="qian-line1">
+                                    <view class="amount">
+                                        <text>{{ item.symbol }}</text>
+                                        <text>{{ item.cutAmount }}</text>
+                                    </view>
+                                    <view class="tiaojian">Available over {{ item.amount }}</view>
+                                </view>
+                                <view class="qian-line2">
+                                    <text>{{ item.remark }}</text>
+                                    <text>(1元=10积分)</text>
+                                </view>
+                                <view class="qian-line3">
+                                    <view>有效期至{{ item.passTime }}</view>
+                                </view>
+                            </view>
+                            <view class="hou">
+                                <view class="btn">立即使用</view>
+                            </view>
+                            <view class="xuxian"></view>
+                            <view class="guoqi">{{ item.id }}</view>
+                        </view>
+                    </view>
+                </view>
+            </scroll-view>
+        </view> -->
         </nut-popup>
     </div>
 </template>

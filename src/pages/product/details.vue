@@ -75,7 +75,7 @@ const swiperClick = (index: number) => {
 /**
  * 下单
  */
-const showSubmitPopup = ref(true);
+const showSubmitPopup = ref(false);
 const submitCount = ref(1);
 </script>
 
