@@ -25,6 +25,12 @@ export namespace DirectSelling {
         skuImage: string;
         properties: { value: string; id: number }[];
     }
+    export interface CreateOrderParams {
+        id: number;
+        addressId: number;
+        payType: string;
+        remark: string;
+    }
 }
 
 // 分类列表
@@ -36,6 +42,14 @@ export const directSellingTypeApi = () => {
 export const directSellingProductListApi = (data: DirectSelling.ProductParams) => {
     return unInstance.post<UnData, UnData, IUnResponseData<DirectSelling.Product[], null>>(
         "/merch/justMerchList",
+        data
+    );
+};
+
+// 创建订单
+export const directSellingCreateOrderApi = (data: DirectSelling.CreateOrderParams) => {
+    return unInstance.post<UnData, DirectSelling.CreateOrderParams, IUnResponseData<null, null>>(
+        "/v1/order/createJustOrder",
         data
     );
 };
