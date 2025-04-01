@@ -10,6 +10,8 @@ declare module 'vue' {
     copy: typeof import('./../src/components/NavBar copy.vue')['default']
     NavBar: typeof import('./../src/components/NavBar.vue')['default']
     'NavBar copy': typeof import('./../src/components/NavBar copy.vue')['default']
+    NutCountdown: typeof import('nutui-uniapp/components/countdown/countdown.vue')['default']
+    NutDivider: typeof import('nutui-uniapp/components/divider/divider.vue')['default']
     NutForm: typeof import('nutui-uniapp/components/form/form.vue')['default']
     NutFormItem: typeof import('nutui-uniapp/components/formitem/formitem.vue')['default']
     NutInput: typeof import('nutui-uniapp/components/input/input.vue')['default']
