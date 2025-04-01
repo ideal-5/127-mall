@@ -6,6 +6,10 @@ export namespace User {
         //  * 电话
         phone: string;
     }
+    export interface Paging {
+        page: number | string;
+        limit: number | string;
+    }
     export interface SinginParams {
         password: string;
         phone: string;
@@ -97,6 +101,20 @@ export namespace User {
          */
         sortId: number;
     }
+
+    // 优惠券列表
+    export interface CouponListParams extends Paging {
+        status: string;
+    }
+    // 优惠券
+    export interface Coupon {
+        needAmount: number; // 优惠券使用门槛
+        cutAmount: number; // 优惠券优惠金额
+        remark: string;
+        expiredTime: string;
+        status: string;
+        id: number;
+    }
 }
 
 // 登陆
@@ -172,4 +190,9 @@ export const userFeedbackApi = (data: { suggest: string }) => {
 // 店铺入驻
 export const userShopEnterApi = (data: User.ShopEnterParamse) => {
     return unInstance.post<UnData, User.ShopEnterParamse, IUnResponseData<null, null>>("/v1/shop/shopEnter", data);
+};
+
+// 优惠券列表
+export const userCouponListApi = (data: User.CouponListParams) => {
+    return unInstance.post<UnData, User.CouponListParams, IUnResponseData<User.Coupon[], null>>("/v1/user/userCoupon", data);
 };

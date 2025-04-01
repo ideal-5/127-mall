@@ -1,11 +1,30 @@
 <script setup lang="ts">
 import { ref } from "vue";
-const activeTabs = ref(0);
+import { userCouponListApi } from "@/api";
+import type { User } from "@/api";
+const activeTabs = ref("10");
 
 const tabList = ref([
-    { label: "可使用", value: "5" },
-    { label: "已过期/失效", value: "6" },
+    { label: "可使用", value: "10" },
+    { label: "已过期/失效", value: "20" },
 ]);
+
+const paging = {
+    page: 1,
+    limit: 10,
+};
+
+onMounted(getCouponList);
+
+const couponList = ref<User.Coupon[]>();
+async function getCouponList(isPush: boolean = false) {
+    let { data } = await userCouponListApi({
+        page: isPush ? paging.page + 1 : 1,
+        limit: paging.limit,
+        status: activeTabs.value,
+    });
+    couponList.value = data;
+}
 </script>
 
 <template>
@@ -19,11 +38,7 @@ const tabList = ref([
                 --nut-tabs-horizontal-tab-line-color: #ffaa48;
                 --nut-tab-pane-background: #f8f8f8;
             "
-            @change="
-                (i) => {
-                    console.log(i);
-                }
-            "
+            @change="getCouponList(false)"
         >
             <nut-tab-pane
                 :title="tabItem.label"
@@ -32,26 +47,26 @@ const tabList = ref([
                 :key="tabIndex"
             >
                 <div class="coupon-list box-border px-30">
-                    <div class="quan-dizu" v-for="(item, index) in 10" :key="index">
+                    <div class="quan-dizu" v-for="(item, index) in couponList" :key="item.id">
                         <div class="quan">
                             <div class="qian">
                                 <div class="qian-line1">
                                     <div class="amount">
-                                        <text>123</text>
-                                        <text>123</text>
+                                        <text>￥</text>
+                                        <text>{{ item.cutAmount }}</text>
                                     </div>
-                                    <div class="tiaojian">456</div>
+                                    <div class="tiaojian">{{ `满${item.needAmount}可用` }}</div>
                                 </div>
                                 <div class="qian-line2">
-                                    <text>456</text>
+                                    <text>{{ item.remark }}</text>
                                 </div>
                                 <div class="qian-line3">
-                                    <div>789</div>
+                                    <div>{{ item.expiredTime }}</div>
                                 </div>
                             </div>
                             <div class="hou"></div>
                             <div class="xuxian"></div>
-                            <div class="guoqi">10</div>
+                            <div class="guoqi">￥{{ item.cutAmount }}</div>
                         </div>
                     </div>
                 </div>
