@@ -1,8 +1,13 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { onReachBottom } from "@dcloudio/uni-app";
 import { userCouponListApi } from "@/api";
 import type { User } from "@/api";
-const activeTabs = ref("10");
+import { useStyle } from "@/hooks/useStyle";
+
+const stickyStyle = useStyle().sticky("navBar");
+
+const activeTabs = ref(0);
 
 const tabList = ref([
     { label: "可使用", value: "10" },
@@ -21,57 +26,60 @@ async function getCouponList(isPush: boolean = false) {
     let { data } = await userCouponListApi({
         page: isPush ? paging.page + 1 : 1,
         limit: paging.limit,
-        status: activeTabs.value,
+        status: tabList.value[activeTabs.value].value,
     });
-    couponList.value = data;
+    if (isPush) {
+        if (!data.length) return;
+        paging.page++;
+        couponList.value?.push(...data);
+    } else {
+        paging.page = 1;
+        couponList.value = data;
+    }
 }
+
+onReachBottom(() => {
+    getCouponList(true);
+});
 </script>
 
 <template>
     <div class="main bg-#F8F8F8">
         <NavBar barColor="#fff">优惠券</NavBar>
-        <nut-tabs
-            v-model="activeTabs"
-            swipeable
-            style="
-                --nut-tabs-titles-background-color: #fff;
-                --nut-tabs-horizontal-tab-line-color: #ffaa48;
-                --nut-tab-pane-background: #f8f8f8;
-            "
+
+        <Tabs
+            :tabList="tabList"
+            keyName="label"
+            v-model:activeTab="activeTabs"
+            :style="stickyStyle"
+            style="background-color: #fff"
             @change="getCouponList(false)"
-        >
-            <nut-tab-pane
-                :title="tabItem.label"
-                :pane-key="tabItem.value"
-                v-for="(tabItem, tabIndex) in tabList"
-                :key="tabIndex"
-            >
-                <div class="coupon-list box-border px-30">
-                    <div class="quan-dizu" v-for="(item, index) in couponList" :key="item.id">
-                        <div class="quan">
-                            <div class="qian">
-                                <div class="qian-line1">
-                                    <div class="amount">
-                                        <text>￥</text>
-                                        <text>{{ item.cutAmount }}</text>
-                                    </div>
-                                    <div class="tiaojian">{{ `满${item.needAmount}可用` }}</div>
-                                </div>
-                                <div class="qian-line2">
-                                    <text>{{ item.remark }}</text>
-                                </div>
-                                <div class="qian-line3">
-                                    <div>{{ item.expiredTime }}</div>
-                                </div>
+        ></Tabs>
+
+        <div class="coupon-list box-border px-30">
+            <div class="quan-dizu" v-for="(item, index) in couponList" :key="item.id">
+                <div class="quan">
+                    <div class="qian">
+                        <div class="qian-line1">
+                            <div class="amount">
+                                <text>￥</text>
+                                <text>{{ item.cutAmount }}</text>
                             </div>
-                            <div class="hou"></div>
-                            <div class="xuxian"></div>
-                            <div class="guoqi">￥{{ item.cutAmount }}</div>
+                            <div class="tiaojian">{{ `满${item.needAmount}可用` }}</div>
+                        </div>
+                        <div class="qian-line2">
+                            <text>{{ item.remark }}</text>
+                        </div>
+                        <div class="qian-line3">
+                            <div>{{ item.expiredTime }}</div>
                         </div>
                     </div>
+                    <div class="hou"></div>
+                    <div class="xuxian"></div>
+                    <div class="guoqi">￥{{ item.cutAmount }}</div>
                 </div>
-            </nut-tab-pane>
-        </nut-tabs>
+            </div>
+        </div>
     </div>
 </template>
 

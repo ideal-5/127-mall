@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
-import type { Product } from "@/api";
-import { newProductCreateOrderApi } from "@/api";
+import type { Product, User, NewProduct } from "@/api";
+import { newProductCreateOrderApi, userCouponListApi } from "@/api";
 import { useSelectAddress } from "@/hooks/useSelectAddress";
 
 interface Props {
@@ -55,23 +55,69 @@ const payType = ref([
  * 优惠券
  */
 const showCouponPopup = ref(false);
-const activeCoupon = ref(5);
+const activeCoupon = ref<User.Coupon | null>(null);
+const couponList = ref<User.Coupon[]>();
+
+const couponPaging = {
+    page: 1,
+    limit: 10,
+};
+async function getCouponList(isPush: boolean = false) {
+    let { data } = await userCouponListApi({
+        page: isPush ? couponPaging.page + 1 : 1,
+        limit: couponPaging.limit,
+        status: "10",
+    });
+    if (isPush) {
+        if (!data.length) return;
+        couponPaging.page++;
+        couponList.value?.push(...data);
+    } else {
+        couponPaging.page = 1;
+        couponList.value = data;
+    }
+}
+
+onMounted(getCouponList);
+
+function tapCoupon(item: User.Coupon) {
+    if (activeCoupon.value?.id === item.id) {
+        activeCoupon.value = null;
+    } else {
+        activeCoupon.value = item;
+    }
+}
 
 /**
  * 下单
  */
 
+const afterAmount = computed(() => {
+    let couponAmount: number = activeCoupon.value ? activeCoupon.value?.cutAmount : 0;
+    if (activeSpecificationInfo.value) {
+        return activeSpecificationInfo.value?.activePrice * submitCount.value - couponAmount;
+    }
+    return 0;
+});
+
 async function submitOrder() {
-    toast.error("123");
     try {
         if (!props.specificationList || !activeAddress.value) return;
-        await newProductCreateOrderApi({
+        let params: NewProduct.CreateOrderParams = {
             skuId: props.specificationList[activeSpecification.value].id,
             addressId: activeAddress.value?.id,
             payType: activePayType.value,
             remark: remarkInp.value,
             stock: submitCount.value,
-        });
+        };
+        if (activeCoupon.value) {
+            params.couponId = activeCoupon.value.id;
+        }
+        await newProductCreateOrderApi(params);
+        toast.success("下单成功");
+        setTimeout(() => {
+            uni.navigateBack();
+        }, 600);
     } catch (error) {
         let err = error as { msg: string };
         toast.error(err?.msg || "下单失败,请稍后重试");
@@ -203,10 +249,14 @@ async function submitOrder() {
                     </div>
                 </div>
                 <!-- 优惠券 -->
-                <div class="wfull flex items-center justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2">
-                    <div text-26 fw500>订单备注</div>
+                <div
+                    class="wfull flex items-center justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2"
+                    @click="showCouponPopup = true"
+                >
+                    <div text-26 fw500>优惠券</div>
                     <div>
-                        <span>-300</span>
+                        <span v-if="activeCoupon">-{{ activeCoupon?.cutAmount }}</span>
+                        <span v-else>选择优惠券</span>
                         <span i-mdi:chevron-right></span>
                     </div>
                 </div>
@@ -249,9 +299,7 @@ async function submitOrder() {
                     @click="submitOrder"
                 >
                     <span text-28>立即支付</span>
-                    <span text-34 v-if="activeSpecificationInfo"
-                        >￥{{ activeSpecificationInfo?.activePrice * submitCount }}</span
-                    >
+                    <span text-34 v-if="activeSpecificationInfo">￥{{ afterAmount }}</span>
                 </div>
             </div>
         </nut-popup>
@@ -265,47 +313,47 @@ async function submitOrder() {
             lock-scroll
         >
             <!-- 优惠券弹窗 -->
-            <!-- <view class="coupon-popup">
-            <view class="title">111111</view>
-            <scroll-view class="list-box" scroll-y enable-flex>
-                <view class="tem-coupon-box">
-                    <view
-                        class="quan-dizu"
-                        :class="[activeCoupon.id === item.id && 'quan-dizu--active']"
-                        v-for="(item, index) in couponList"
-                        :key="item.id"
-                        @click="tapCoupon(item)"
-                    >
-                        <view class="active-yuan">
-                            <up-icon name="checkbox-mark" color="#ff9113" size="20"></up-icon>
-                        </view>
-                        <view class="quan">
-                            <view class="qian">
-                                <view class="qian-line1">
-                                    <view class="amount">
-                                        <text>{{ item.symbol }}</text>
-                                        <text>{{ item.cutAmount }}</text>
-                                    </view>
-                                    <view class="tiaojian">Available over {{ item.amount }}</view>
-                                </view>
-                                <view class="qian-line2">
-                                    <text>{{ item.remark }}</text>
-                                    <text>(1元=10积分)</text>
-                                </view>
-                                <view class="qian-line3">
-                                    <view>有效期至{{ item.passTime }}</view>
-                                </view>
-                            </view>
-                            <view class="hou">
-                                <view class="btn">立即使用</view>
-                            </view>
-                            <view class="xuxian"></view>
-                            <view class="guoqi">{{ item.id }}</view>
-                        </view>
-                    </view>
-                </view>
-            </scroll-view>
-        </view> -->
+            <div class="coupon-popup">
+                <div class="title">优惠券</div>
+                <scroll-view class="list-box" scroll-y enable-flex>
+                    <div class="tem-coupon-box">
+                        <div
+                            class="quan-dizu"
+                            :class="[activeCoupon?.id === item.id && 'quan-dizu--active']"
+                            v-for="(item, index) in couponList"
+                            :key="item.id"
+                            @click="tapCoupon(item)"
+                        >
+                            <div class="active-yuan">
+                                <span i-mdi:check class="text-#ff9113 size-80%"></span>
+                            </div>
+                            <div class="quan">
+                                <div class="qian">
+                                    <div class="qian-line1">
+                                        <div class="amount">
+                                            <span>￥</span>
+                                            <span>{{ item.cutAmount }}</span>
+                                        </div>
+                                        <div class="tiaojian">{{ `满${item.needAmount}可用` }}</div>
+                                    </div>
+                                    <div class="qian-line2">
+                                        <span>{{ item.remark }}</span>
+                                        <!-- <text>(1元=10积分)</text> -->
+                                    </div>
+                                    <div class="qian-line3">
+                                        <div>有效期至{{ item.expiredTime }}</div>
+                                    </div>
+                                </div>
+                                <div class="hou">
+                                    <div class="btn">立即使用</div>
+                                </div>
+                                <div class="xuxian"></div>
+                                <div class="guoqi">{{ item.id }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </scroll-view>
+            </div>
         </nut-popup>
     </div>
 </template>
@@ -315,5 +363,192 @@ async function submitOrder() {
     padding: 18rpx;
     background-color: #f6f6f7 !important;
     border-radius: 10rpx;
+}
+.coupon-popup {
+    width: 100%;
+    height: 50vh;
+    background-color: #fff;
+    border-radius: 15rpx 15rpx 0 0;
+    display: flex;
+    flex-direction: column;
+    .title {
+        width: 100%;
+        height: 80rpx;
+        font-size: 36rpx;
+        font-weight: 600;
+        @include my-flex;
+    }
+    .list-box {
+        flex: 1;
+        width: 100%;
+        min-height: 0;
+        overflow: scroll;
+
+        $quan-color: #fff; // 优惠卷颜色
+        $quan-yuan-size: 20rpx; // 优惠卷透明圆的半径
+        $quan-yuan-x: 70%; // 优惠卷透明圆的X轴坐标
+        $dizu-width: 720rpx;
+        $dizuo-padding-x: 20rpx; // 底座左右的内边距<控制优惠卷宽度>
+        .tem-coupon-box {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+
+            .quan-dizu {
+                width: $dizu-width;
+                height: 204rpx;
+                flex-shrink: 0; // 确保该盒子不被挤压变形
+                background-color: #fff5dd;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                border-radius: 10rpx;
+                box-shadow: 0rpx 6rpx 12rpx 2rpx rgba(0, 0, 0, 0.16);
+                margin-top: 20rpx;
+                transition: all 0.3s;
+                box-sizing: border-box;
+                padding: 0 $dizuo-padding-x;
+                position: relative;
+
+                .active-yuan {
+                    position: absolute;
+                    top: 50%;
+                    transform: translateY(-50%);
+                    left: $dizuo-padding-x;
+                    width: 40rpx;
+                    height: 40rpx;
+                    background-color: #fff;
+                    border-radius: 999999rpx;
+                    @include my-flex;
+                    transition: all 0.2s;
+                    opacity: 0;
+                }
+                &--active {
+                    background-color: #ffaa48;
+                    .quan {
+                        width: 620rpx !important;
+                    }
+                    .active-yuan {
+                        opacity: 1;
+                    }
+                }
+
+                // 优惠卷
+                .quan {
+                    width: $dizu-width - $dizuo-padding-x * 2;
+                    height: 166rpx;
+                    background-color: #000;
+                    background: radial-gradient(
+                                circle at $quan-yuan-x 0%,
+                                transparent 0px $quan-yuan-size,
+                                $quan-color $quan-yuan-size 100%
+                            )
+                            0% 0%,
+                        radial-gradient(
+                                circle at $quan-yuan-x 100%,
+                                transparent 0px $quan-yuan-size,
+                                $quan-color $quan-yuan-size 100%
+                            )
+                            0% 100%;
+                    background-repeat: no-repeat;
+                    background-size: 100% 50%;
+                    position: relative;
+                    overflow: hidden;
+                    border-radius: 10rpx;
+                    display: flex;
+                    align-items: center;
+                    transition: all 0.3s;
+
+                    .qian {
+                        height: 100%;
+                        width: $quan-yuan-x;
+                        color: #8a8a8a;
+                        box-sizing: border-box;
+                        padding: 15rpx;
+                        display: flex;
+                        flex-direction: column;
+                        justify-content: space-between;
+
+                        .qian-line1 {
+                            display: flex;
+                            align-items: center;
+                            color: #ee0b0b;
+                            .amount {
+                                margin-right: 10rpx;
+                                > text {
+                                    &:nth-child(1) {
+                                        font-size: 26rpx;
+                                    }
+                                    &:nth-child(2) {
+                                        font-size: 42rpx;
+                                        font-weight: 600;
+                                    }
+                                }
+                            }
+                            .tiaojian {
+                                font-size: 24rpx;
+                                border: 1rpx solid #ee0b0b;
+                                padding: 5rpx 10rpx;
+                            }
+                        }
+                        .qian-line2 {
+                            > text {
+                                &:nth-child(1) {
+                                    font-size: 24rpx;
+                                    margin-right: 10rpx;
+                                }
+                                &:nth-child(2) {
+                                    font-size: 18rpx;
+                                }
+                            }
+                        }
+                        .qian-line3 {
+                            font-size: 18rpx;
+                        }
+                    }
+                    .hou {
+                        height: 100%;
+                        width: calc(100% - #{$quan-yuan-x});
+                        @include my-flex;
+                        .btn {
+                            width: 150rpx;
+                            height: 55rpx;
+                            background: linear-gradient(309deg, #ff9e9e 0%, #ee0b0b 100%);
+                            border-radius: 999999rpx;
+                            font-size: 24rpx;
+                            color: #fff;
+                            @include my-flex;
+                            margin-top: 30rpx;
+                        }
+                    }
+                    // 优惠卷中的虚线
+                    .xuxian {
+                        position: absolute;
+                        top: $quan-yuan-size;
+                        left: calc(70% - 1rpx);
+                        width: 1rpx;
+                        height: calc(100% - #{$quan-yuan-size * 2});
+                        // 虚线边框
+                        border-left: 1rpx dashed #d8d8d8;
+                    }
+                    // 右上角过期彩带
+                    .guoqi {
+                        width: 200rpx;
+                        background: linear-gradient(309deg, #ff9e9e 0%, #ee0b0b 100%);
+                        color: #fff;
+                        font-size: 20rpx;
+                        @include my-flex;
+                        position: absolute;
+                        inset: -50rpx -50rpx auto auto;
+                        transform-origin: top left; /* 或 top right */
+                        transform: translate(29.3%) rotate(45deg);
+                        padding: 6rpx 0;
+                    }
+                }
+            }
+        }
+    }
 }
 </style>
