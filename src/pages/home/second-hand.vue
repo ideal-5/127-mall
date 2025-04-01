@@ -2,6 +2,7 @@
 import { ref, watch } from "vue";
 import { secondHandGetSecondHandSortListApi, secondHanProductListApi } from "@/api";
 import type { SecondHand } from "@/api";
+import { gotoPage } from "@/utils/uni";
 
 const searchValue = ref("");
 
@@ -89,7 +90,12 @@ const toast = useToast();
                 </div>
                 <div class="flex-1 min-h0 wfull">
                     <scroll-view class="hfull wfull overflow-scroll" scroll-y @scrolltolower="getList(true)">
-                        <div class="wfull flex mb30" v-for="(item, index) in list" :key="item.id">
+                        <div
+                            class="wfull flex mb30"
+                            v-for="(item, index) in list"
+                            :key="item.id"
+                            @click="gotoPage(`/pages/product/details?id=${item.id}`)"
+                        >
                             <div class="size-220 flex-shrink-0">
                                 <image :src="item.imageUrl" mode="aspectFill" class="b-rd-10 size-full" />
                             </div>

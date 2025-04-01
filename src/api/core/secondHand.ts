@@ -22,6 +22,14 @@ export namespace SecondHand {
         imageUrl: string;
         properties: { value: string; id: number }[];
     }
+    export interface CreateOrderParams {
+        skuId: number;
+        addressId: number;
+        payType: string;
+        remark: string;
+        couponId?: number;
+        stock: number;
+    }
 }
 
 // 二手市场分类列表
@@ -35,4 +43,9 @@ export const secondHanProductListApi = (data: SecondHand.ProductParams) => {
         "/merch/secondMerchList",
         data
     );
+};
+
+// 创建订单
+export const secondHandCreateOrderApi = (data: SecondHand.CreateOrderParams) => {
+    return unInstance.post<UnData, SecondHand.CreateOrderParams, IUnResponseData<null, null>>("/v1/order/createSecondOrder", data);
 };

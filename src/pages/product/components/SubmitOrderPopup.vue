@@ -1,12 +1,15 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { Product, User, NewProduct } from "@/api";
-import { newProductCreateOrderApi, userCouponListApi } from "@/api";
+import { userCouponListApi } from "@/api";
 import { useSelectAddress } from "@/hooks/useSelectAddress";
 
 interface Props {
-    productInfo: (Product.Product & { activePrice: number }) | null;
-    specificationList: (Product.Specification & { activePrice: number })[] | null;
+    listId?: string | number;
+    submitGroupOrderType?: string;
+    productType: string; //  JUST_SEND 厂家直销  GROUP_BUY 团购 SECOND_BUY 二手 UNDERWEAR_BUY 内衣 NEW_BUY 新品上市 COIN_BUY 积分
+    productInfo: (Product.Product & { activePrice: number }) | null; // 商品信息
+    specificationList: (Product.Specification & { activePrice: number })[] | null; // 规格列表
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -14,10 +17,22 @@ const props = withDefaults(defineProps<Props>(), {
     specificationList: null,
 });
 
-const showSubmitPopup = defineModel<boolean>("visible", { required: true });
-const submitCount = defineModel<number>("count", { required: true });
+const showSubmitPopup = defineModel<boolean>("visible", { required: true }); // 显示弹窗
+const submitCount = defineModel<number>("count", { required: true }); // 购买数量
 
-const toast = useToast();
+const emit = defineEmits<{
+    (
+        e: "submitOrder",
+        params: {
+            skuId: number;
+            addressId: number;
+            payType: string;
+            remark: string;
+            stock: number;
+            couponId?: number;
+        }
+    ): void;
+}>();
 
 const activeSpecification = ref(0); // 选中的规格
 
@@ -101,30 +116,16 @@ const afterAmount = computed(() => {
 });
 
 async function submitOrder() {
-    try {
-        if (!props.specificationList || !activeAddress.value) return;
-        let params: NewProduct.CreateOrderParams = {
-            skuId: props.specificationList[activeSpecification.value].id,
-            addressId: activeAddress.value?.id,
-            payType: activePayType.value,
-            remark: remarkInp.value,
-            stock: submitCount.value,
-        };
-        if (activeCoupon.value) {
-            params.couponId = activeCoupon.value.id;
-        }
-        /**
-         * 判断当前商品分类 不同商品调不同接口
-         */
-        await newProductCreateOrderApi(params);
-        toast.success("下单成功");
-        setTimeout(() => {
-            uni.navigateBack();
-        }, 600);
-    } catch (error) {
-        let err = error as { msg: string };
-        toast.error(err?.msg || "下单失败,请稍后重试");
-    }
+    if (!activeAddress.value || !props.specificationList?.[activeSpecification.value]) return;
+
+    emit("submitOrder", {
+        skuId: props.specificationList?.[activeSpecification.value].id,
+        addressId: activeAddress.value?.id,
+        payType: activePayType.value,
+        remark: remarkInp.value,
+        stock: submitCount.value,
+        couponId: activeCoupon.value?.id,
+    });
 }
 </script>
 
@@ -132,7 +133,7 @@ async function submitOrder() {
     <div>
         <nut-popup
             position="bottom"
-            :z-index="100"
+            :z-index="60"
             :custom-style="{
                 height: '80vh',
                 display: 'flex',
@@ -197,7 +198,10 @@ async function submitOrder() {
                             <!-- <div class="text-#949494 text-24 line-through">￥19.99</div> -->
                         </div>
                         <div text-26 my28>已选: {{ activeSpecificationInfo.skuName }}</div>
-                        <nut-input-number v-model="submitCount"></nut-input-number>
+                        <nut-input-number
+                            v-if="props.productType !== 'GROUP_BUY'"
+                            v-model="submitCount"
+                        ></nut-input-number>
                     </div>
                 </div>
                 <!-- 分类 -->
@@ -255,6 +259,7 @@ async function submitOrder() {
                 <div
                     class="wfull flex items-center justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2"
                     @click="showCouponPopup = true"
+                    v-if="props.productType !== 'GROUP_BUY'"
                 >
                     <div text-26 fw500>优惠券</div>
                     <div>
@@ -301,7 +306,8 @@ async function submitOrder() {
                     class="bg-[linear-gradient(109deg,#FFAA48_0%,#FF9113_100%)] wfull h92 fw500 flex-center text-#fff b-rd-16"
                     @click="submitOrder"
                 >
-                    <span text-28>立即支付</span>
+                    <span text-28 v-if="props.productType === 'GROUP_BUY'">开启团购</span>
+                    <span text-28 v-else>立即支付</span>
                     <span text-34 v-if="activeSpecificationInfo">￥{{ afterAmount }}</span>
                 </div>
             </div>

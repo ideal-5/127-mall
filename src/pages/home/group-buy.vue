@@ -69,7 +69,7 @@ onReachBottom(() => getList(true));
                     class="wfull flex mb30 bg-#fff b-rd-16 box-border py20 px16"
                     v-for="(item, index) in list"
                     :key="item.id"
-                    @click="gotoPage(`/pages/product/details?id=${item.merchId}`)"
+                    @click="gotoPage(`/pages/product/details?id=${item.merchId}&listId=${item.id}`)"
                 >
                     <div class="size-210 flex-shrink-0">
                         <image :src="item.skuImage" mode="aspectFill" class="b-rd-10 size-full" />

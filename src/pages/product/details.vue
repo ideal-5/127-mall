@@ -4,13 +4,24 @@ import { onLoad } from "@dcloudio/uni-app";
 import { useStyle } from "@/hooks/useStyle";
 import WaterfallsFlow from "@/components/WaterfallsFlow.vue";
 import { gotoPage } from "@/utils/uni";
-import { productDetailApi } from "@/api";
-import type { Product } from "@/api";
+import {
+    productDetailApi,
+    groupBuyGetGroupMerchApi,
+    newProductCreateOrderApi,
+    secondHandCreateOrderApi,
+    groupBuyCreateOrderApi,
+    groupBuyJoinGroupApi,
+    underwearCreateOrderApi,
+} from "@/api";
+
+import type { Product, GroupBuy } from "@/api";
 import SubmitOrderPopup from "./components/SubmitOrderPopup.vue";
 import { useUserStore } from "@/store";
 
 const userStore = useUserStore();
 
+let productType = ""; // 商品类型标志  JUST_SEND 厂家直销  GROUP_BUY 团购 SECOND_BUY 二手 UNDERWEAR_BUY 内衣 NEW_BUY 新品上市 COIN_BUY 积分
+const listId = ref<number>();
 const bannerList = ref<Product.Banner[]>([]); // 轮播图
 const productInfo = ref<{ activePrice: number } & Product.Product>(); // 商品信息
 const productTag = ref<{
@@ -32,6 +43,7 @@ const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
 onLoad(async (query) => {
     if (!query) return;
     let { body } = await productDetailApi({ id: query.id as number });
+    productType = body.sort;
     bannerList.value = body.merchBannerList;
     productInfo.value = {
         ...body.shopMerch,
@@ -47,7 +59,35 @@ onLoad(async (query) => {
     recommendProduct.value = body.recommendMerch;
     WaterfallsFlowRef.value &&
         WaterfallsFlowRef.value.pushData(recommendProduct.value.map((item) => ({ ...item, img: item.imageUrl })));
+
+    // 有listId 说明是团购
+    if (query?.listId) {
+        listId.value = query.listId;
+        GetGroupMerch(query?.listId);
+    }
 });
+
+const groupList = ref<GroupBuy.GroupList[]>([]);
+async function GetGroupMerch(id: number) {
+    // 如果是团购  就要获取团购队列
+    if (productType === "GROUP_BUY" && productInfo.value) {
+        let { body } = await groupBuyGetGroupMerchApi({ id });
+        groupList.value = body;
+    }
+}
+const submitGroupOrderType = ref(""); // 团购下单类型  1 创建  2参与
+const activeGroupItem = ref<GroupBuy.GroupList>(); // 当前选中的团购队列列表
+// 创建拼团
+function createdGroup() {
+    submitGroupOrderType.value = "1";
+    showSubmitPopup.value = true;
+}
+// 点击参与拼团
+function addGroupClick(item: GroupBuy.GroupList) {
+    submitGroupOrderType.value = "2";
+    showSubmitPopup.value = true;
+    activeGroupItem.value = item;
+}
 
 const showExplainPopup = ref(false); // 说明弹窗
 const showExplainPopupData = ref<{ title: string; content: Product.Detail["properties"] }>({
@@ -77,6 +117,70 @@ const swiperClick = (index: number) => {
  */
 const showSubmitPopup = ref(false);
 const submitCount = ref(1);
+
+const toast = useToast();
+async function submitOrder(paramsfun: {
+    skuId: number;
+    addressId: number;
+    payType: string;
+    remark: string;
+    stock: number;
+    couponId?: number;
+}) {
+    try {
+        /**
+         * 判断当前商品分类 不同商品调不同接口
+         */
+        let { couponId, ...residue } = paramsfun;
+        let params: {
+            skuId: number;
+            addressId: number;
+            payType: string;
+            remark: string;
+            stock: number;
+            couponId?: number;
+        } = {
+            ...residue,
+        };
+        if (couponId) {
+            params.couponId = couponId;
+        }
+
+        if (productType === "NEW_BUY") {
+            await newProductCreateOrderApi(params);
+        } else if (productType === "SECOND_BUY") {
+            await secondHandCreateOrderApi(params);
+        } else if (productType === "GROUP_BUY" && listId.value) {
+            if (submitGroupOrderType.value === "1") {
+                // 创建团购
+                await groupBuyCreateOrderApi({
+                    id: listId.value,
+                    addressId: params.addressId,
+                    payType: params.payType,
+                    remark: params.remark,
+                });
+            } else if (submitGroupOrderType.value === "2" && activeGroupItem.value) {
+                // 参与团购
+                await groupBuyJoinGroupApi({
+                    openId: activeGroupItem.value?.id,
+                    addressId: params.addressId,
+                    payType: params.payType,
+                    remark: params.remark,
+                });
+            }
+        } else if (productType === "UNDERWEAR_BUY") {
+            await underwearCreateOrderApi(params);
+        }
+        showSubmitPopup.value = false;
+        toast.text("下单成功");
+        // setTimeout(() => {
+        //     uni.navigateBack();
+        // }, 600);
+    } catch (error) {
+        let err = error as { msg: string };
+        toast.error(err?.msg || "下单失败,请稍后重试");
+    }
+}
 </script>
 
 <template>
@@ -125,7 +229,7 @@ const submitCount = ref(1);
                 <div
                     class="wfull flex-center box-border py25"
                     @click="showExplainPopupFunc('服务说明', productTag.logistics.data)"
-                     v-if="productTag.logistics.data[0]"
+                    v-if="productTag.logistics.data[0]"
                 >
                     <div class="w80 flex-center flex-shrink-0">
                         <span class="i-mdi:shield-check-outline"></span>
@@ -154,6 +258,38 @@ const submitCount = ref(1);
                             <div class="i-mdi:chevron-right"></div>
                         </div>
                         <!-- <div class="text-16 text-#AEAEAE">福建省福州市 发货 | 免运费</div> -->
+                    </div>
+                </div>
+            </div>
+            <!-- 团购列表 -->
+            <div v-if="productType === 'GROUP_BUY'" class="wfull bg-#fff b-rd-14 mt20 box-border p25">
+                <div class="wfull mb25 fw500 flex items-center">团购列表</div>
+                <div class="wfull">
+                    <div
+                        v-for="(item, index) in groupList"
+                        :key="index"
+                        class="wfull flex items-center justify-between mb20"
+                    >
+                        <div class="w200 hfull flex overflow-hidden">
+                            <div v-for="(it, ind) in item.orders" :key="ind" class="size-50 -ml-25 first:ml-0">
+                                <image :src="it.headImage" mode="aspectFill" class="b-rd-full size-full" />
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="flex-col items-end mr20">
+                                <div class="text-#FFAA48 text-18">拼单距离结束</div>
+                                <nut-countdown
+                                    :end-time="Date.parse(item.passTime)"
+                                    style="--nut-countdown-font-size: 20rpx"
+                                ></nut-countdown>
+                            </div>
+                            <div
+                                class="bg-#FFAA48 text-#fff fw500 text-24 b-rd-10 box-border px15 py-8"
+                                @click="addGroupClick(item)"
+                            >
+                                参与拼单
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -254,16 +390,26 @@ const submitCount = ref(1);
                 </div>
             </div>
             <div class="flex h76 flex-shrink-0">
-                <div class="hfull text-24 text-#FF8B06 bg-#FFEDC4 b-rd-l-full flex-center box-content px22">
-                    加入购物车
-                </div>
-                <div
-                    class="hfull flex-col items-center justify-center text-#fff bg-#FFAA48 b-rd-r-full box-border px50"
-                    @click="showSubmitPopup = true"
-                >
-                    <span class="fw500 text-30">￥{{ productInfo?.activePrice }}</span>
-                    <span class="text-20">立即购买</span>
-                </div>
+                <template v-if="productType === 'GROUP_BUY'">
+                    <div
+                        class="hfull flex-col items-center justify-center text-#fff bg-#FFAA48 b-rd-full box-border px50"
+                        @click="createdGroup"
+                    >
+                        开启团购
+                    </div>
+                </template>
+                <template v-else>
+                    <div class="hfull text-24 text-#FF8B06 bg-#FFEDC4 b-rd-l-full flex-center box-content px22">
+                        加入购物车
+                    </div>
+                    <div
+                        class="hfull flex-col items-center justify-center text-#fff bg-#FFAA48 b-rd-r-full box-border px50"
+                        @click="showSubmitPopup = true"
+                    >
+                        <span class="fw500 text-30">￥{{ productInfo?.activePrice }}</span>
+                        <span class="text-20">立即购买</span>
+                    </div>
+                </template>
             </div>
         </div>
     </div>
@@ -293,6 +439,10 @@ const submitCount = ref(1);
         v-model:count="submitCount"
         :productInfo="productInfo"
         :specificationList="specificationList"
+        :productType="productType"
+        :listId="listId"
+        :submitGroupOrderType="submitGroupOrderType"
+        @submitOrder="submitOrder"
     ></SubmitOrderPopup>
 </template>
 

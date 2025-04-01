@@ -14,6 +14,7 @@ export namespace Product {
         currentPrice: number;
         description: string;
         saleCount: number;
+        merchId: number;
     }
     export interface Banner {
         id: number;
@@ -32,6 +33,7 @@ export namespace Product {
         recommendMerch: Product[];
         properties: { value: string; id: number; type: string; remark: string }[];
         merchSkuList: Specification[];
+        sort: string;
     }
 }
 
