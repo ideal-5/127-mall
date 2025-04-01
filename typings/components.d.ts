@@ -18,6 +18,7 @@ declare module 'vue' {
     NutInputNumber: typeof import('nutui-uniapp/components/inputnumber/inputnumber.vue')['default']
     NutPicker: typeof import('nutui-uniapp/components/picker/picker.vue')['default']
     NutPopup: typeof import('nutui-uniapp/components/popup/popup.vue')['default']
+    NutProgress: typeof import('nutui-uniapp/components/progress/progress.vue')['default']
     NutSearchbar: typeof import('nutui-uniapp/components/searchbar/searchbar.vue')['default']
     NutSwiper: typeof import('nutui-uniapp/components/swiper/swiper.vue')['default']
     NutSwiperItem: typeof import('nutui-uniapp/components/swiperitem/swiperitem.vue')['default']

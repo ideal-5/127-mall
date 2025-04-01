@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import type { Product, User, NewProduct } from "@/api";
-import { newProductCreateOrderApi, userCouponListApi } from "@/api";
+import { newProductCreateOrderApi, underwearCreateOrderApi, userCouponListApi } from "@/api";
 import { useSelectAddress } from "@/hooks/useSelectAddress";
 
 interface Props {
@@ -113,6 +113,9 @@ async function submitOrder() {
         if (activeCoupon.value) {
             params.couponId = activeCoupon.value.id;
         }
+        /**
+         * 判断当前商品分类 不同商品调不同接口
+         */
         await newProductCreateOrderApi(params);
         toast.success("下单成功");
         setTimeout(() => {

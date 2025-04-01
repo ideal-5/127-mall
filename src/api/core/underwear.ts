@@ -21,6 +21,14 @@ export namespace Underwear {
         imageUrl: string;
         properties: { value: string; id: number }[];
     }
+    export interface CreateOrderParams {
+        skuId: number;
+        addressId: number;
+        payType: string;
+        remark: string;
+        couponId?: number;
+        stock: number;
+    }
 }
 
 // 内衣商品列表
@@ -35,6 +43,14 @@ export const underwearProductListApi = (data: Underwear.ProductParams) => {
 export const underwearRecommendListApi = (data: Underwear.ProductRecommendParams) => {
     return unInstance.post<UnData, Underwear.ProductRecommendParams, IUnResponseData<Underwear.Product[], null>>(
         "/merch/underwearRecommend",
+        data
+    );
+};
+
+// 创建订单
+export const underwearCreateOrderApi = (data: Underwear.CreateOrderParams) => {
+    return unInstance.post<UnData, Underwear.CreateOrderParams, IUnResponseData<null, null>>(
+        "/v1/order/createUnderwearOrder",
         data
     );
 };

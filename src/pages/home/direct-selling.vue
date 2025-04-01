@@ -1,16 +1,46 @@
 <script setup lang="ts">
 import { ref } from "vue";
+import { directSellingTypeApi, directSellingProductListApi } from "@/api";
+import type { DirectSelling } from "@/api";
+
 const searchValue = ref("");
 
-const tabList = ref([
-    { title: "热卖", value: "1" },
-    { title: "鞋服衣饰", value: "2" },
-    { title: "纸巾清洁", value: "3" },
-    { title: "家居百货", value: "4" },
-    { title: "情趣内衣", value: "5" },
-]);
+const tabList = ref<DirectSelling.Sort[]>();
 
-const activeTab = ref("1");
+const activeTab = ref<number>();
+
+onMounted(async () => {
+    let { body } = await directSellingTypeApi();
+    tabList.value = body;
+    activeTab.value = tabList.value[0].id;
+});
+
+const paging = {
+    page: 1,
+    limit: 10,
+};
+const list = ref<DirectSelling.Product[]>([]);
+async function getList(isPush: boolean = false) {
+    let { data } = await directSellingProductListApi({
+        page: isPush ? paging.page + 1 : 1,
+        limit: paging.limit,
+        merchName: searchValue.value,
+        sortId: activeTab.value || 0,
+    });
+    if (isPush) {
+        if (data.length === 0) return;
+        list.value.push(...data);
+    } else {
+        list.value = data;
+    }
+}
+
+watch(
+    () => activeTab.value,
+    () => {
+        getList(false);
+    }
+);
 </script>
 
 <template>
@@ -28,9 +58,11 @@ const activeTab = ref("1");
                             --nut-searchbar-background: transparent;
                             --nut-searchbar-input-background: #fff;
                         "
+                        @search="getList(false)"
+                        @clear="getList(false)"
                     >
                         <template #leftin>
-                            <div class="size-40 flex-center">
+                            <div class="size-40 flex-center" @click="getList(false)">
                                 <span class="i-mdi:magnify text-#000 size-40"></span>
                             </div>
                         </template>
@@ -44,7 +76,11 @@ const activeTab = ref("1");
                 class="w310 h168 border-solid border-4 border-#154BD2 b-rd-16 bg-#fff absolute bottom-45 right-30 flex items-center justify-around"
             >
                 <div class="w118 h116 relative" v-for="(item, index) in 2" :key="index">
-                    <image :src="`https://picsum.photos/700/350?random=${Math.random()}`" mode="aspectFill" class="size-full" />
+                    <image
+                        :src="`https://picsum.photos/700/350?random=${Math.random()}`"
+                        mode="aspectFill"
+                        class="size-full"
+                    />
                     <div
                         class="text-#EC3013 absolute top-[100%] left-[50%] translate-[-50%] bg-#FEEAE7 b-rd-full box-border px15 py5 flex items-center"
                     >
@@ -69,7 +105,11 @@ const activeTab = ref("1");
                         v-for="(item, index) in 4"
                         :key="index"
                     >
-                        <image :src="`https://picsum.photos/700/350?random=${Math.random()}`" mode="aspectFill" class="size-full b-rd-12" />
+                        <image
+                            :src="`https://picsum.photos/700/350?random=${Math.random()}`"
+                            mode="aspectFill"
+                            class="size-full b-rd-12"
+                        />
                         <div class="absolute top-0 left-0 bg-#FEEAE7 b-rd-full text-14 text-#EC3013">热销5万+</div>
                         <div
                             class="text-#EC3013 absolute top-[100%] left-[50%] translate-[-50%] bg-#FEEAE7 b-rd-full box-border px15 py5 flex items-center"
@@ -84,56 +124,63 @@ const activeTab = ref("1");
                 <div class="wfull h100 flex items-center overflow-scroll">
                     <div
                         class="flex-center text-26 box-border px15 py5 b-rd-full mr20 whitespace-nowrap transition"
-                        :class="activeTab === item.value ? 'text-#EC3013 bg-#FEEAE7' : 'text-#AEAEAE bg-#EBEBEB'"
+                        :class="activeTab === item.id ? 'text-#EC3013 bg-#FEEAE7' : 'text-#AEAEAE bg-#EBEBEB'"
                         v-for="(item, index) in tabList"
-                        @click="activeTab = item.value"
+                        @click="activeTab = item.id"
                     >
-                        {{ item.title }}
+                        {{ item.name }}
                     </div>
                 </div>
-                <div class="flex-1 min-h0 wfull overflow-scroll">
-                    <div class="wfull flex mb30" v-for="(item, index) in 10">
-                        <div class="size-220 flex-shrink-0">
-                            <image :src="`https://picsum.photos/700/350?random=${index}`" mode="aspectFill" class="b-rd-10 size-full" />
-                        </div>
-                        <div class="flex-1 min-w-0 box-border pl-44">
-                            <div class="text-30 font-500">【新人福利】一次性洗脸巾</div>
-                            <div class="wfull flex items-center mt20">
-                                <nut-progress
-                                    percentage="50"
-                                    :show-text="false"
-                                    style="--nut-progress-outer-background-color: #feeae7"
-                                    status="active"
-                                />
-                                <div class="text-#AEAEAE text-20 whitespace-nowrap ml25 mr35">已售3万+</div>
+                <div class="flex-1 min-h0 wfull">
+                    <scroll-view scroll-y class="wfull hfull overflow-scroll" @scrolltolower="getList(true)">
+                        <div class="wfull flex mb30 h100vh" v-for="(item, index) in list">
+                            <div class="size-220 flex-shrink-0">
+                                <image :src="item.skuImage" mode="aspectFill" class="b-rd-10 size-full" />
                             </div>
-                            <div class="wfull flex items-center my-20">
-                                <div
-                                    class="text-22 text-#EC3013 b-1 b-solid b-#EC3013 b-rd-4 flex-center box-border px5 py3"
-                                >
-                                    急速退款
-                                </div>
-                            </div>
-                            <div class="wfull flex items-center">
-                                <div class="flex-1 min-w-0 bg-#FEEAE7 h58 b-rd-8 text-#EC3013 flex items-center">
-                                    <div class="font-500 mx15">
-                                        <span class="text-22">￥</span>
-                                        <span class="text-32">9.99</span>
+                            <div class="flex-1 min-w-0 box-border pl-44">
+                                <div class="text-30 font-500">{{ item.skuName }}</div>
+                                <div class="wfull flex items-center mt20">
+                                    <nut-progress
+                                        :percentage="(item.saleCount / item.totalCount) * 100"
+                                        :show-text="false"
+                                        style="--nut-progress-outer-background-color: #feeae7"
+                                        status="active"
+                                    />
+                                    <div class="text-#AEAEAE text-20 whitespace-nowrap ml25 mr35">
+                                        已售{{ item.totalSaleCount }}
                                     </div>
-                                    <div class="text-18">券后价</div>
                                 </div>
-                                <div class="h58 w94 bg-#EC3013 text-38 text-#fff flex-center b-rd-8 flex-shrink-0 ml8">
-                                    抢
+                                <div class="wfull flex items-center my-20 overflow-scroll">
+                                    <div
+                                        class="text-22 mr10 text-#EC3013 b-1 b-solid b-#EC3013 b-rd-4 flex-center box-border px5 py3 whitespace-nowrap"
+                                        v-for="it in item.properties"
+                                        :key="it.id"
+                                    >
+                                        {{ it.value }}
+                                    </div>
+                                </div>
+                                <div class="wfull flex items-center">
+                                    <div class="flex-1 min-w-0 bg-#FEEAE7 h58 b-rd-8 text-#EC3013 flex items-center">
+                                        <div class="font-500 mx15">
+                                            <span class="text-22">￥</span>
+                                            <span class="text-32">{{ item.price }}</span>
+                                        </div>
+                                        <div class="text-18">券后价</div>
+                                    </div>
+                                    <div
+                                        class="h58 w94 bg-#EC3013 text-38 text-#fff flex-center b-rd-8 flex-shrink-0 ml8"
+                                    >
+                                        抢
+                                    </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </scroll-view>
                 </div>
             </div>
         </div>
     </div>
 </template>
-
 
 <style scoped lang="scss">
 .bg {

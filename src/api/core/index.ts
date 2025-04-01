@@ -8,3 +8,4 @@ export * from "./points";
 export * from "./address";
 export * from "./order";
 export * from "./underwear";
+export * from "./directSelling";
