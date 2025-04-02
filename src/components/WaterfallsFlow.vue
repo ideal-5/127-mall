@@ -68,7 +68,7 @@ const pushList = async (list: ReceiveData[]) => {
         );
         const column = columns.value[maxIndex];
         column.data.push({ ...listItem, img: "" });
-
+        await nextTick();
         // 获取文字区域宽高
         let columnDom = await new Promise<{ height: number; width: number }>((resolve, reject) => {
             nextTick(() => {
@@ -78,15 +78,17 @@ const pushList = async (list: ReceiveData[]) => {
                     .boundingClientRect(async (domInfo) => {
                         if (!domInfo) return resolve({ height: 0, width: 0 }); // 防止 domInfo 为空时报错
                         let { height = 0, width = 0 } = domInfo as UniApp.NodeInfo;
-                        console.log("height, width", height, width);
                         resolve({ height, width });
                     })
                     .exec();
             });
         });
-
         column.data[column.data.length - 1].img = listItem.img;
-        column.height = column.height + columnDom.height + listItem.imgInfo.width + 24;
+        column.height =
+            column.height +
+            columnDom.height +
+            (listItem.imgInfo.height / listItem.imgInfo.width) * columnDom.width +
+            24;
     }
 };
 

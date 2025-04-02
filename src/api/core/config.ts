@@ -16,6 +16,7 @@ export namespace Config {
     export interface ConfigShopSortResult {
         id: number;
         name: string;
+        value: string;
     }
     export interface BannerParams extends ConfigPaging {
         type: "10" | "20"; // 10: 首页 20: 内衣

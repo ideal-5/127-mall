@@ -2,8 +2,8 @@
 import { useStyle } from "@/hooks/useStyle";
 import { ref, computed } from "vue";
 import { useUpload } from "@/hooks/useUpload";
-import { userShopEnterApi, configGetShopSortListApi } from "@/api";
-import type { User, Config } from "@/api";
+import { shopEnterApi, configGetShopSortListApi } from "@/api";
+import type { Shop, Config } from "@/api";
 import type { PickerBaseEvent } from "nutui-uniapp";
 
 const shopSortList = ref<Config.ConfigShopSortResult[]>();
@@ -28,7 +28,7 @@ const popupConfirm = (selected: PickerBaseEvent) => {
     showShopSortPopup.value = false;
 };
 
-const from = ref<User.ShopEnterParamse>({
+const from = ref<Shop.ShopEnterParamse>({
     address: "",
     backImage: "",
     contactName: "",
@@ -66,7 +66,7 @@ const delClick = (key: "shopLogo" | "faceImage" | "backImage" | "imageList", ind
 };
 
 const submitClick = async () => {
-    userShopEnterApi(from.value);
+    shopEnterApi(from.value);
 };
 </script>
 

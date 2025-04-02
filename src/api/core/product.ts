@@ -35,12 +35,24 @@ export namespace Product {
         merchSkuList: Specification[];
         sort: string;
     }
+    export interface SearchParams extends Paging {
+        shopSortId: string;
+        value: string;
+    }
 }
 
 // 商品详情
 export const productDetailApi = (data: { id: number | string }) => {
     return unInstance.post<UnData, { id: number | string }, IUnResponseData<null, Product.Detail>>(
         "/merch/normalMerchDetail",
+        data
+    );
+};
+
+// 首页商品搜索
+export const productSearchApi = (data: Product.SearchParams) => {
+    return unInstance.post<UnData, Product.SearchParams, IUnResponseData<Product.Product[], null>>(
+        "/merch/normalMerchList",
         data
     );
 };

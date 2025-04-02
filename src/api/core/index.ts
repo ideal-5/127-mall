@@ -9,3 +9,4 @@ export * from "./address";
 export * from "./order";
 export * from "./underwear";
 export * from "./directSelling";
+export * from "./shop";
