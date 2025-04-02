@@ -10,3 +10,4 @@ export * from "./order";
 export * from "./underwear";
 export * from "./directSelling";
 export * from "./shop";
+export * from "./chat";

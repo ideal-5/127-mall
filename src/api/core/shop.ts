@@ -57,6 +57,7 @@ export namespace Shop {
         shopName: string;
         shopLogo: string;
         sortId: number;
+        userId: number;
     }
     export interface MerchList {
         id: number;

@@ -154,7 +154,14 @@ const showSearxhInp = ref(false); // 是否显示搜索框 && 是否聚焦
                                         <span class="i-icon-park-outline:transaction-order size-38 mr10"></span>
                                         <span>我的订单</span>
                                     </div>
-                                    <div class="box-border py15 px20 flex truncate">
+                                    <div
+                                        class="box-border py15 px20 flex truncate"
+                                        @click.stop="
+                                            gotoPage(
+                                                `/pages/message/chat?toid=${shopInfo?.userId}&toname=${shopInfo?.shopName}`
+                                            )
+                                        "
+                                    >
                                         <span class="i-ri:customer-service-line size-38 mr10"></span>
                                         <span>客服</span>
                                     </div>
