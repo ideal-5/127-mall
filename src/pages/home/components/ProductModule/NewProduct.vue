@@ -5,6 +5,14 @@
 -->
 <script setup lang="ts">
 import { gotoPage } from "@/utils/uni";
+import { newProductProductListApi } from "@/api";
+import type { NewProduct } from "@/api";
+
+const list = ref<NewProduct.Product[]>([]);
+onMounted(async () => {
+    let { data } = await newProductProductListApi({ page: 1, limit: 8 });
+    list.value = data;
+});
 </script>
 
 <template>
@@ -20,12 +28,12 @@ import { gotoPage } from "@/utils/uni";
             <div class="text-18 text-#717171 b-l-solid b-#717171 b-l-1 pl-15">限时限量抢好物</div>
         </div>
         <div class="w-full flex flex-wrap justify-between">
-            <div v-for="(item, index) in 8" :key="index" class="w-142 h-134 mb-48 position-relative">
-                <image :src="`https://picsum.photos/200?random=${Math.random()}`" mode="aspectFill" class="size-full b-rd-10" />
+            <div v-for="(item, index) in list" :key="item.id" class="w-142 h-134 mb-48 position-relative">
+                <image :src="item.imageUrl" mode="aspectFill" class="size-full b-rd-10" />
                 <div
                     class="text-18 font-500 text-#EC3013 bg-#FEEAE7 position-absolute top-100% left-50% transform -translate-50% b-rd-999 px-16 py-8"
                 >
-                    ￥66.70
+                    ￥{{ item.currentPrice }}
                 </div>
             </div>
         </div>

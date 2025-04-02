@@ -8,7 +8,7 @@ export namespace Underwear {
 
     export interface ProductParams extends Paging {
         merchName?: string;
-        sortConfig: string;
+        sortConfig?: string;
     }
     export interface ProductRecommendParams extends Paging {
         merchName?: string;

@@ -168,7 +168,7 @@ async function submitOrder() {
                 </div>
                 <div class="flex-1 min-h0 wfull">
                     <scroll-view scroll-y class="wfull hfull overflow-scroll" @scrolltolower="getList(true)">
-                        <div class="wfull flex mb30 h100vh" v-for="(item, index) in list">
+                        <div class="wfull flex mb30" v-for="(item, index) in list">
                             <div class="size-220 flex-shrink-0">
                                 <image :src="item.skuImage" mode="aspectFill" class="b-rd-10 size-full" />
                             </div>

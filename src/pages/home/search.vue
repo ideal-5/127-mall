@@ -45,7 +45,7 @@ async function getProductList(isPush: boolean = false) {
     });
     if (isPush) {
         paging.page++;
-        WaterfallsFlowRef.value.pushData(data.map((item) => ({ ...item, img: item.imageUrl, idk: `key${item.id}` })));
+        WaterfallsFlowRef.value.pushData(data.map((item) => ({ ...item, img: item.imageUrl, idKey: `key${item.id}` })));
     } else {
         paging.page = 1;
         WaterfallsFlowRef.value.clearList();

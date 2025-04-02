@@ -5,6 +5,14 @@
 -->
 <script setup lang="ts">
 import { gotoPage } from "@/utils/uni";
+import { underwearProductListApi } from "@/api";
+import type { Underwear } from "@/api";
+
+const list = ref<Underwear.Product[]>([]);
+onMounted(async () => {
+    let { data } = await underwearProductListApi({ page: 1, limit: 8 });
+    list.value = data;
+});
 </script>
 
 <template>
@@ -24,34 +32,18 @@ import { gotoPage } from "@/utils/uni";
         <div class="w-full flex justify-between">
             <div class="flex flex-col w-148">
                 <div class="w-full h-200 mb-8">
-                    <image
-                        :src="`https://picsum.photos/200/300?random=${Math.random()}`"
-                        mode="aspectFill"
-                        class="size-full b-rd-10"
-                    />
+                    <image :src="list?.[0]?.imageUrl" mode="aspectFill" class="size-full b-rd-10" />
                 </div>
                 <div class="w-full h-236">
-                    <image
-                        :src="`https://picsum.photos/200/300?random=${Math.random()}`"
-                        mode="aspectFill"
-                        class="size-full b-rd-10"
-                    />
+                    <image :src="list?.[1]?.imageUrl" mode="aspectFill" class="size-full b-rd-10" />
                 </div>
             </div>
             <div class="flex flex-col w-148">
                 <div class="w-full h-246 mb-8">
-                    <image
-                        :src="`https://picsum.photos/200/300?random=${Math.random()}`"
-                        mode="aspectFill"
-                        class="size-full b-rd-10"
-                    />
+                    <image :src="list?.[2]?.imageUrl" mode="aspectFill" class="size-full b-rd-10" />
                 </div>
                 <div class="w-full h-190">
-                    <image
-                        :src="`https://picsum.photos/200/300?random=${Math.random()}`"
-                        mode="aspectFill"
-                        class="size-full b-rd-10"
-                    />
+                    <image :src="list?.[3]?.imageUrl" mode="aspectFill" class="size-full b-rd-10" />
                 </div>
             </div>
         </div>

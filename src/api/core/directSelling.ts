@@ -12,7 +12,7 @@ export namespace DirectSelling {
     }
     export interface ProductParams extends Paging {
         merchName?: string;
-        sortId: number;
+        sortId?: number;
     }
     export interface Product {
         id: number;

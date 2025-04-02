@@ -37,6 +37,7 @@ const getList = async (isPush: boolean = false) => {
         }
     } else {
         if (WaterfallsFlowRef.value) {
+            paging.value.page = 1;
             WaterfallsFlowRef.value.clearList();
             await WaterfallsFlowRef.value.pushData(data.map((item) => ({ ...item, img: item.imageUrl })));
         }

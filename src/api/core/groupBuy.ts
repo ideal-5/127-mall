@@ -1,6 +1,5 @@
 import { unInstance } from "@/service";
 
-// 文件1
 export namespace GroupBuy {
     export interface Paging {
         page: number | string;

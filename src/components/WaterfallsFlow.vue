@@ -5,6 +5,7 @@ import { deepClone } from "@/utils/tool";
 // 接收的值
 interface ReceiveData {
     img: string;
+    idKey: string;
     [key: string]: any;
 }
 interface Columns {

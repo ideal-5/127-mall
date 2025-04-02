@@ -11,7 +11,7 @@ export namespace SecondHand {
         name: string;
     }
     export interface ProductParams extends Paging {
-        sortId: number;
+        sortId?: number;
         merchName?: string;
     }
     export interface Product {

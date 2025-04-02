@@ -15,7 +15,7 @@ export namespace Product {
         description: string;
         saleCount: number;
         merchId: number;
-        shopId:number;
+        shopId: number;
     }
     export interface Banner {
         id: number;
@@ -35,7 +35,7 @@ export namespace Product {
         properties: { value: string; id: number; type: string; remark: string }[];
         merchSkuList: Specification[];
         sort: string;
-        shopLogo:string;
+        shopLogo: string;
     }
     export interface SearchParams extends Paging {
         shopSortId: string;
@@ -57,4 +57,9 @@ export const productSearchApi = (data: Product.SearchParams) => {
         "/merch/normalMerchList",
         data
     );
+};
+
+// 首页热门推荐
+export const productRecommendApi = (data: Product.Paging) => {
+    return unInstance.post<UnData, Product.Paging, IUnResponseData<Product.Product[], null>>("/merch/homePage", data);
 };
