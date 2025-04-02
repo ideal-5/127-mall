@@ -2,6 +2,9 @@
 import { onMounted, ref } from "vue";
 import { OrderListApi } from "@/api";
 import type { Order } from "@/api";
+import { useStyle } from "@/hooks/useStyle";
+
+const stickyStyle = useStyle().sticky("navBar");
 
 const activeTab = ref(0);
 // 10未支付 20已支付 30已完成 40已发货 50已完成 60已评论 90拼团中 70退款
@@ -9,7 +12,7 @@ const tabList = ref([
     { name: "全部", value: "" },
     { name: "未支付", value: "10" },
     { name: "已支付", value: "20" },
-    { name: "已完成", value: "30" },
+    { name: "代发货", value: "30" },
     { name: "已发货", value: "40" },
     { name: "已完成", value: "50" },
     { name: "已评论", value: "60" },
@@ -51,29 +54,64 @@ async function getOrderList(isPush: boolean = false) {
 
 <template>
     <div class="main bg-#F2F2F2">
-        <NavBar>我的订单</NavBar>
+        <NavBar barColor="#fff">我的订单</NavBar>
         <Tabs
             :tabList="tabList"
             keyName="name"
             v-model:activeTab="activeTab"
-            style="--tabs-line-bagcolor: #ffaa48"
+            style="background-color: #fff; --tabs-line-bagcolor: #ffaa48"
             @change="getOrderList(false)"
+            :style="stickyStyle"
         ></Tabs>
         <div class="wfull box-border px34">
-            <div class="bg-#fff b-rd-14 mt25" v-for="(item, index) in orderList" :key="item.id">
-                <div class="wfull flex items-center justify-between b-#EFEFEF b-1rpx b-b-solid">
+            <div class="bg-#fff b-rd-14 mt25" v-for="(order, index) in orderList" :key="order.id">
+                <!-- 头部状态区域 -->
+                <div class="wfull flex items-center justify-between b-#EFEFEF b-1rpx b-b-solid box-border p18">
                     <div class="flex items-center">
-                        <image :src="item.shopLogo" mode="aspectFill" class="size-50 b-rd-full" />
-                        <div>{{ item.shopName }}</div>
+                        <image :src="order.shopLogo" mode="aspectFill" class="size-50 b-rd-full mr14" />
+                        <div class="text-26 fw500" >{{ order.shopName }}</div>
                         <span i-mdi:chevron-right></span>
                     </div>
-                    <div>{{ item.statusText }}</div>
+                    <div class="text-#FF9113 text-26" >{{ order.statusText }}</div>
                 </div>
-                <div class="wfull flex">
-                    <div>
-                        <image src="" mode="aspectFill" />
+                <!-- 中间商品区域 -->
+                <div class="wfull box-border p18 b-#EFEFEF b-1rpx b-b-solid">
+                    <div class="wfull flex" v-for="(product, ind) in order.orderDetails" :key="product.id">
+                        <div class="size-186 flex-shrink-0 mr24">
+                            <image :src="product.skuImage" mode="aspectFill" class="size-186 b-rd-10" />
+                        </div>
+                        <div class="flex-1 min-w-0 h186 flex-col justify-around box-border py25">
+                            <div class="flex items-center justify-between fw500 text-26 wfull">
+                                <div class="flex-1 min-w-0 overflow-scroll truncate-1">{{ product.merchName }}</div>
+                                <div class="wfit flex-shrink-0 ml30">￥{{ product.currentAmount }}</div>
+                            </div>
+                            <div class="flex items-center justify-between text-22 text-#AEAEAE wfull">
+                                <div class="flex-1 min-w-0 overflow-scroll truncate-1">{{ product.skuName }}</div>
+                                <div class="wfit flex-shrink-0 ml30">X{{ product.stock }}</div>
+                            </div>
+                            <div class="wfull flex overflow-scroll">
+                                <div
+                                    class="bg-#FEEAE7 b-#EC3013 b-1rpx b-solid b-rd-6 text-14 text-#EC3013 mr10 box-border px10 py4 flex-center"
+                                    v-for="(tag, tabInd) in product?.properties"
+                                    :key="tag.id"
+                                >
+                                    {{ tag.value }}
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                    <div></div>
+                    <div class="wfull flex items-center justify-end">
+                        <div>
+                            <span class="text-20">需付款￥</span>
+                            <span class="fw500 text-32">{{ order.currentAmount }}</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- 底部按钮区域 -->
+                <div class="flex items-center wfull box-border p18 justify-end">
+                    <div class="text-#FFAA48 text-26 b-#FFAA48 b-solid b-1rpx box-border px18 py10 b-rd-full">
+                        再来一单
+                    </div>
                 </div>
             </div>
         </div>

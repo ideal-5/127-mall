@@ -6,7 +6,7 @@ export namespace Order {
         limit: number | string;
     }
     export interface ListParams extends Paging {
-        status:string; // 10未支付 20已支付 30已完成 40已发货 50已完成 60已评论 90拼团中 70退款
+        status: string; // 10未支付 20已支付 30已完成 40已发货 50已完成 60已评论 90拼团中 70退款
     }
     export interface OrderDetail {
         /**
@@ -36,11 +36,15 @@ export namespace Order {
         /**
          * 商品图片
          */
-        skuImage: null;
+        skuImage: string;
+        /**
+         * 商品规格名称
+         */
+        skuName: string;
         /**
          * 商品名称
          */
-        skuName: string;
+        merchName: string;
         /**
          * 订单状态
          */
@@ -49,6 +53,10 @@ export namespace Order {
          * 数量
          */
         stock: number;
+        /**
+         * 商品标签
+         */
+        properties: { id: number; value: string; remark: string }[];
     }
     export interface OrderInfo {
         createTime: string;
