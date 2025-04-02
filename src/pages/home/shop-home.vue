@@ -1,49 +1,64 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { onLoad, onReachBottom } from "@dcloudio/uni-app";
+import { shopDetailApi } from "@/api";
+import type { Shop } from "@/api";
+import { gotoPage } from "@/utils/uni";
 
-const swiperList = ref([
-    "https://storage.360buyimg.com/jdc-article/NutUItaro34.jpg",
-    "https://storage.360buyimg.com/jdc-article/NutUItaro2.jpg",
-    "https://storage.360buyimg.com/jdc-article/welcomenutui.jpg",
-    "https://storage.360buyimg.com/jdc-article/fristfabu.jpg",
-]);
+const shopInfo = ref<Shop.ShopInfo>();
+const merchList = ref<Shop.MerchList[]>();
+const shopBannerList = ref<Shop.Banner[]>();
 
+const activeTabs = ref<string>();
 const tabList = ref([
-    {
-        title: "综合",
-        key: "all",
-    },
-    {
-        title: "销量",
-        key: "phone",
-    },
-    {
-        title: "新品",
-        key: "computer",
-    },
-    {
-        title: "价格(降序)",
-        key: "life",
-    },
-    {
-        title: "价格(升序)",
-        key: "123",
-    },
+    { title: "综合", key: "10" },
+    { title: "销量", key: "20" },
+    { title: "新品", key: "30" },
+    { title: "价格(降序)", key: "40" },
+    { title: "价格(升序)", key: "50" },
 ]);
-const activeTabs = ref("all");
+watch(
+    () => activeTabs.value,
+    () => getList(false)
+);
+
+let shopId: number;
+onLoad(async (query) => {
+    if (!query) return;
+    shopId = query.id as number;
+    activeTabs.value = tabList.value[0].key;
+});
+
+const paging = {
+    page: 1,
+    limit: 10,
+};
+async function getList(isPush: boolean = false) {
+    let { body } = await shopDetailApi({
+        id: shopId,
+        page: isPush ? paging.page + 1 : 1,
+        limit: paging.limit,
+        orderBy: activeTabs.value || "10",
+        merchName: searchValue.value,
+    });
+    shopInfo.value = body.shopInfo;
+    shopBannerList.value = body.shopBannerList;
+    if (isPush) {
+        if (body.merchList.length === 0) return;
+        paging.page++;
+        merchList.value?.push(...body.merchList);
+    } else {
+        paging.page = 1;
+        merchList.value = body.merchList;
+    }
+}
+
+onReachBottom(() => getList(true));
 
 const showMore = ref(false); // 是否显示更多气泡
 
 const searchValue = ref(""); // 搜索框值
 
 const showSearxhInp = ref(false); // 是否显示搜索框 && 是否聚焦
-
-const tapSearch = () => {
-    uni.showToast({
-        title: searchValue.value,
-        icon: "none",
-    });
-};
 </script>
 
 <template>
@@ -63,10 +78,10 @@ const tapSearch = () => {
                             >
                                 <image
                                     class="size-82 b-rd-10 mr16 flex-shrink-0"
-                                    src="https://picsum.photos/id/237/200/300"
+                                    :src="shopInfo?.shopLogo"
                                     mode="aspectFill"
                                 />
-                                <div class="font-500 text-28 flex-1 min-w-0 truncate">Moon橘子店</div>
+                                <div class="font-500 text-28 flex-1 min-w-0 truncate">{{ shopInfo?.shopName }}</div>
                             </nut-transition>
                             <nut-transition
                                 :show="showSearxhInp"
@@ -86,7 +101,8 @@ const tapSearch = () => {
                                         --nut-searchbar-background: transparent;
                                         --nut-searchbar-input-background: rgba(255, 255, 255, 0.5);
                                     "
-                                    @search="tapSearch"
+                                    @search="getList(false)"
+                                    @clear="getList(false)"
                                 >
                                     <template #leftin>
                                         <div class="size-40 flex-center">
@@ -94,7 +110,7 @@ const tapSearch = () => {
                                         </div>
                                     </template>
                                     <template #rightout>
-                                        <div class="wfull hfull flex-center" @click.stop="tapSearch">搜索</div>
+                                        <div class="wfull hfull flex-center" @click.stop="getList(false)">搜索</div>
                                     </template>
                                 </nut-searchbar>
                             </nut-transition>
@@ -131,7 +147,10 @@ const tapSearch = () => {
                                         <span class="i-mdi:cart-minus size-38 mr10"></span>
                                         <span>购物车</span>
                                     </div>
-                                    <div class="box-border py15 px20 b-b-solid b-b-1 b-b-#EFEFEF flex truncate">
+                                    <div
+                                        class="box-border py15 px20 b-b-solid b-b-1 b-b-#EFEFEF flex truncate"
+                                        @click.stop="gotoPage('/pages/order/order-list')"
+                                    >
                                         <span class="i-icon-park-outline:transaction-order size-38 mr10"></span>
                                         <span>我的订单</span>
                                     </div>
@@ -156,9 +175,9 @@ const tapSearch = () => {
                 auto-play="30000"
                 class="w-full h-996"
             >
-                <nut-swiper-item v-for="(item, index) in swiperList" :key="index">
+                <nut-swiper-item v-for="(item, index) in shopBannerList" :key="item.id">
                     <!-- <image src="" mode="aspectFill" class="wfull hfull bg-emerald" /> -->
-                    <image :src="item" mode="aspectFill" class="wfull hfull" />
+                    <image :src="item.imageUrl" mode="aspectFill" class="wfull hfull" />
                 </nut-swiper-item>
             </nut-swiper>
         </div>
@@ -181,25 +200,35 @@ const tapSearch = () => {
                     <span class="i-tabler:triangle-inverted text-12"></span>
                 </div>  -->
             </div>
-            <div class="flex-1 min-h-0 wfull flex flex-wrap justify-between overflow-scroll">
-                <div v-for="(item, index) in 9" :key="index" :id="index" class="w-326 mb-[24px]">
-                    <div class="w-full h-342 overflow-hidden flex">
-                        <image src="https://picsum.photos/200/300" mode="aspectFill" class="w-full hfull" />
-                    </div>
-                    <div class="bg-#fff b-rd-b-16 box-border p-16">
-                        <div class="text-24">我是商品</div>
-                        <div>
-                            <span class="font-500 text-18">￥</span>
-                            <span class="text-24 font-700">100.00</span>
-                        </div>
-                        <div class="flex items-center">
-                            <div class="flex items-center border-1 border-#000 border-solid">
-                                <image src="@/static/img/vip1.png" mode="scaleToFill" class="size-25" />
-                                <span class="text-12 mx-10">省20.00</span>
+            <div class="flex-1 min-h-0 wfull flex flex-wrap justify-between">
+                <scroll-view scroll-y class="wfull hfull" @scrolltolower="getList(true)">
+                    <div class="wfull hfull flex flex-wrap justify-between">
+                        <div
+                            v-for="(item, index) in merchList"
+                            :key="item.id"
+                            :id="index"
+                            class="w-326 mb-[24px]"
+                            @click.stop="gotoPage(`/pages/product/details?id=${item.id}`)"
+                        >
+                            <div class="w-full h-342 overflow-hidden flex">
+                                <image :src="item.imageUrl" mode="aspectFill" class="w-full hfull" />
+                            </div>
+                            <div class="bg-#fff b-rd-b-16 box-border p-16">
+                                <div class="text-24">{{ item.merchName }}</div>
+                                <div>
+                                    <span class="font-500 text-18">￥</span>
+                                    <span class="text-24 font-700">{{ item.price }}</span>
+                                </div>
+                                <div class="flex items-center">
+                                    <div class="flex items-center border-1 border-#000 border-solid">
+                                        <image src="@/static/img/vip1.png" mode="scaleToFill" class="size-25" />
+                                        <span class="text-12 mx-10">省{{ item.price - item.currentPrice }}</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
+                </scroll-view>
             </div>
         </div>
     </div>

@@ -68,6 +68,10 @@ export namespace Shop {
         saleCount: number;
         merchId: number;
     }
+    export interface Banner {
+        id: number;
+        imageUrl: string;
+    }
 
     export interface SearchParams extends Paging {
         shopSortId: string;
@@ -76,6 +80,16 @@ export namespace Shop {
     export interface SearchListResult {
         shopInfo: ShopInfo;
         merchList: MerchList[];
+    }
+    export interface ShopDetailResult {
+        shopInfo: ShopInfo;
+        merchList: MerchList[];
+        shopBannerList: Banner[];
+    }
+    export interface DetailParams extends Paging {
+        id: number;
+        orderBy: string;
+        merchName: string;
     }
 }
 
@@ -88,6 +102,14 @@ export const shopEnterApi = (data: Shop.ShopEnterParamse) => {
 export const shopSearchListApi = (data: Shop.SearchParams) => {
     return unInstance.post<UnData, Shop.SearchParams, IUnResponseData<Shop.SearchListResult[], null>>(
         "/v1/shop/shopList",
+        data
+    );
+};
+
+// 店铺详情
+export const shopDetailApi = (data: Shop.DetailParams) => {
+    return unInstance.post<UnData, Shop.DetailParams, IUnResponseData<null, Shop.ShopDetailResult>>(
+        "/shop/shopDetail",
         data
     );
 };

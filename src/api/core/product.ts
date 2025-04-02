@@ -15,6 +15,7 @@ export namespace Product {
         description: string;
         saleCount: number;
         merchId: number;
+        shopId:number;
     }
     export interface Banner {
         id: number;
@@ -34,6 +35,7 @@ export namespace Product {
         properties: { value: string; id: number; type: string; remark: string }[];
         merchSkuList: Specification[];
         sort: string;
+        shopLogo:string;
     }
     export interface SearchParams extends Paging {
         shopSortId: string;

@@ -139,7 +139,14 @@ const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
         >
             <scroll-view class="wfull flex-1 min-h-0 overflow-scroll" scroll-y>
                 <!-- 商品列表 -->
-                <WaterfallsFlow ref="WaterfallsFlowRef">
+                <WaterfallsFlow
+                    ref="WaterfallsFlowRef"
+                    @itemClick="
+                        (i) => {
+                            gotoPage(`/pages/product/details?id=${i.id}`);
+                        }
+                    "
+                >
                     <template #text="{ item }">
                         <div class="bg-#fff b-rd-b-16 box-border p-16">
                             <div class="text-24">{{ item.merchName }}</div>
@@ -168,10 +175,9 @@ const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
                     class="w-full border-b-solid border-b-#DCDCDC border-b-1 box-border px-30 mb24"
                     v-for="(item, index) in shopList"
                     :key="item.shopInfo.id"
-                    @click.stop="gotoPage('shop-home')"
                 >
                     <div class="flex items-center justify-between">
-                        <div class="flex-center">
+                        <div class="flex-center" @click.stop="gotoPage('shop-home?id=' + item.shopInfo.id)">
                             <div class="mr24">
                                 <image :src="item.shopInfo.shopLogo" mode="aspectFill" class="size-84 b-rd-12" />
                             </div>
@@ -181,6 +187,7 @@ const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
                             </div>
                         </div>
                         <div
+                            @click.stop="gotoPage('shop-home?id=' + item.shopInfo.id)"
                             class="bg-[linear-gradient(270deg,#FFAA48_0%,#FC685C_100%)] b-rd-full text-#fff text-24 flex-center box-border px20 py10"
                         >
                             <span>进店</span>
@@ -192,6 +199,7 @@ const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
                             class="size-168 b-rd-10 overflow-hidden relative"
                             v-for="(it, ind) in item.merchList"
                             :key="ind"
+                            @click.stop="gotoPage(`/pages/product/details?id=${it.id}`)"
                         >
                             <image :src="it.imageUrl" mode="aspectFill" class="size-full" />
                             <div

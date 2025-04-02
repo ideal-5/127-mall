@@ -21,6 +21,7 @@ import { useUserStore } from "@/store";
 const userStore = useUserStore();
 
 let productType = ""; // 商品类型标志  JUST_SEND 厂家直销  GROUP_BUY 团购 SECOND_BUY 二手 UNDERWEAR_BUY 内衣 NEW_BUY 新品上市 COIN_BUY 积分
+const shopLogo = ref("");
 const listId = ref<number>();
 const bannerList = ref<Product.Banner[]>([]); // 轮播图
 const productInfo = ref<{ activePrice: number } & Product.Product>(); // 商品信息
@@ -44,6 +45,7 @@ onLoad(async (query) => {
     if (!query) return;
     let { body } = await productDetailApi({ id: query.id as number });
     productType = body.sort;
+    shopLogo.value = body.shopLogo;
     bannerList.value = body.merchBannerList;
     productInfo.value = {
         ...body.shopMerch,
@@ -376,8 +378,8 @@ async function submitOrder(paramsfun: {
         <!-- 底部 -->
         <div class="flex items-center box-border px32" :style="bottomStyle">
             <div flex-1 min-w-0 h100 flex items-center justify-around>
-                <div flex-col items-center>
-                    <image src="https://picsum.photos/seed/picsum/200/300" mode="aspectFill" size-48 b-rd-full />
+                <div flex-col items-center   @click.stop="gotoPage('/pages/home/shop-home?id=' + productInfo?.shopId)" >
+                    <image :src="shopLogo" mode="aspectFill" size-48 b-rd-full />
                     <span text-22>进店</span>
                 </div>
                 <div flex-col items-center>
