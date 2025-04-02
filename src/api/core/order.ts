@@ -97,6 +97,17 @@ export namespace Order {
          * 数量
          */
         stock: number;
+        orderType: string;
+    }
+    export interface CommentParams {
+        id: number;
+        review: string;
+        imageList: string[];
+        tagList: number;
+    }
+    export interface CommentTag {
+        reviewTag: string;
+        id: number;
     }
 }
 
@@ -105,5 +116,23 @@ export const OrderListApi = (data: Order.ListParams) => {
     return unInstance.post<UnData, Order.ListParams, IUnResponseData<Order.OrderInfo[], null>>(
         "/v1/order/orderList",
         data
+    );
+};
+
+// 确认收货
+export const OrderConfirmApi = (data: { id: number }) => {
+    return unInstance.post<UnData, { id: number }, IUnResponseData<null, null>>("/v1/order/receiveMerch", data);
+};
+
+// 发布评论
+export const orderCommentApi = (data: Order.CommentParams) => {
+    return unInstance.post<UnData, Order.CommentParams, IUnResponseData<null, null>>("/merch/merchReview", data);
+};
+
+// 获取产品评论标签
+export const orderCommentTagListApi = (params: { id: number }) => {
+    return unInstance.get<UnData, { id: number }, IUnResponseData<null, Order.CommentTag[]>>(
+        "/merch/getShopReviewTag",
+        { params }
     );
 };

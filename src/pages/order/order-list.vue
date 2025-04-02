@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
-import { OrderListApi } from "@/api";
+import { OrderListApi, OrderConfirmApi, productIdApi } from "@/api";
 import type { Order } from "@/api";
 import { useStyle } from "@/hooks/useStyle";
+import ReviewPopup from "./components/ReviewPopup.vue";
+import { gotoPage } from "@/utils/uni";
 
 const stickyStyle = useStyle().sticky("navBar");
 
@@ -27,27 +29,63 @@ const paging = {
 
 onMounted(async () => getOrderList(false));
 
-const orderList = ref<(Order.OrderInfo & { statusText: string })[]>([]);
+const orderList = ref<(Order.OrderInfo & { statusText: string; productId: number })[]>([]);
 async function getOrderList(isPush: boolean = false) {
     let { data } = await OrderListApi({
         page: isPush ? paging.page + 1 : 1,
         limit: paging.limit,
         status: tabList.value[activeTab.value].value,
     });
-    let ndata = data.map((item) => {
+    let ndata: (Order.OrderInfo & { statusText: string; productId: number })[] = [];
+    await Promise.all(
+        data.map(async (item) => {
+            if (item.orderType !== "COIN_BUY") {
+                let { body } = await productIdApi({ skuId: item.orderDetails[0].skuId });
+                if (body) {
+                    ndata.push({ ...item, statusText: "", productId: body });
+                }
+            }
+        })
+    );
+    let zndata = ndata.map((item) => {
         let tab = tabList.value.find((tab) => tab.value === item.status);
         return {
-            statusText: tab?.name || "未知",
             ...item,
+            statusText: tab?.name || "未知",
         };
     });
+    console.log("ndata", zndata);
     if (isPush) {
         if (data.length === 0) return;
         paging.page++;
-        orderList.value.push(...ndata);
+        orderList.value.push(...zndata);
     } else {
         paging.page = 1;
-        orderList.value = ndata;
+        orderList.value = zndata;
+    }
+}
+
+// 收货
+async function receiveGoods(id: number) {
+    await OrderConfirmApi({ id });
+    let index = tabList.value.findIndex((it) => it.value === "50");
+    if (index !== -1) {
+        activeTab.value = index;
+    }
+}
+// 评论
+const reviewShow = ref(false);
+const activeOrderId = ref<number | null>(null); // 子订单id
+const activeProductId = ref<number>(); // 商品id
+// const active;
+async function reviewClick(order: Order.OrderInfo & { statusText: string; productId: number }) {
+    if (order.orderDetails.length === 1) {
+        // 调弹窗
+        activeOrderId.value = order.orderDetails[0].id;
+        activeProductId.value = order.productId;
+        reviewShow.value = true;
+    } else {
+        // 进详情
     }
 }
 </script>
@@ -69,15 +107,19 @@ async function getOrderList(isPush: boolean = false) {
                 <div class="wfull flex items-center justify-between b-#EFEFEF b-1rpx b-b-solid box-border p18">
                     <div class="flex items-center">
                         <image :src="order.shopLogo" mode="aspectFill" class="size-50 b-rd-full mr14" />
-                        <div class="text-26 fw500" >{{ order.shopName }}</div>
+                        <div class="text-26 fw500">{{ order.shopName }}</div>
+                        <div class="text-26 fw500">{{ order.orderType }}</div>
                         <span i-mdi:chevron-right></span>
                     </div>
-                    <div class="text-#FF9113 text-26" >{{ order.statusText }}</div>
+                    <div class="text-#FF9113 text-26">{{ order.statusText }}</div>
                 </div>
                 <!-- 中间商品区域 -->
                 <div class="wfull box-border p18 b-#EFEFEF b-1rpx b-b-solid">
                     <div class="wfull flex" v-for="(product, ind) in order.orderDetails" :key="product.id">
-                        <div class="size-186 flex-shrink-0 mr24">
+                        <div
+                            class="size-186 flex-shrink-0 mr24"
+                            @click="gotoPage(`/pages/product/details?id=${product.skuId}`)"
+                        >
                             <image :src="product.skuImage" mode="aspectFill" class="size-186 b-rd-10" />
                         </div>
                         <div class="flex-1 min-w-0 h186 flex-col justify-around box-border py25">
@@ -109,13 +151,35 @@ async function getOrderList(isPush: boolean = false) {
                 </div>
                 <!-- 底部按钮区域 -->
                 <div class="flex items-center wfull box-border p18 justify-end">
-                    <div class="text-#FFAA48 text-26 b-#FFAA48 b-solid b-1rpx box-border px18 py10 b-rd-full">
-                        再来一单
+                    <!-- <div class="order-btn">再来一单</div> -->
+                    <div class="order-btn" v-if="order.status === '10'">立即支付</div>
+                    <div class="order-btn" v-if="order.status === '40'" @click.stop="receiveGoods(order.id)">
+                        已收货
                     </div>
+                    <div class="order-btn" v-if="order.status === '50'" @click.stop="reviewClick(order)">评论</div>
                 </div>
             </div>
         </div>
     </div>
+    <ReviewPopup
+        v-if="activeOrderId && activeProductId"
+        v-model:visible="reviewShow"
+        :activeOrderId="activeOrderId"
+        :activeProductId="activeProductId"
+    ></ReviewPopup>
 </template>
 
-<style scoped lang="scss"></style>
+<style scoped lang="scss">
+.order-btn {
+    color: #ffaa48;
+    font-size: 26rpx;
+    border: 1rpx solid #ffaa48;
+    box-sizing: border-box;
+    padding: 10rpx 18rpx;
+    border-radius: 999999rpx;
+    margin-right: 20rpx;
+    &:last-child {
+        margin-right: 0;
+    }
+}
+</style>

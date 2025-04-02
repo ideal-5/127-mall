@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
 import { useStyle } from "@/hooks/useStyle";
 import WaterfallsFlow from "@/components/WaterfallsFlow.vue";
+import Comment from "./components/Comment.vue";
 import { gotoPage } from "@/utils/uni";
 import {
     productDetailApi,
@@ -303,56 +304,7 @@ async function submitOrder(paramsfun: {
                 <image :src="productInfo?.description" mode="widthFix" class="wfull" />
             </div>
             <!-- 评论 -->
-            <div bg-white wfull mt20 mb20 @click.stop="gotoPage('comment')">
-                <div flex items-center justify-between h80 box-border px-10>
-                    <div text-28 fw500>商品评价(2.2万)</div>
-                    <div i-mdi:chevron-right></div>
-                </div>
-                <div wfull flex items-center mb-20 box-border px-10>
-                    <div
-                        class="bg-#FEF3DA b-rd-6 text-20 box-border px10 py5 mr15"
-                        v-for="(item, index) in 3"
-                        :key="index"
-                    >
-                        <span>回头客 </span>
-                        <span class="text-#949494">1.2万</span>
-                    </div>
-                </div>
-
-                <div wfull>
-                    <div
-                        class="b-b-#E8E8E8 box-border py-15 wfull b-b-solid b-b-1rpx last:b-b-0 box-border px-10"
-                        v-for="(item, index) in 3"
-                        :key="index"
-                    >
-                        <div flex items-center>
-                            <image
-                                src="https://picsum.photos/seed/picsum/200/300"
-                                mode="aspectFill"
-                                class="size-42 b-rd-full mr10"
-                            />
-                            <div class="text-#949494" text-20>我是用户名</div>
-                        </div>
-                        <div wfull flex justify-between>
-                            <div class="text-#949494 text-24 flex-1 min-w-0 truncate-2 h-fit mt18">
-                                特别好用亲肤 快递也很快， 物有所值比我之前 买的都是好用会一直回购的，会 特别好用亲肤
-                                快递也很快， 物有所值比我之前 买的都是好用会一直回购的，会 特别好用亲肤 快递也很快，
-                                物有所值比我之前 买的都是好用会一直回购的，会 特别好用亲肤 快递也很快， 物有所值比我之前
-                                买的都是好用会一直回购的，会 特别好用亲肤 快递也很快， 物有所值比我之前
-                                买的都是好用会一直回购的，会
-                            </div>
-                            <div w200 flex justify-end flex-shrink-0>
-                                <image
-                                    src="https://picsum.photos/seed/picsum/200/300"
-                                    mode="aspectFill"
-                                    size-90
-                                    b-rd-16
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <Comment v-if="productInfo" :productInfo="productInfo"></Comment>
             <!-- 推荐 -->
             <div wfull>
                 <div fw500 text-28 mb20>相关推荐</div>
@@ -378,7 +330,7 @@ async function submitOrder(paramsfun: {
         <!-- 底部 -->
         <div class="flex items-center box-border px32" :style="bottomStyle">
             <div flex-1 min-w-0 h100 flex items-center justify-around>
-                <div flex-col items-center   @click.stop="gotoPage('/pages/home/shop-home?id=' + productInfo?.shopId)" >
+                <div flex-col items-center @click.stop="gotoPage('/pages/home/shop-home?id=' + productInfo?.shopId)">
                     <image :src="shopLogo" mode="aspectFill" size-48 b-rd-full />
                     <span text-22>进店</span>
                 </div>

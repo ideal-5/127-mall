@@ -23,6 +23,7 @@ const config: UserConfig = defineConfig({
             "text-overflow": "ellipsis",
             "word-break": "break-all",
         })],
+        
     ],
     content: {
         pipeline: {

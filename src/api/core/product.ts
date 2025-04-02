@@ -41,6 +41,26 @@ export namespace Product {
         shopSortId: string;
         value: string;
     }
+    export interface CommentTag {
+        count: number;
+        id: number;
+        title: string;
+    }
+    export interface CommentListParams extends Paging {
+        tagId?: number;
+        id: number;
+    }
+    export interface Banners {
+        id: number;
+        imageUrl: string;
+    }
+    export interface Review {
+        review: string;
+    }
+    export interface Comment {
+        banners: Banners[];
+        review: Review;
+    }
 }
 
 // 商品详情
@@ -62,4 +82,27 @@ export const productSearchApi = (data: Product.SearchParams) => {
 // 首页热门推荐
 export const productRecommendApi = (data: Product.Paging) => {
     return unInstance.post<UnData, Product.Paging, IUnResponseData<Product.Product[], null>>("/merch/homePage", data);
+};
+
+// 获取产品id<根据规格id>
+export const productIdApi = (params: { skuId: number | string }) => {
+    return unInstance.get<UnData, { skuId: number | string }, IUnResponseData<null, number>>("/merch/getShopMerchId", {
+        params,
+    });
+};
+
+// 获取商品评论的tab
+export const productCommentTagListApi = (params: { id: number }) => {
+    return unInstance.get<UnData, { id: number }, IUnResponseData<null, Product.CommentTag[]>>(
+        "/merch/merchReviewStatistics",
+        { params }
+    );
+};
+
+// 商品评论列表
+export const productCommentListApi = (data: Product.CommentListParams) => {
+    return unInstance.post<UnData, Product.CommentListParams, IUnResponseData<Product.Comment[], null>>(
+        "/merch/reviewList",
+        data
+    );
 };
