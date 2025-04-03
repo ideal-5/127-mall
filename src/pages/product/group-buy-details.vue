@@ -1,3 +1,4 @@
+<!-- 团购详情页 -->
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
 import { onLoad } from "@dcloudio/uni-app";
@@ -45,7 +46,7 @@ const WaterfallsFlowRef = ref<InstanceType<typeof WaterfallsFlow>>();
 
 onLoad(async (query) => {
     if (!query) return;
-    let { body } = await productDetailApi({ id: query.id as number });
+    let { body } = await productDetailApi({ id: query.productId as number });
     productType = body.sort;
     shopLogo.value = body.shopLogo;
     bannerList.value = body.merchBannerList;
@@ -87,14 +88,12 @@ const activeGroupItem = ref<GroupBuy.GroupList>(); // 当前选中的团购队�
 function createdGroup() {
     submitGroupOrderType.value = "1";
     showSubmitPopup.value = true;
-    openSubmitPopup("buy");
 }
 // 点击参与拼团
 function addGroupClick(item: GroupBuy.GroupList) {
     submitGroupOrderType.value = "2";
     showSubmitPopup.value = true;
     activeGroupItem.value = item;
-    openSubmitPopup("buy");
 }
 
 const showExplainPopup = ref(false); // 说明弹窗
@@ -370,9 +369,7 @@ function shopCardIconClick() {
                 <div
                     flex-col
                     items-center
-                    @click.stop="
-                        gotoPage(`/pages/message/chat?toid=${productInfo?.userId}&toname=${productInfo?.shopName}`)
-                    "
+                    @click.stop="gotoPage(`/pages/message/chat?toid=${productInfo?.userId}&toname=${productInfo?.shopName}`)"
                 >
                     <span i-ri:customer-service-line size-48 />
                     <span text-22>客服</span>
@@ -428,7 +425,7 @@ function shopCardIconClick() {
                 </div>
             </div>
         </div>
-    </nut-popup>
+    </nut-popup> 
     <SubmitOrderPopup
         v-if="productInfo && specificationList && submitPopupType"
         v-model:visible="showSubmitPopup"

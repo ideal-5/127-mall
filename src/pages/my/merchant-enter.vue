@@ -36,7 +36,7 @@ const from = ref<Shop.ShopEnterParamse>({
     faceImage: "",
     identityCode: "",
     imageList: [],
-    msgCode: '',
+    msgCode: "",
     shopLogo: "",
     shopName: "",
     sortId: 0,
@@ -66,7 +66,8 @@ const delClick = (key: "shopLogo" | "faceImage" | "backImage" | "imageList", ind
 };
 
 const submitClick = async () => {
-    shopEnterApi(from.value);
+    await shopEnterApi(from.value);
+    uni.navigateBack();
 };
 </script>
 

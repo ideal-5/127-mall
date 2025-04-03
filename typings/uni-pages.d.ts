@@ -35,6 +35,7 @@ interface NavigateToOptions {
        "/pages/order/order-list" |
        "/pages/product/comment" |
        "/pages/product/details" |
+       "/pages/product/group-buy-details" |
        "/pages/product/point-details" |
        "/pages/product/point-place-order" |
        "/pages/product/swiper" |

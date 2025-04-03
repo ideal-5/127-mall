@@ -134,7 +134,11 @@ const loginClick = async () => {
         <rich-text :nodes="showPopupData?.policy"></rich-text>
     </nut-popup>
 </template>
-
+<route lang="json">
+{
+    "layout": "anyLayout"
+}
+</route>
 <style scoped lang="scss">
 .bg {
     background: url("@/static/bj/login-bj.png");

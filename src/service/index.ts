@@ -6,6 +6,7 @@ import un from "@uni-helper/uni-network";
 // import qs from 'qs'
 // import { showNetworkError } from "./helper";
 import { handleHttpError, handleServerError } from "./handleError";
+import { gotoPage } from "@/utils/uni";
 
 const instance = un.create({
     baseUrl: DefaultBaseUrl,
@@ -62,6 +63,9 @@ instance.interceptors.response.use(
          */
 
         if (data.data?.code !== 200) {
+            if (data.data?.code === 401) {
+                return gotoPage("/pages/login/login");
+            }
             let msg = handleServerError(data.data?.code, data.data?.msg);
             uni.showToast({
                 title: msg || data.data?.msg || "未知错误",
