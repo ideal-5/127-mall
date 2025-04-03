@@ -5,6 +5,7 @@ import type { Order } from "@/api";
 import { useStyle } from "@/hooks/useStyle";
 import ReviewPopup from "./components/ReviewPopup.vue";
 import { gotoPage } from "@/utils/uni";
+import { onReachBottom } from "@dcloudio/uni-app";
 
 const stickyStyle = useStyle().sticky("navBar");
 
@@ -29,32 +30,28 @@ const paging = {
 
 onMounted(async () => getOrderList(false));
 
-const orderList = ref<(Order.OrderInfo & { statusText: string; productId: number })[]>([]);
+const orderList = ref<Order.OrderInfo[]>([]);
 async function getOrderList(isPush: boolean = false) {
     let { data } = await OrderListApi({
         page: isPush ? paging.page + 1 : 1,
         limit: paging.limit,
         status: tabList.value[activeTab.value].value,
     });
-    let ndata: (Order.OrderInfo & { statusText: string; productId: number })[] = [];
-    await Promise.all(
-        data.map(async (item) => {
-            if (item.orderType !== "COIN_BUY") {
-                let { body } = await productIdApi({ skuId: item.orderDetails[0].skuId });
-                if (body) {
-                    ndata.push({ ...item, statusText: "", productId: body });
-                }
-            }
+    let zndata = await Promise.all(
+        data.map(async (order) => {
+            let tab = tabList.value.find((tab) => tab.value === order.status);
+            order.statusText = tab?.name || "未知";
+            let nOrderDetails = await Promise.all(
+                order.orderDetails.map(async (detail) => {
+                    const { body } = await productIdApi({ skuId: detail.skuId });
+                    detail.productId = body as number;
+                    return detail;
+                })
+            );
+            return { ...order, orderDetails: nOrderDetails };
         })
     );
-    let zndata = ndata.map((item) => {
-        let tab = tabList.value.find((tab) => tab.value === item.status);
-        return {
-            ...item,
-            statusText: tab?.name || "未知",
-        };
-    });
-    console.log("ndata", zndata);
+    console.log("zndata", zndata);
     if (isPush) {
         if (data.length === 0) return;
         paging.page++;
@@ -64,6 +61,8 @@ async function getOrderList(isPush: boolean = false) {
         orderList.value = zndata;
     }
 }
+
+onReachBottom(() => getOrderList(true));
 
 // 收货
 async function receiveGoods(id: number) {
@@ -78,11 +77,11 @@ const reviewShow = ref(false);
 const activeOrderId = ref<number | null>(null); // 子订单id
 const activeProductId = ref<number>(); // 商品id
 // const active;
-async function reviewClick(order: Order.OrderInfo & { statusText: string; productId: number }) {
+async function reviewClick(order: Order.OrderInfo) {
     if (order.orderDetails.length === 1) {
         // 调弹窗
         activeOrderId.value = order.orderDetails[0].id;
-        activeProductId.value = order.productId;
+        activeProductId.value = order.orderDetails[0].productId;
         reviewShow.value = true;
     } else {
         // 进详情
@@ -115,7 +114,7 @@ async function reviewClick(order: Order.OrderInfo & { statusText: string; produc
                 </div>
                 <!-- 中间商品区域 -->
                 <div class="wfull box-border p18 b-#EFEFEF b-1rpx b-b-solid">
-                    <div class="wfull flex" v-for="(product, ind) in order.orderDetails" :key="product.id">
+                    <div class="wfull flex mb20" v-for="(product, ind) in order.orderDetails" :key="product.id">
                         <div
                             class="size-186 flex-shrink-0 mr24"
                             @click="gotoPage(`/pages/product/details?id=${product.skuId}`)"

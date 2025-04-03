@@ -22,6 +22,25 @@ export namespace ShopCart {
         shopLogo: string;
         shopName: string;
     }
+
+    export interface SubmitOrderParams {
+        /**
+         * 地址id
+         */
+        addressId: number;
+        /**
+         * 购物车id集合
+         */
+        ids: string;
+        /**
+         * 支付方式
+         */
+        payType: string;
+        /**
+         * 备注
+         */
+        remark?: string;
+    }
 }
 
 // 购物车列表
@@ -38,17 +57,22 @@ export const shopCartAddApi = (data: { skuId: number | string }) => {
 };
 
 // 购物车删除
-export const shopCartDeleteApi = (data: { ids:  string }) => {
-    return unInstance.post<UnData, { ids:  string }, IUnResponseData<null, null>>(
-        "/v1/user/deleteCart",
-        data
-    );
+export const shopCartDeleteApi = (data: { ids: string }) => {
+    return unInstance.post<UnData, { ids: string }, IUnResponseData<null, null>>("/v1/user/deleteCart", data);
 };
 
 // 修改购物车商品数量
 export const shopCartUpdateCountApi = (data: { id: number; stock: number }) => {
     return unInstance.post<UnData, { id: number; stock: number }, IUnResponseData<null, null>>(
         "/v1/user/updateCart",
+        data
+    );
+};
+
+// 购物车下单
+export const shopCartSubmitOrderApi = (data: ShopCart.SubmitOrderParams) => {
+    return unInstance.post<UnData, ShopCart.SubmitOrderParams, IUnResponseData<null, null>>(
+        "/v1/order/createOrder",
         data
     );
 };

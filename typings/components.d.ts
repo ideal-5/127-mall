@@ -24,6 +24,7 @@ declare module 'vue' {
     NutTabbarItem: typeof import('nutui-uniapp/components/tabbaritem/tabbaritem.vue')['default']
     NutTextarea: typeof import('nutui-uniapp/components/textarea/textarea.vue')['default']
     NutToast: typeof import('nutui-uniapp/components/toast/toast.vue')['default']
+    NutTransition: typeof import('nutui-uniapp/components/transition/transition.vue')['default']
     Tabs: typeof import('./../src/components/Tabs.vue')['default']
     WaterfallsFlow: typeof import('./../src/components/WaterfallsFlow.vue')['default']
   }

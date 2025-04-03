@@ -2,6 +2,7 @@
 import { useShopCartStore } from "@/store";
 import type { ShopCart } from "@/api";
 import { onReachBottom, onShow } from "@dcloudio/uni-app";
+import { gotoPage } from "@/utils/uni";
 
 interface Shop {
     cartList: (ShopCart.Product & { activePrice: number; isSelect: boolean })[];
@@ -111,6 +112,16 @@ function deleteClick() {
 function stockChange(item: Item, stock: number) {
     shopCartStore.shopCartUpdateCount({ id: item.id, stock });
 }
+const toast = useToast();
+function submit() {
+    if (!isExistSelect.value) return toast.text("请选中商品再结算");
+    // let activeShop = shopCartStore.shopCartList.find((shop) => {
+    //     return shop.cartList.some((item) => item.isSelect);
+    // });
+    // console.log("activeShop", activeShop);
+    gotoPage('submit-order')
+
+}
 </script>
 
 <template>
@@ -205,6 +216,7 @@ function stockChange(item: Item, stock: number) {
                     v-if="!isManage"
                     class="text-#fff bg-#b9b9b9 fw500 text-30 box-border px40 py15 b-rd-full flex-center transition"
                     :class="isExistSelect && 'bg-[linear-gradient(97deg,#FECE62_0%,#FF9113_100%)]'"
+                    @click="submit"
                 >
                     结算
                 </div>

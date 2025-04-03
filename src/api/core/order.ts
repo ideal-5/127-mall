@@ -57,6 +57,7 @@ export namespace Order {
          * 商品标签
          */
         properties: { id: number; value: string; remark: string }[];
+        productId?: number;
     }
     export interface OrderInfo {
         createTime: string;
@@ -98,6 +99,7 @@ export namespace Order {
          */
         stock: number;
         orderType: string;
+        statusText?:string;
     }
     export interface CommentParams {
         id: number;

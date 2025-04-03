@@ -38,6 +38,7 @@ interface NavigateToOptions {
        "/pages/product/point-place-order" |
        "/pages/product/swiper" |
        "/pages/shopping-cart/shopping-cart" |
+       "/pages/shopping-cart/submit-order" |
        "/pages/underwear/underwear-home" |
        "/pages/underwear/underwear-hot" |
        "/pages/underwear/underwear-major" |
