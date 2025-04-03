@@ -15,6 +15,7 @@ const darkMode = isH5 ? "class" : "media";
 const config: UserConfig = defineConfig({
     rules: [
         ["flex-center", { display: "flex", "align-items": "center", "justify-content": "center" }], // 一个配置为一个数组
+        ["flex-c", { display: "flex", "align-items": "center"}], // 一个配置为一个数组
         [/^truncate-(\d+)$/, ([, lines]) => ({
             display: "-webkit-box",
             "-webkit-box-orient": "vertical",

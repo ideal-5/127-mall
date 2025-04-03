@@ -1,9 +1,17 @@
 <script lang="ts" setup>
 import { ref } from "vue";
 import { onShow, onLoad } from "@dcloudio/uni-app";
-import { useUserStore } from "@/store";
+import { useUserStore, useShopCartStore } from "@/store";
 
 const userStore = useUserStore();
+
+/**
+ * 购物车
+ */
+const shopCartStore = useShopCartStore();
+onLoad(() => {
+    shopCartStore.getShopCartList();
+});
 
 /**
  * 处理tabbar
@@ -43,7 +51,7 @@ function changeTab(_: any, index: number | string) {
 </script>
 
 <template>
-    <div>
+    <div style="--global-tabbar-height: 50px;" >
         <nut-toast :z-index="99999"></nut-toast>
         <slot />
         <nut-tabbar
@@ -55,11 +63,13 @@ function changeTab(_: any, index: number | string) {
             placeholder
             @tab-switch="changeTab"
             v-if="isTabbar"
+            style="--nut-tabbar-height: var(--global-tabbar-height)"
         >
             <nut-tabbar-item
                 v-for="(path, idx) in Object.keys(tabMap)"
                 :key="idx"
                 :tab-title="['首页', '消息', '购物车', '我的'][idx]"
+                :value="idx === 2 ? shopCartStore.total : ''"
             >
                 <template #icon="props">
                     <image class="size-38" v-if="props.active" :src="`/static/tabbar/${idx + 1}-1.png`" />

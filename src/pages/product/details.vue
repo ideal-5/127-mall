@@ -5,6 +5,7 @@ import { useStyle } from "@/hooks/useStyle";
 import WaterfallsFlow from "@/components/WaterfallsFlow.vue";
 import Comment from "./components/Comment.vue";
 import { gotoPage } from "@/utils/uni";
+import { useShopCartStore } from "@/store";
 import {
     productDetailApi,
     groupBuyGetGroupMerchApi,
@@ -61,7 +62,9 @@ onLoad(async (query) => {
     }));
     recommendProduct.value = body.recommendMerch;
     WaterfallsFlowRef.value &&
-        WaterfallsFlowRef.value.pushData(recommendProduct.value.map((item) => ({ ...item, img: item.imageUrl })));
+        WaterfallsFlowRef.value.pushData(
+            recommendProduct.value.map((item) => ({ ...item, img: item.imageUrl, idKey: "key" + item.id }))
+        );
 
     // 有listId 说明是团购
     if (query?.listId) {
@@ -116,12 +119,23 @@ const swiperClick = (index: number) => {
 };
 
 /**
+ * 弹起下单弹窗
+ */
+const submitPopupType = ref<"cart" | "buy">();
+function openSubmitPopup(type: "cart" | "buy") {
+    submitPopupType.value = type;
+    showSubmitPopup.value = true;
+}
+
+/**
  * 下单
  */
 const showSubmitPopup = ref(false);
 const submitCount = ref(1);
 
 const toast = useToast();
+
+const shopCartStore = useShopCartStore();
 async function submitOrder(paramsfun: {
     skuId: number;
     addressId: number;
@@ -129,59 +143,70 @@ async function submitOrder(paramsfun: {
     remark: string;
     stock: number;
     couponId?: number;
+    type: "cart" | "buy";
 }) {
-    try {
-        /**
-         * 判断当前商品分类 不同商品调不同接口
-         */
-        let { couponId, ...residue } = paramsfun;
-        let params: {
-            skuId: number;
-            addressId: number;
-            payType: string;
-            remark: string;
-            stock: number;
-            couponId?: number;
-        } = {
-            ...residue,
-        };
-        if (couponId) {
-            params.couponId = couponId;
+    if (paramsfun.type === "cart") {
+        try {
+            await shopCartStore.shopCartAdd(paramsfun.skuId);
+            showSubmitPopup.value = false;
+            toast.text("添加购物车成功");
+        } catch (error) {
+            console.log("失败");
         }
-
-        if (productType === "NEW_BUY") {
-            await newProductCreateOrderApi(params);
-        } else if (productType === "SECOND_BUY") {
-            await secondHandCreateOrderApi(params);
-        } else if (productType === "GROUP_BUY" && listId.value) {
-            if (submitGroupOrderType.value === "1") {
-                // 创建团购
-                await groupBuyCreateOrderApi({
-                    id: listId.value,
-                    addressId: params.addressId,
-                    payType: params.payType,
-                    remark: params.remark,
-                });
-            } else if (submitGroupOrderType.value === "2" && activeGroupItem.value) {
-                // 参与团购
-                await groupBuyJoinGroupApi({
-                    openId: activeGroupItem.value?.id,
-                    addressId: params.addressId,
-                    payType: params.payType,
-                    remark: params.remark,
-                });
+    } else if (paramsfun.type === "buy") {
+        try {
+            /**
+             * 判断当前商品分类 不同商品调不同接口
+             */
+            let { couponId, ...residue } = paramsfun;
+            let params: {
+                skuId: number;
+                addressId: number;
+                payType: string;
+                remark: string;
+                stock: number;
+                couponId?: number;
+            } = {
+                ...residue,
+            };
+            if (couponId) {
+                params.couponId = couponId;
             }
-        } else if (productType === "UNDERWEAR_BUY") {
-            await underwearCreateOrderApi(params);
+
+            if (productType === "NEW_BUY") {
+                await newProductCreateOrderApi(params);
+            } else if (productType === "SECOND_BUY") {
+                await secondHandCreateOrderApi(params);
+            } else if (productType === "GROUP_BUY" && listId.value) {
+                if (submitGroupOrderType.value === "1") {
+                    // 创建团购
+                    await groupBuyCreateOrderApi({
+                        id: listId.value,
+                        addressId: params.addressId,
+                        payType: params.payType,
+                        remark: params.remark,
+                    });
+                } else if (submitGroupOrderType.value === "2" && activeGroupItem.value) {
+                    // 参与团购
+                    await groupBuyJoinGroupApi({
+                        openId: activeGroupItem.value?.id,
+                        addressId: params.addressId,
+                        payType: params.payType,
+                        remark: params.remark,
+                    });
+                }
+            } else if (productType === "UNDERWEAR_BUY") {
+                await underwearCreateOrderApi(params);
+            }
+            showSubmitPopup.value = false;
+            toast.text("下单成功");
+            // setTimeout(() => {
+            //     uni.navigateBack();
+            // }, 600);
+        } catch (error) {
+            let err = error as { msg: string };
+            toast.error(err?.msg || "下单失败,请稍后重试");
         }
-        showSubmitPopup.value = false;
-        toast.text("下单成功");
-        // setTimeout(() => {
-        //     uni.navigateBack();
-        // }, 600);
-    } catch (error) {
-        let err = error as { msg: string };
-        toast.error(err?.msg || "下单失败,请稍后重试");
     }
 }
 </script>
@@ -353,12 +378,15 @@ async function submitOrder(paramsfun: {
                     </div>
                 </template>
                 <template v-else>
-                    <div class="hfull text-24 text-#FF8B06 bg-#FFEDC4 b-rd-l-full flex-center box-content px22">
+                    <div
+                        class="hfull text-24 text-#FF8B06 bg-#FFEDC4 b-rd-l-full flex-center box-content px22"
+                        @click="openSubmitPopup('cart')"
+                    >
                         加入购物车
                     </div>
                     <div
                         class="hfull flex-col items-center justify-center text-#fff bg-#FFAA48 b-rd-r-full box-border px50"
-                        @click="showSubmitPopup = true"
+                        @click="openSubmitPopup('buy')"
                     >
                         <span class="fw500 text-30">￥{{ productInfo?.activePrice }}</span>
                         <span class="text-20">立即购买</span>
@@ -388,7 +416,7 @@ async function submitOrder(paramsfun: {
         </div>
     </nut-popup>
     <SubmitOrderPopup
-        v-if="productInfo && specificationList"
+        v-if="productInfo && specificationList && submitPopupType"
         v-model:visible="showSubmitPopup"
         v-model:count="submitCount"
         :productInfo="productInfo"
@@ -397,6 +425,7 @@ async function submitOrder(paramsfun: {
         :listId="listId"
         :submitGroupOrderType="submitGroupOrderType"
         @submitOrder="submitOrder"
+        :type="submitPopupType"
     ></SubmitOrderPopup>
 </template>
 

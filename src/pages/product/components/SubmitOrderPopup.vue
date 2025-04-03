@@ -10,6 +10,7 @@ interface Props {
     productType: string; //  JUST_SEND 厂家直销  GROUP_BUY 团购 SECOND_BUY 二手 UNDERWEAR_BUY 内衣 NEW_BUY 新品上市 COIN_BUY 积分
     productInfo: (Product.Product & { activePrice: number }) | null; // 商品信息
     specificationList: (Product.Specification & { activePrice: number })[] | null; // 规格列表
+    type: "cart" | "buy";
 }
 
 const props = withDefaults(defineProps<Props>(), {
@@ -24,6 +25,7 @@ const emit = defineEmits<{
     (
         e: "submitOrder",
         params: {
+            type: "cart" | "buy";
             skuId: number;
             addressId: number;
             payType: string;
@@ -119,6 +121,7 @@ async function submitOrder() {
     if (!activeAddress.value || !props.specificationList?.[activeSpecification.value]) return;
 
     emit("submitOrder", {
+        type: props.type,
         skuId: props.specificationList?.[activeSpecification.value].id,
         addressId: activeAddress.value?.id,
         payType: activePayType.value,
@@ -154,6 +157,7 @@ async function submitOrder() {
                 <div
                     class="wfull flex items-center h-fit b-b-solid b-b-4rpx b-b-#F2F2F2 box-border py20"
                     @click="selectAddress"
+                    v-if="props.type === 'buy'"
                 >
                     <div class="flex-1 min-w-0 flex hfull flex items-center">
                         <div class="w100 hfull flex-center flex-shrink-0">
@@ -199,7 +203,7 @@ async function submitOrder() {
                         </div>
                         <div text-26 my28>已选: {{ activeSpecificationInfo.skuName }}</div>
                         <nut-input-number
-                            v-if="props.productType !== 'GROUP_BUY'"
+                            v-if="props.productType !== 'GROUP_BUY' && props.type === 'buy'"
                             v-model="submitCount"
                         ></nut-input-number>
                     </div>
@@ -259,7 +263,7 @@ async function submitOrder() {
                 <div
                     class="wfull flex items-center justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2"
                     @click="showCouponPopup = true"
-                    v-if="props.productType !== 'GROUP_BUY'"
+                    v-if="props.productType !== 'GROUP_BUY' && props.type === 'buy'"
                 >
                     <div text-26 fw500>优惠券</div>
                     <div>
@@ -269,13 +273,16 @@ async function submitOrder() {
                     </div>
                 </div>
                 <!-- 订单备注 -->
-                <div class="wfull flex-col justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2">
+                <div
+                    class="wfull flex-col justify-between box-border p32 b-b-solid b-b-6rpx b-b-#F2F2F2"
+                    v-if="props.type === 'buy'"
+                >
                     <div text-26 fw500 mb20>订单备注</div>
                     <!-- <div i-mdi:chevron-right></div> -->
                     <nut-textarea v-model="remarkInp" limit-show max-length="200" />
                 </div>
                 <!-- 支付方式 -->
-                <div class="wfull flex-col justify-between box-border">
+                <div class="wfull flex-col justify-between box-border" v-if="props.type === 'buy'">
                     <div
                         class="wfull flex items-center justify-between box-border py15 b-b-solid b-1rpx b-#F2F2F2 box-border p-x32"
                         v-for="(item, index) in payType"
@@ -307,7 +314,7 @@ async function submitOrder() {
                     @click="submitOrder"
                 >
                     <span text-28 v-if="props.productType === 'GROUP_BUY'">开启团购</span>
-                    <span text-28 v-else>立即支付</span>
+                    <span text-28 v-else>{{ props.type === "buy" ? "立即支付" : "加入购物车" }}</span>
                     <span text-34 v-if="activeSpecificationInfo">￥{{ afterAmount }}</span>
                 </div>
             </div>
