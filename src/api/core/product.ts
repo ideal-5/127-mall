@@ -16,6 +16,8 @@ export namespace Product {
         saleCount: number;
         merchId: number;
         shopId: number;
+        userId: number;
+        shopName: string;
     }
     export interface Banner {
         id: number;

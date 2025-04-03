@@ -3,7 +3,7 @@ import { onMounted, ref } from "vue";
 import { OrderListApi, OrderConfirmApi, productIdApi } from "@/api";
 import type { Order } from "@/api";
 import { useStyle } from "@/hooks/useStyle";
-import ReviewPopup from "./components/ReviewPopup.vue";
+// import ReviewPopup from "./components/ReviewPopup.vue";
 import { gotoPage } from "@/utils/uni";
 import { onReachBottom } from "@dcloudio/uni-app";
 
@@ -27,8 +27,6 @@ const paging = {
     page: 1,
     limit: 10,
 };
-
-onMounted(async () => getOrderList(false));
 
 const orderList = ref<Order.OrderInfo[]>([]);
 async function getOrderList(isPush: boolean = false) {
@@ -61,8 +59,12 @@ async function getOrderList(isPush: boolean = false) {
         orderList.value = zndata;
     }
 }
-
+onMounted(async () => getOrderList(false));
 onReachBottom(() => getOrderList(true));
+watch(
+    () => activeTab.value,
+    () => getOrderList(false)
+);
 
 // 收货
 async function receiveGoods(id: number) {
@@ -72,20 +74,25 @@ async function receiveGoods(id: number) {
         activeTab.value = index;
     }
 }
-// 评论
-const reviewShow = ref(false);
-const activeOrderId = ref<number | null>(null); // 子订单id
-const activeProductId = ref<number>(); // 商品id
-// const active;
-async function reviewClick(order: Order.OrderInfo) {
-    if (order.orderDetails.length === 1) {
-        // 调弹窗
-        activeOrderId.value = order.orderDetails[0].id;
-        activeProductId.value = order.orderDetails[0].productId;
-        reviewShow.value = true;
-    } else {
-        // 进详情
-    }
+// // 评论
+// const reviewShow = ref(false);
+// const activeOrderId = ref<number | null>(null); // 子订单id
+// const activeProductId = ref<number>(); // 商品id
+// // const active;
+// async function reviewClick(order: Order.OrderInfo) {
+//     if (order.orderDetails.length === 1) {
+//         // 调弹窗
+//         activeOrderId.value = order.orderDetails[0].id;
+//         activeProductId.value = order.orderDetails[0].productId;
+//         reviewShow.value = true;
+//     } else {
+//         // 进详情
+//     }
+// }
+
+// 点击店铺
+function shopClick(order: Order.OrderInfo) {
+    console.log("order", order);
 }
 </script>
 
@@ -97,14 +104,18 @@ async function reviewClick(order: Order.OrderInfo) {
             keyName="name"
             v-model:activeTab="activeTab"
             style="background-color: #fff; --tabs-line-bagcolor: #ffaa48"
-            @change="getOrderList(false)"
             :style="stickyStyle"
         ></Tabs>
         <div class="wfull box-border px34">
-            <div class="bg-#fff b-rd-14 mt25" v-for="(order, index) in orderList" :key="order.id">
+            <div
+                class="bg-#fff b-rd-14 mt25"
+                v-for="(order, index) in orderList"
+                :key="order.id"
+                @click.stop="gotoPage(`order-details?id=${order.id}`)"
+            >
                 <!-- 头部状态区域 -->
                 <div class="wfull flex items-center justify-between b-#EFEFEF b-1rpx b-b-solid box-border p18">
-                    <div class="flex items-center">
+                    <div class="flex items-center" @click="shopClick(order)">
                         <image :src="order.shopLogo" mode="aspectFill" class="size-50 b-rd-full mr14" />
                         <div class="text-26 fw500">{{ order.shopName }}</div>
                         <div class="text-26 fw500">{{ order.orderType }}</div>
@@ -155,17 +166,17 @@ async function reviewClick(order: Order.OrderInfo) {
                     <div class="order-btn" v-if="order.status === '40'" @click.stop="receiveGoods(order.id)">
                         已收货
                     </div>
-                    <div class="order-btn" v-if="order.status === '50'" @click.stop="reviewClick(order)">评论</div>
+                    <!-- <div class="order-btn" v-if="order.status === '50'" @click.stop="reviewClick(order)">评论</div> -->
                 </div>
             </div>
         </div>
     </div>
-    <ReviewPopup
+    <!-- <ReviewPopup
         v-if="activeOrderId && activeProductId"
         v-model:visible="reviewShow"
         :activeOrderId="activeOrderId"
         :activeProductId="activeProductId"
-    ></ReviewPopup>
+    ></ReviewPopup> -->
 </template>
 
 <style scoped lang="scss">

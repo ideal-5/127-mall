@@ -99,7 +99,7 @@ export namespace Order {
          */
         stock: number;
         orderType: string;
-        statusText?:string;
+        statusText?: string;
     }
     export interface CommentParams {
         id: number;
@@ -111,6 +111,115 @@ export namespace Order {
         reviewTag: string;
         id: number;
     }
+    export interface DetailProductDetail {
+        /**
+         * 优惠扣减
+         */
+        couponCutAmount?: number;
+        createTime?: string;
+        /**
+         * 现价
+         */
+        currentAmount?: number;
+        id?: number;
+        orderId?: string;
+        /**
+         * 原价
+         */
+        originalAmount?: number;
+        shopSortId?: number;
+        shopSortValue?: string;
+        skuId?: number;
+        /**
+         * 商品图片
+         */
+        skuImage: null;
+        /**
+         * 商品名称
+         */
+        skuName?: string;
+        status?: string;
+        /**
+         * 数量
+         */
+        stock?: number;
+        userId?: number;
+    }
+    export interface DetailOrderInfo {
+        /**
+         * 详细地址
+         */
+        address: string;
+        /**
+         * 购买方式
+         */
+        buyType: string;
+        /**
+         * 联系人
+         */
+        contactName: string;
+        /**
+         * 联系电话
+         */
+        contactPhone: string;
+        /**
+         * 优惠扣减金额
+         */
+        couponAmount: number;
+        couponId: number;
+        /**
+         * 创建时间
+         */
+        createTime: string;
+        /**
+         * 现价
+         */
+        currentAmount: number;
+        /**
+         * 运费
+         */
+        freightAmount: number;
+        id: number;
+        logisticsCode: null;
+        logisticsOrder: null;
+        /**
+         * 订单号
+         */
+        orderId: string;
+        /**
+         * 原价
+         */
+        originalAmount: number;
+        outOrderId: string;
+        paymentId: null;
+        /**
+         * 支付时间
+         */
+        payTime: null;
+        /**
+         * 订单备注
+         */
+        remark: string;
+        shopId: number;
+        shopSortId: number;
+        /**
+         * 店铺分类
+         */
+        shopSortValue: string;
+        /**
+         * 订单状态
+         */
+        status: string;
+        /**
+         * 数量
+         */
+        stock: number;
+        userId: number;
+    }
+    export interface Detail {
+        orderInfo: DetailOrderInfo;
+        detail: DetailProductDetail[];
+    }
 }
 
 // 订单列表
@@ -119,6 +228,11 @@ export const OrderListApi = (data: Order.ListParams) => {
         "/v1/order/orderList",
         data
     );
+};
+
+// 订单详情
+export const OrderDetailApi = (data: { id: number }) => {
+    return unInstance.post<UnData, { id: number }, IUnResponseData<null, Order.Detail>>("/v1/order/detail", data);
 };
 
 // 确认收货

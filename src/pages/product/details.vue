@@ -209,6 +209,12 @@ async function submitOrder(paramsfun: {
         }
     }
 }
+
+function shopCardIconClick() {
+    uni.switchTab({
+        url: "/pages/shopping-cart/shopping-cart",
+    });
+}
 </script>
 
 <template>
@@ -359,11 +365,15 @@ async function submitOrder(paramsfun: {
                     <image :src="shopLogo" mode="aspectFill" size-48 b-rd-full />
                     <span text-22>进店</span>
                 </div>
-                <div flex-col items-center>
+                <div
+                    flex-col
+                    items-center
+                    @click.stop="gotoPage(`/pages/message/chat?toid=${productInfo?.userId}&toname=${productInfo?.shopName}`)"
+                >
                     <span i-ri:customer-service-line size-48 />
                     <span text-22>客服</span>
                 </div>
-                <div flex-col items-center>
+                <div flex-col items-center @click.stop="shopCardIconClick">
                     <span i-mdi:cart-minus size-48 />
                     <span text-22>购物车</span>
                 </div>
