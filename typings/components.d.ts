@@ -7,27 +7,8 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    copy: typeof import('./../src/components/NavBar copy.vue')['default']
     NavBar: typeof import('./../src/components/NavBar.vue')['default']
     'NavBar copy': typeof import('./../src/components/NavBar copy.vue')['default']
-    NutBacktop: typeof import('nutui-uniapp/components/backtop/backtop.vue')['default']
-    NutButton: typeof import('nutui-uniapp/components/button/button.vue')['default']
-    NutCountdown: typeof import('nutui-uniapp/components/countdown/countdown.vue')['default']
-    NutDivider: typeof import('nutui-uniapp/components/divider/divider.vue')['default']
-    NutInput: typeof import('nutui-uniapp/components/input/input.vue')['default']
-    NutInputNumber: typeof import('nutui-uniapp/components/inputnumber/inputnumber.vue')['default']
-    NutPopup: typeof import('nutui-uniapp/components/popup/popup.vue')['default']
-    NutSearchbar: typeof import('nutui-uniapp/components/searchbar/searchbar.vue')['default']
-    NutSwipe: typeof import('nutui-uniapp/components/swipe/swipe.vue')['default']
-    NutSwipeGroup: typeof import('nutui-uniapp/components/swipegroup/swipegroup.vue')['default']
-    NutSwiper: typeof import('nutui-uniapp/components/swiper/swiper.vue')['default']
-    NutSwiperItem: typeof import('nutui-uniapp/components/swiperitem/swiperitem.vue')['default']
-    NutSwitch: typeof import('nutui-uniapp/components/switch/switch.vue')['default']
-    NutTabbar: typeof import('nutui-uniapp/components/tabbar/tabbar.vue')['default']
-    NutTabbarItem: typeof import('nutui-uniapp/components/tabbaritem/tabbaritem.vue')['default']
-    NutTextarea: typeof import('nutui-uniapp/components/textarea/textarea.vue')['default']
-    NutToast: typeof import('nutui-uniapp/components/toast/toast.vue')['default']
-    NutTransition: typeof import('nutui-uniapp/components/transition/transition.vue')['default']
     Tabs: typeof import('./../src/components/Tabs.vue')['default']
     WaterfallsFlow: typeof import('./../src/components/WaterfallsFlow.vue')['default']
   }

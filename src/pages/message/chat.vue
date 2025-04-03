@@ -47,8 +47,12 @@ const scrollToBottom = () => {
 const messageList = ref<(Chat.Message & { isSelf: boolean })[]>([]);
 
 const touser = ref<{ toname: string; toid: number; sessionId: number }>();
-onLoad(async ({ toname = "对方名", toid = 0, sessionId = 0 }: any) => {
-    await chatConversationCreateApi({ takeUserId: toid }); // TODO 这里创建后没有返回值
+onLoad(async ({ toname = "对方名", toid = 0, sessionId }: any) => {
+    if (!sessionId) {
+        let {body} = await chatConversationCreateApi({ takeUserId: toid });
+        sessionId = body.id;
+    }
+
     touser.value = { toname, toid, sessionId };
     await getChatDetail();
     scrollToBottom();

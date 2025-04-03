@@ -40,5 +40,8 @@ export const chatConversationDetailApi = (data: { id: number }) => {
 
 // 创建会话
 export const chatConversationCreateApi = (data: { takeUserId: number }) => {
-    return unInstance.post<UnData, { takeUserId: number }, IUnResponseData<null, null>>("/chat/createChat", data);
+    return unInstance.post<UnData, { takeUserId: number }, IUnResponseData<null, { id: number }>>(
+        "/chat/createChat",
+        data
+    );
 };
