@@ -22,6 +22,7 @@ export namespace User {
         headImage: string;
         unCode: string;
         vipStatus: "10" | "20"; // 10未开通 20已开通
+        vipTime:string;
     }
     export interface UserScoreAndCouponResult {
         coin: number;
@@ -143,4 +144,9 @@ export const userFeedbackApi = (data: { suggest: string }) => {
 // 优惠券列表
 export const userCouponListApi = (data: User.CouponListParams) => {
     return unInstance.post<UnData, User.CouponListParams, IUnResponseData<User.Coupon[], null>>("/v1/user/userCoupon", data);
+};
+
+// 购买vip
+export const userBuyVipApi = (data: { payType: string }) => {
+    return unInstance.post<UnData,{ payType: string }, IUnResponseData<null, null>>("/v1/user/createVipOrder", data);
 };

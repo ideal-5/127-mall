@@ -2,7 +2,7 @@ import { unInstance } from "@/service";
 
 export namespace Config {
     export interface AgreementParams {
-        type: "10" | "20" | "30" | "40" | "50" | "60" | "70" | "80";
+        type: "10" | "20" | "30" | "40" | "50" | "60" | "70" | "80" | "90";
     }
     export interface AgreementResult {
         name: string;
@@ -24,6 +24,22 @@ export namespace Config {
     export interface BannerResult {
         id: number;
         imageUrl: string;
+    }
+    export interface ConfigVip {
+        /**
+         * 金额
+         */
+        amount: number;
+        createTime: null;
+        id: number;
+        /**
+         * 会员天数
+         */
+        time: number;
+        /**
+         * 会员名称
+         */
+        vipName: string;
     }
 }
 
@@ -49,4 +65,9 @@ export const configGetBannerListApi = (data: Config.BannerParams) => {
         `/sys/bannerList`,
         data
     );
+};
+
+// 获取vip配置
+export const configGetVipConfigApi = () => {
+    return unInstance.get<UnData, null, IUnResponseData<null, Config.ConfigVip>>(`/sys/getVipConfig`);
 };

@@ -119,7 +119,6 @@ const afterAmount = computed(() => {
 
 async function submitOrder() {
     if (!activeAddress.value || !props.specificationList?.[activeSpecification.value]) return;
-
     emit("submitOrder", {
         type: props.type,
         skuId: props.specificationList?.[activeSpecification.value].id,
