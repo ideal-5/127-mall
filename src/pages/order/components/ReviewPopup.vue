@@ -37,7 +37,7 @@ function delImgClick(index: number) {
 }
 const toast = useToast();
 async function submitComment() {
-    if (!props.activeOrderId || !activeTagId.value) return;
+    if (!props.activeOrderId || !activeTagId.value || !review.value) return;
     await orderCommentApi({
         id: props.activeOrderId,
         review: review.value,

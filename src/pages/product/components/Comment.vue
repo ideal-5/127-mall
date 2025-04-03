@@ -22,7 +22,7 @@ onMounted(async () => {
 </script>
 
 <template>
-    <div bg-white wfull mt20 mb20 @click.stop="gotoPage('comment')">
+    <div bg-white wfull mt20 mb20 @click.stop="gotoPage(`comment?productInfo=${props.productInfo.id}`)">
         <div flex items-center justify-between h80 box-border px-10>
             <div text-28 fw500>商品评价({{ tagList?.[0]?.count }})</div>
             <div i-mdi:chevron-right></div>
@@ -41,27 +41,19 @@ onMounted(async () => {
         <div wfull>
             <div
                 class="b-b-#E8E8E8 box-border py-15 wfull b-b-solid b-b-1rpx last:b-b-0 box-border px-10"
-                v-for="(item, index) in 3"
-                :key="index"
+                v-for="(item, index) in commentList"
+                :key="item.review.id"
             >
                 <div flex items-center>
-                    <image
-                        src="https://picsum.photos/seed/picsum/200/300"
-                        mode="aspectFill"
-                        class="size-42 b-rd-full mr10"
-                    />
-                    <div class="text-#949494" text-20>我是用户名</div>
+                    <image :src="item.headImage" mode="aspectFill" class="size-42 b-rd-full mr10" />
+                    <div class="text-#949494" text-20>{{ item.userName }}</div>
                 </div>
                 <div wfull flex justify-between>
                     <div class="text-#949494 text-24 flex-1 min-w-0 truncate-2 h-fit mt18">
-                        特别好用亲肤 快递也很快， 物有所值比我之前 买的都是好用会一直回购的，会 特别好用亲肤
-                        快递也很快， 物有所值比我之前 买的都是好用会一直回购的，会 特别好用亲肤 快递也很快，
-                        物有所值比我之前 买的都是好用会一直回购的，会 特别好用亲肤 快递也很快， 物有所值比我之前
-                        买的都是好用会一直回购的，会 特别好用亲肤 快递也很快， 物有所值比我之前
-                        买的都是好用会一直回购的，会
+                        {{ item.review.review }}
                     </div>
-                    <div w200 flex justify-end flex-shrink-0>
-                        <image src="https://picsum.photos/seed/picsum/200/300" mode="aspectFill" size-90 b-rd-16 />
+                    <div w200 flex justify-end flex-shrink-0 v-if="item.banners.length > 0">
+                        <image :src="item.banners?.[0].imageUrl" mode="aspectFill" size-90 b-rd-16 />
                     </div>
                 </div>
             </div>

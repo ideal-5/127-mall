@@ -49,6 +49,7 @@ export namespace Product {
     export interface CommentListParams extends Paging {
         tagId?: number;
         id: number;
+        orderBy?: string;
     }
     export interface Banners {
         id: number;
@@ -56,10 +57,16 @@ export namespace Product {
     }
     export interface Review {
         review: string;
+        id: number;
+        viewNum: number;
+        merchName: string;
+        createTime: string;
     }
     export interface Comment {
+        userName: string;
         banners: Banners[];
         review: Review;
+        headImage: string;
     }
 }
 
